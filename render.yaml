@@ -10,7 +10,7 @@ services:
     name: kib-api
     runtime: python
     plan: starter
-    buildCommand: pip install -r services/api/requirements.txt && pip install -r services/rag/requirements.txt
+    buildCommand: PIP_DEFAULT_TIMEOUT=120 pip install --retries 10 -r services/api/requirements.txt
     startCommand: uvicorn services.api.app.main:app --host 0.0.0.0 --port $PORT
     preDeployCommand: python scripts/init_db.py
     healthCheckPath: /health
@@ -49,7 +49,7 @@ services:
     name: kib-rag
     runtime: python
     plan: starter
-    buildCommand: pip install -r services/rag/requirements.txt
+    buildCommand: PIP_DEFAULT_TIMEOUT=120 pip install --retries 10 -r services/rag/requirements.txt
     startCommand: uvicorn services.rag.app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
@@ -74,7 +74,7 @@ services:
     name: kib-ingestion
     runtime: python
     plan: starter
-    buildCommand: pip install -r services/ingestion/requirements.txt
+    buildCommand: PIP_DEFAULT_TIMEOUT=120 pip install --retries 10 -r services/ingestion/requirements.txt
     startCommand: uvicorn services.ingestion.app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     disk:
