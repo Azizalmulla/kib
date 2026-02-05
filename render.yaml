@@ -1,6 +1,6 @@
 databases:
   - name: kib-postgres
-    plan: starter
+    plan: free
     databaseName: kib
     postgresMajorVersion: 16
     ipAllowList: []
