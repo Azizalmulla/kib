@@ -62,9 +62,9 @@ services:
       - key: KIB_LLM_PROVIDER
         value: "openai_compatible"
       - key: KIB_LLM_BASE_URL
-        sync: false
+        value: "https://api.fireworks.ai/inference/v1"
       - key: KIB_LLM_MODEL
-        sync: false
+        value: "fireworks/kimi-k2p5"
       - key: KIB_LLM_API_KEY
         sync: false
       - key: KIB_LLM_TIMEOUT_SECONDS

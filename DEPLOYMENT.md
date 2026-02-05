@@ -48,9 +48,10 @@ Create services manually in the order below.
 #### kib-rag (RAG Service)
 | Variable | Value |
 |----------|-------|
-| `KIB_LLM_BASE_URL` | Your LLM endpoint (e.g., `https://api.openai.com`) |
-| `KIB_LLM_MODEL` | Model name (e.g., `gpt-4o-mini`) |
-| `KIB_LLM_API_KEY` | Your API key |
+| `KIB_LLM_PROVIDER` | `openai_compatible` |
+| `KIB_LLM_BASE_URL` | `https://api.fireworks.ai/inference/v1` |
+| `KIB_LLM_MODEL` | `fireworks/kimi-k2p5` |
+| `KIB_LLM_API_KEY` | Your Fireworks API key |
 
 ---
 
