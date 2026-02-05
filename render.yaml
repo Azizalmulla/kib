@@ -27,7 +27,7 @@ services:
       - key: KIB_REQUEST_TIMEOUT_SECONDS
         value: "30"
       - key: KIB_MOCK_OIDC
-        value: "false"
+        value: "true"
       - key: KIB_OIDC_ISSUER
         sync: false
       - key: KIB_OIDC_AUDIENCE
