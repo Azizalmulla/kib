@@ -86,6 +86,7 @@ async def ingest(
     status: str = Form(default="approved"),
     allowed_roles: str = Form(default="front_desk"),
     access_tags: str = Form(default="{}"),
+    source_uri: Optional[str] = Form(default=None),
 ) -> dict:
     content = await file.read()
     os.makedirs(settings.uploads_dir, exist_ok=True)
@@ -115,7 +116,7 @@ async def ingest(
             conn,
             document_id,
             version,
-            dest_path,
+            source_uri or dest_path,
             sha256,
             meta.get("page_count"),
         )
