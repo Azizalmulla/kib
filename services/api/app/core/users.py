@@ -2,6 +2,7 @@ from typing import Any
 from uuid import UUID
 
 from psycopg import Connection
+from psycopg.types.json import Json
 
 from .security import AuthUser
 
@@ -19,6 +20,6 @@ def ensure_user(conn: Connection, user: AuthUser) -> UUID:
             updated_at = now()
         RETURNING id
         """,
-        (user.email, user.display_name, user.department, user.attributes),
+        (user.email, user.display_name, user.department, Json(user.attributes)),
     ).fetchone()
     return row["id"]

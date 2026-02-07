@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
+from psycopg.types.json import Json
 
 from ..core.config import settings
 from ..core.db import get_db
@@ -88,10 +89,10 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
                 None,
                 None,
                 None,
-                {
+                Json({
                     "confidence": data.get("confidence"),
                     "missing_info": data.get("missing_info"),
-                },
+                }),
                 trace_id,
                 latency_ms,
             ),
