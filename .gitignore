@@ -33,3 +33,4 @@ services/ingestion/data/
 
 # Logs
 *.log
+.vercel

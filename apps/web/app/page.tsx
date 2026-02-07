@@ -51,8 +51,8 @@ export default function Page() {
   }, [messages, selectedIndex]);
 
   const apiBase = process.env.NEXT_PUBLIC_KIB_API_BASE_URL || "http://localhost:8000";
-  const mockUser = process.env.NEXT_PUBLIC_KIB_MOCK_USER;
-  const mockRoles = process.env.NEXT_PUBLIC_KIB_MOCK_ROLES;
+  const mockUser = process.env.NEXT_PUBLIC_KIB_MOCK_USER || "demo@kib.com";
+  const mockRoles = process.env.NEXT_PUBLIC_KIB_MOCK_ROLES || "front_desk";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
