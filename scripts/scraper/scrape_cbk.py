@@ -8,7 +8,7 @@ from .config import CBK_BASE_URL, CBK_SITEMAP_URL
 from .discovery import discover_urls
 from .extractor import detect_language, extract_text, extract_title
 from .fetcher import fetch_html
-from .ingest_client import ingest_page
+from .direct_ingest import ingest_page
 
 # CBK-specific exclusions
 CBK_EXCLUDE = [

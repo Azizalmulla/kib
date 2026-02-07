@@ -61,4 +61,7 @@ EXCLUDE_PATTERNS = [
     "javascript:",
     "mailto:",
     "tel:",
+    ".tab",
+    "/print/",
+    "?print=",
 ]

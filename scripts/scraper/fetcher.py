@@ -1,5 +1,6 @@
 """HTTP fetching with retries, rate limiting, and robots.txt compliance."""
 
+import ssl
 import time
 from typing import Optional
 from urllib.parse import urlparse
@@ -18,6 +19,17 @@ _robots_cache: dict[str, RobotFileParser] = {}
 _last_request_time: dict[str, float] = {}
 
 
+def _make_ssl_context() -> ssl.SSLContext:
+    ctx = ssl.create_default_context()
+    ctx.set_ciphers("DEFAULT:@SECLEVEL=1")
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return ctx
+
+
+_SSL_CTX = _make_ssl_context()
+
+
 def _get_robots_parser(base_url: str) -> RobotFileParser:
     if base_url in _robots_cache:
         return _robots_cache[base_url]
@@ -25,7 +37,7 @@ def _get_robots_parser(base_url: str) -> RobotFileParser:
     rp = RobotFileParser()
     robots_url = f"{base_url}/robots.txt"
     try:
-        with httpx.Client(timeout=10, follow_redirects=True) as client:
+        with httpx.Client(timeout=10, follow_redirects=True, verify=_SSL_CTX) as client:
             resp = client.get(robots_url, headers={"User-Agent": USER_AGENT})
             if resp.status_code == 200:
                 rp.parse(resp.text.splitlines())
@@ -53,19 +65,13 @@ def _rate_limit(domain: str) -> None:
     _last_request_time[domain] = time.time()
 
 
-def fetch_html(url: str) -> Optional[str]:
-    if not is_allowed(url):
-        print(f"  [BLOCKED by robots.txt] {url}")
-        return None
-
-    domain = urlparse(url).netloc
-    _rate_limit(domain)
-
+def _try_fetch(url: str) -> Optional[str]:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             with httpx.Client(
                 timeout=REQUEST_TIMEOUT,
                 follow_redirects=True,
+                verify=_SSL_CTX,
                 headers={"User-Agent": USER_AGENT},
             ) as client:
                 resp = client.get(url)
@@ -78,5 +84,15 @@ def fetch_html(url: str) -> Optional[str]:
             print(f"  [ERROR] {url} attempt {attempt}: {exc}")
             if attempt < MAX_RETRIES:
                 time.sleep(2 * attempt)
-
     return None
+
+
+def fetch_html(url: str) -> Optional[str]:
+    if not is_allowed(url):
+        print(f"  [BLOCKED by robots.txt] {url}")
+        return None
+
+    domain = urlparse(url).netloc
+    _rate_limit(domain)
+
+    return _try_fetch(url)
