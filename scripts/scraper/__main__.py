@@ -3,7 +3,7 @@
 import sys
 
 from .scrape_kib import run as run_kib
-from .scrape_cbk import run as run_cbk
+from .scrape_cbk_pw import run as run_cbk_pw
 
 
 def main() -> int:
@@ -16,7 +16,7 @@ def main() -> int:
         summaries.append(run_kib())
 
     if target in ("cbk", "all"):
-        summaries.append(run_cbk())
+        summaries.append(run_cbk_pw())
 
     if not summaries:
         print(f"Unknown target: {target}. Use: kib, cbk, or all")

@@ -105,6 +105,7 @@ def discover_bfs(base_url: str) -> List[str]:
 
 def discover_urls(sitemap_url: str, base_url: str) -> List[str]:
     urls = discover_from_sitemap(sitemap_url, base_url)
-    if not urls:
+    if len(urls) < 5:
+        print(f"[DISCOVERY] Sitemap yielded only {len(urls)} URLs, falling back to BFS")
         urls = discover_bfs(base_url)
     return urls
