@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 
 from .config import CBK_BASE_URL, REQUEST_DELAY_SECONDS, MAX_PAGES_PER_SITE
 from .extractor import detect_language, extract_text, extract_title
-from .direct_ingest import ingest_page as db_ingest
+from .ingest_client import ingest_page
 
 CBK_EXCLUDE = [
     "/login",
@@ -17,7 +17,22 @@ CBK_EXCLUDE = [
     "/admin",
     "/search",
     "/print",
+    "/redirects/",
+    ".pdf",
+    # These are aliases of /legislation-and-regulation/* and produce duplicate content
+    "/supervision/cbk-regulations-and-instructions/",
+    # Image-only pages with no extractable text
+    "/organization/organization-chart",
+    "/ar/about-cbk/committee-of-shariah/members",
 ]
+
+# Banknote denomination pages (quarter/half/one/five/ten/twenty-kd-note) for
+# issues 1-4 are image-only.  Fifth & sixth issues have real text so we keep them.
+_IMAGE_ONLY_BANKNOTE_ISSUES = ("/first-issue/", "/second-issue/", "/third-issue/", "/fourth-issue/")
+
+MIN_TEXT_LENGTH = 50  # Lower threshold so thin-but-real pages pass
+MAX_RETRIES = 2       # Retry on timeout
+RETRY_TIMEOUT = 60000 # 60s on retry
 
 CBK_ACCESS_TAGS = {
     "source": "cbk_website",
@@ -29,7 +44,16 @@ SEEN_HASHES: set = set()
 
 def _is_excluded(url: str) -> bool:
     lower = url.lower()
-    return any(pat in lower for pat in CBK_EXCLUDE)
+    if any(pat in lower for pat in CBK_EXCLUDE):
+        return True
+    # Reject bare /ar and /en (redirect to homepage, duplicate content)
+    path = urlparse(lower).path.rstrip("/")
+    if path in ("/ar", "/en"):
+        return True
+    # Old banknote denomination pages (issues 1-4) are image-only
+    if any(issue in lower for issue in _IMAGE_ONLY_BANKNOTE_ISSUES) and "-kd-note" in lower:
+        return True
+    return False
 
 
 def _same_domain(url: str) -> bool:
@@ -69,31 +93,47 @@ def run() -> dict:
                 if clean:
                     discovered.add(clean)
 
-        # Also try known CBK sections
+        # Only add known paths that are verified to return 200
         known_paths = [
-            "/en/about-cbk/overview",
-            "/en/about-cbk/board-of-directors",
-            "/en/about-cbk/governor-word",
-            "/en/supervision/banking-regulation",
-            "/en/supervision/licensed-banks",
-            "/en/consumer-protection",
-            "/en/consumer-protection/complaints",
-            "/en/anti-money-laundering",
-            "/en/statistics-and-publication",
-            "/en/laws-and-regulations",
-            "/en/monetary-policy",
-            "/en/exchange-rates",
-            "/en/financial-stability",
-            "/ar/about-cbk/overview",
-            "/ar/supervision/banking-regulation",
-            "/ar/consumer-protection",
-            "/ar/anti-money-laundering",
-            "/ar/laws-and-regulations",
-            "/ar/monetary-policy",
-            "/ar/exchange-rates",
+            "/ar/about-cbk/welcome",
+            "/ar/about-cbk/mission-and-objectives",
+            "/ar/about-cbk/governor/profile",
+            "/ar/about-cbk/deputy-governor-profile",
+            "/ar/about-cbk/board-of-directors/members",
+            "/ar/about-cbk/board-of-directors/responsibilities",
+            "/ar/about-cbk/organization/directory",
+            "/ar/supervision/basic-functions-and-tasks",
+            "/ar/supervision/customer-protection-unit/introduction",
+            "/ar/supervision/faq",
+            "/ar/supervision/penalties",
+            "/ar/legislation-and-regulation/cbk-law/Law-intro",
+            "/ar/legislation-and-regulation/cbk-law/chapter-one",
+            "/ar/legislation-and-regulation/cbk-law/chapter-two",
+            "/ar/legislation-and-regulation/cbk-law/chapter-three",
+            "/ar/legislation-and-regulation/cbk-law/chapter-four",
+            "/ar/monetary-policy/monetary-policy-objectives",
+            "/ar/monetary-policy/exchange-rate-policy",
+            "/ar/payment-systems/payment-systems-intro",
+            "/ar/statistics-and-publication/nsdp",
+            "/ar/cbk-news/covid-19-measures",
+            "/en/about-cbk/welcome",
+            "/en/about-cbk/mission-and-objectives",
+            "/en/about-cbk/governor/profile",
+            "/en/about-cbk/deputy-governor-profile",
+            "/en/about-cbk/board-of-directors/members",
+            "/en/about-cbk/board-of-directors/responsibilities",
+            "/en/about-cbk/organization/directory",
+            "/en/about-cbk/offices-and-locations/offices",
+            "/en/about-cbk/history/former-governors",
+            "/en/about-cbk/history/former-deputy-governor",
+            "/en/about-cbk/committee-of-shariah/members",
+            "/en/about-cbk/committee-of-shariah/responsibilities",
+            "/en/banknotes-and-coins/banknotes/fifth-issue",
         ]
         for path in known_paths:
-            discovered.add(CBK_BASE_URL.rstrip("/") + path)
+            full = CBK_BASE_URL.rstrip("/") + path
+            if not _is_excluded(full):
+                discovered.add(full)
 
         urls = sorted(discovered)[:MAX_PAGES_PER_SITE]
         stats["urls_discovered"] = len(urls)
@@ -101,53 +141,66 @@ def run() -> dict:
 
         for i, url in enumerate(urls, 1):
             print(f"[{i}/{len(urls)}] {url}")
-            try:
-                resp = page.goto(url, wait_until="networkidle", timeout=30000)
-                if resp and resp.status >= 400:
-                    print(f"  [SKIP] HTTP {resp.status}")
-                    stats["skipped"] += 1
-                    continue
-                time.sleep(2)
 
-                html = page.content()
-                if not html or len(html) < 200:
-                    print("  [SKIP] Empty page")
-                    stats["skipped"] += 1
-                    continue
-
-                # Also discover links from this page for BFS depth-2
+            # --- Navigate with retry on timeout ---
+            html = None
+            resp = None
+            for attempt in range(1, MAX_RETRIES + 1):
                 try:
-                    sub_links = page.eval_on_selector_all(
-                        "a[href]",
-                        "els => els.map(e => e.href).filter(h => h.startsWith('http'))"
-                    )
-                    for link in sub_links:
-                        if _same_domain(link) and not _is_excluded(link):
-                            clean = link.split("#")[0].split("?")[0].rstrip("/")
-                            if clean and clean not in discovered and len(urls) < MAX_PAGES_PER_SITE:
-                                discovered.add(clean)
-                                urls.append(clean)
-                except Exception:
-                    pass
+                    timeout = 30000 if attempt == 1 else RETRY_TIMEOUT
+                    resp = page.goto(url, wait_until="networkidle", timeout=timeout)
+                    time.sleep(2)
+                    html = page.content()
+                    break  # success
+                except Exception as e:
+                    if attempt < MAX_RETRIES:
+                        print(f"  [RETRY {attempt}] {e}")
+                        time.sleep(3)
+                    else:
+                        stats["errors"] += 1
+                        print(f"  [ERROR] {e} (after {MAX_RETRIES} attempts)")
 
-                text = extract_text(html)
-                if not text or len(text) < 200:
-                    print("  [SKIP] Too little content")
-                    stats["skipped"] += 1
-                    continue
+            if html is None:
+                continue
 
-                content_hash = hashlib.sha256(text.encode()).hexdigest()
-                if content_hash in SEEN_HASHES:
-                    print("  [SKIP] Duplicate content")
-                    stats["skipped"] += 1
-                    continue
-                SEEN_HASHES.add(content_hash)
+            if resp and resp.status >= 400:
+                stats["errors"] += 1
+                print(f"  [ERROR] HTTP {resp.status}")
+                continue
 
+            if len(html) < 100:
+                stats["errors"] += 1
+                print("  [ERROR] Empty page")
+                continue
+
+            # --- Discover sub-links for BFS depth-2 ---
+            try:
+                sub_links = page.eval_on_selector_all(
+                    "a[href]",
+                    "els => els.map(e => e.href).filter(h => h.startsWith('http'))"
+                )
+                for link in sub_links:
+                    if _same_domain(link) and not _is_excluded(link):
+                        clean = link.split("#")[0].split("?")[0].rstrip("/")
+                        if clean and clean not in discovered and len(urls) < MAX_PAGES_PER_SITE:
+                            discovered.add(clean)
+                            urls.append(clean)
+            except Exception:
+                pass
+
+            # --- Extract & ingest ---
+            text = extract_text(html)
+            if not text or len(text) < MIN_TEXT_LENGTH:
+                stats["errors"] += 1
+                print(f"  [ERROR] Too little content ({len(text) if text else 0} chars)")
+                continue
+
+            content_hash = hashlib.sha256(text.encode()).hexdigest()
+            if content_hash in SEEN_HASHES:
+                # Still ingest under this URL as an alias so the citation works
                 title = extract_title(html)[:80] if extract_title(html) else url.split("/")[-1]
                 lang = detect_language(text)
-                stats["scraped"] += 1
-
-                result = db_ingest(
+                result = ingest_page(
                     text=text,
                     title=title,
                     source_uri=url,
@@ -155,17 +208,34 @@ def run() -> dict:
                     doc_type="web_page",
                     access_tags=CBK_ACCESS_TAGS,
                 )
-
                 if result:
                     stats["ingested"] += 1
-                    print(f"  [OK] {title[:60]} ({lang}) - {result['chunks_ingested']} chunks")
+                    print(f"  [OK] {title[:60]} ({lang}) - {result.get('chunks_ingested', 0)} chunks [alias]")
                 else:
-                    stats["skipped"] += 1
-                    print("  [SKIP] Ingestion returned None")
+                    stats["errors"] += 1
+                    print("  [ERROR] Ingestion returned None")
+                continue
+            SEEN_HASHES.add(content_hash)
 
-            except Exception as e:
+            title = extract_title(html)[:80] if extract_title(html) else url.split("/")[-1]
+            lang = detect_language(text)
+            stats["scraped"] += 1
+
+            result = ingest_page(
+                text=text,
+                title=title,
+                source_uri=url,
+                language=lang,
+                doc_type="web_page",
+                access_tags=CBK_ACCESS_TAGS,
+            )
+
+            if result:
+                stats["ingested"] += 1
+                print(f"  [OK] {title[:60]} ({lang}) - {result.get('chunks_ingested', 0)} chunks")
+            else:
                 stats["errors"] += 1
-                print(f"  [ERROR] {e}")
+                print("  [ERROR] Ingestion returned None")
 
             time.sleep(REQUEST_DELAY_SECONDS)
 

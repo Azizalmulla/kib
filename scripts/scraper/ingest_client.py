@@ -38,6 +38,7 @@ def ingest_page(
                     "allowed_roles": allowed_roles,
                     "access_tags": tags,
                     "source_uri": source_uri,
+                    "skip_embeddings": "true",
                 },
             )
             resp.raise_for_status()

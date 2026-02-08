@@ -8,7 +8,7 @@ from .config import KIB_BASE_URL, KIB_SITEMAP_URL
 from .discovery import discover_urls
 from .extractor import detect_language, extract_text, extract_title
 from .fetcher import fetch_html
-from .direct_ingest import ingest_page
+from .ingest_client import ingest_page
 
 # KIB-specific exclusions
 KIB_EXCLUDE = [

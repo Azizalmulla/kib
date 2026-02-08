@@ -3,11 +3,11 @@
 import os
 
 # Ingestion service URL
-INGEST_URL = os.getenv("KIB_INGEST_URL", "http://localhost:8001/ingest")
+INGEST_URL = os.getenv("KIB_INGEST_URL", "https://kib-ingestion.onrender.com/ingest")
 
 # Rate limiting
 REQUEST_DELAY_SECONDS = float(os.getenv("SCRAPER_DELAY", "1.5"))
-REQUEST_TIMEOUT = int(os.getenv("SCRAPER_TIMEOUT", "30"))
+REQUEST_TIMEOUT = int(os.getenv("SCRAPER_TIMEOUT", "120"))
 MAX_RETRIES = 3
 
 # Crawl limits

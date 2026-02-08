@@ -1,16 +1,15 @@
 import hashlib
 from typing import List, Tuple
 
-from sentence_transformers import SentenceTransformer
-
 from .core.config import settings
 
 _MODEL = None
 
 
-def _get_model() -> SentenceTransformer:
+def _get_model():
     global _MODEL
     if _MODEL is None:
+        from sentence_transformers import SentenceTransformer
         _MODEL = SentenceTransformer(settings.embedding_model)
     return _MODEL
 

@@ -87,6 +87,7 @@ async def ingest(
     allowed_roles: str = Form(default="front_desk"),
     access_tags: str = Form(default="{}"),
     source_uri: Optional[str] = Form(default=None),
+    skip_embeddings: str = Form(default="false"),
 ) -> dict:
     content = await file.read()
     os.makedirs(settings.uploads_dir, exist_ok=True)
@@ -100,7 +101,8 @@ async def ingest(
     sha256 = hashlib.sha256(content).hexdigest()
     text, meta = parse_document(safe_name, content)
     chunks = chunk_text(text)
-    should_index = status == "approved"
+    do_skip_embed = skip_embeddings.lower() in ("true", "1", "yes")
+    should_index = status == "approved" and not do_skip_embed
     embeddings = embed_texts([chunk["text"] for chunk in chunks]) if should_index else []
 
     role_names = [r.strip() for r in allowed_roles.split(",") if r.strip()]
