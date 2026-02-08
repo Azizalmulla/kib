@@ -4,4 +4,3 @@ pydantic>=1.10.14,<2.0
 psycopg[binary]>=3.2.0
 python-multipart>=0.0.9
 pgvector>=0.2.5
-sentence-transformers>=2.5.1

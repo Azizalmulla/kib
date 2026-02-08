@@ -9,7 +9,13 @@ _MODEL = None
 def _get_model():
     global _MODEL
     if _MODEL is None:
-        from sentence_transformers import SentenceTransformer
+        try:
+            from sentence_transformers import SentenceTransformer
+        except ImportError:
+            raise RuntimeError(
+                "sentence-transformers is not installed. "
+                "Use skip_embeddings=true or install the package."
+            )
         _MODEL = SentenceTransformer(settings.embedding_model)
     return _MODEL
 
