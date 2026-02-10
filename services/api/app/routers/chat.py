@@ -38,6 +38,7 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
             "role_names": current_user.roles,
             "attributes": current_user.attributes,
         },
+        "history": [{"role": h.role, "text": h.text} for h in request.history[-6:]],
     }
 
     start_time = time.time()

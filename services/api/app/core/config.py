@@ -1,11 +1,11 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     app_name: str = "kib-knowledge-copilot-api"
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/kib"
-    rag_service_url: str = "http://localhost:8002"
-    request_timeout_seconds: int = 20
+    database_url: str = "postgresql://localhost/kib"
+    rag_service_url: str = "http://localhost:8001"
+    request_timeout_seconds: int = 90
 
     mock_oidc: bool = True
     oidc_issuer: str = ""
@@ -18,8 +18,7 @@ class Settings(BaseSettings):
 
     audit_read_roles: str = "compliance,audit_admin"
 
-    class Config:
-        env_prefix = "KIB_"
+    model_config = {"env_prefix": "KIB_"}
 
 
 settings = Settings()

@@ -9,7 +9,8 @@ from playwright.sync_api import sync_playwright
 
 from .config import CBK_BASE_URL, REQUEST_DELAY_SECONDS, MAX_PAGES_PER_SITE
 from .extractor import detect_language, extract_text, extract_title
-from .ingest_client import ingest_page
+from .direct_ingest import ingest_page, ingest_pdf
+from .pdf_parser import download_pdf, extract_text_from_pdf, detect_pdf_language
 
 CBK_EXCLUDE = [
     "/login",
@@ -18,7 +19,6 @@ CBK_EXCLUDE = [
     "/search",
     "/print",
     "/redirects/",
-    ".pdf",
     # These are aliases of /legislation-and-regulation/* and produce duplicate content
     "/supervision/cbk-regulations-and-instructions/",
     # Image-only pages with no extractable text
@@ -40,10 +40,18 @@ CBK_ACCESS_TAGS = {
 }
 
 SEEN_HASHES: set = set()
+PDF_URLS: set = set()
+
+
+def _is_pdf(url: str) -> bool:
+    return url.lower().rstrip("/").endswith(".pdf")
 
 
 def _is_excluded(url: str) -> bool:
     lower = url.lower()
+    # PDFs are collected separately, not excluded
+    if _is_pdf(url):
+        return False
     if any(pat in lower for pat in CBK_EXCLUDE):
         return True
     # Reject bare /ar and /en (redirect to homepage, duplicate content)
@@ -62,7 +70,7 @@ def _same_domain(url: str) -> bool:
 
 
 def run() -> dict:
-    stats = {"site": "CBK", "urls_discovered": 0, "scraped": 0, "ingested": 0, "skipped": 0, "errors": 0}
+    stats = {"site": "CBK", "urls_discovered": 0, "scraped": 0, "ingested": 0, "skipped": 0, "errors": 0, "pdfs_ingested": 0, "pdfs_failed": 0}
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -88,9 +96,13 @@ def run() -> dict:
         discovered = set()
         discovered.add(CBK_BASE_URL)
         for link in links:
-            if _same_domain(link) and not _is_excluded(link):
+            if _same_domain(link):
                 clean = link.split("#")[0].split("?")[0].rstrip("/")
-                if clean:
+                if not clean:
+                    continue
+                if _is_pdf(clean):
+                    PDF_URLS.add(clean)
+                elif not _is_excluded(clean):
                     discovered.add(clean)
 
         # Only add known paths that are verified to return 200
@@ -180,9 +192,13 @@ def run() -> dict:
                     "els => els.map(e => e.href).filter(h => h.startsWith('http'))"
                 )
                 for link in sub_links:
-                    if _same_domain(link) and not _is_excluded(link):
+                    if _same_domain(link):
                         clean = link.split("#")[0].split("?")[0].rstrip("/")
-                        if clean and clean not in discovered and len(urls) < MAX_PAGES_PER_SITE:
+                        if not clean:
+                            continue
+                        if _is_pdf(clean):
+                            PDF_URLS.add(clean)
+                        elif not _is_excluded(clean) and clean not in discovered and len(urls) < MAX_PAGES_PER_SITE:
                             discovered.add(clean)
                             urls.append(clean)
             except Exception:
@@ -240,6 +256,45 @@ def run() -> dict:
             time.sleep(REQUEST_DELAY_SECONDS)
 
         browser.close()
+
+    # --- Phase 2: PDF ingestion ---
+    if PDF_URLS:
+        print(f"\n[CBK-PW] Discovered {len(PDF_URLS)} PDF URLs. Downloading and parsing...")
+        for j, pdf_url in enumerate(sorted(PDF_URLS), 1):
+            print(f"  [PDF {j}/{len(PDF_URLS)}] {pdf_url}")
+            pdf_bytes = download_pdf(pdf_url)
+            if not pdf_bytes:
+                stats["pdfs_failed"] += 1
+                continue
+
+            pages = extract_text_from_pdf(pdf_bytes)
+            if not pages:
+                print(f"    [SKIP] No extractable text")
+                stats["pdfs_failed"] += 1
+                continue
+
+            lang = detect_pdf_language(pages)
+            # Use filename as title
+            filename = pdf_url.split("/")[-1].replace(".pdf", "").replace("-", " ").replace("_", " ")
+            total_chars = sum(len(p["text"]) for p in pages)
+            print(f"    {len(pages)} pages, {total_chars} chars, lang={lang}")
+
+            result = ingest_pdf(
+                pages=pages,
+                title=filename,
+                source_uri=pdf_url,
+                language=lang,
+                doc_type="pdf",
+                access_tags=CBK_ACCESS_TAGS,
+            )
+            if result:
+                stats["pdfs_ingested"] += 1
+                print(f"    [OK] {result['chunks_ingested']} chunks from {result['pages']} pages")
+            else:
+                stats["pdfs_failed"] += 1
+                print(f"    [ERROR] Ingestion returned None")
+
+            time.sleep(0.5)
 
     return stats
 

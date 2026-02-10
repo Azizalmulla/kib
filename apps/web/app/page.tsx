@@ -1,8 +1,9 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-const REFUSAL_TEXT = "I can't answer from KIB's approved documents for this question.";
+const REFUSAL_EN = "I can't answer from KIB's approved documents for this question.";
+const REFUSAL_AR = "لا أستطيع الإجابة من مستندات KIB المعتمدة لهذا السؤال.";
 
 type Citation = {
   doc_title: string;
@@ -26,83 +27,205 @@ type ChatResponse = {
 
 type Message = {
   id: string;
-  question: string;
-  response: ChatResponse;
+  role: "user" | "assistant";
+  text: string;
+  response?: ChatResponse;
+  timestamp: number;
 };
+
+type Conversation = {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: number;
+  updatedAt: number;
+};
+
+const STORAGE_KEY = "kib-conversations";
+
+function loadConversations(): Conversation[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveConversations(convos: Conversation[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(convos));
+}
 
 function detectLanguage(text: string): "en" | "ar" {
   const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
   return arabicPattern.test(text) ? "ar" : "en";
 }
 
+function formatTime(ts: number): string {
+  return new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+function StreamingText({ text, speed = 20, onDone }: { text: string; speed?: number; onDone?: () => void }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    setDisplayed("");
+    setDone(false);
+    const words = text.split(" ");
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayed(words.slice(0, i).join(" "));
+      if (i >= words.length) {
+        clearInterval(interval);
+        setDone(true);
+        onDone?.();
+      }
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <>{displayed}{!done && <span className="cursor">|</span>}</>;
+}
+
+const SUGGESTIONS = [
+  "What are the terms for KIB online banking?",
+  "What is KIB's capital adequacy ratio?",
+  "ما هي تعليمات بنك الكويت المركزي بشأن كفاية رأس المال؟",
+  "What are CBK's anti-money laundering requirements?",
+];
+
 export default function Page() {
-  const [question, setQuestion] = useState("");
+  const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [forcedLanguage, setForcedLanguage] = useState<"en" | "ar" | "auto">("auto");
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [activeRole, setActiveRole] = useState<string>("front_desk");
+  const [selectedMsgId, setSelectedMsgId] = useState<string | null>(null);
+  const [sourcesPanelOpen, setSourcesPanelOpen] = useState(true);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
+  const [streamingMsgId, setStreamingMsgId] = useState<string | null>(null);
 
-  const activeMessage = useMemo(() => {
-    if (selectedIndex === null) {
-      return messages[messages.length - 1] || null;
+  // Load conversations from localStorage on mount
+  useEffect(() => {
+    setConversations(loadConversations());
+  }, []);
+
+  // Save current messages to the active conversation whenever messages change
+  const activeConvoIdRef = useRef(activeConvoId);
+  activeConvoIdRef.current = activeConvoId;
+
+  useEffect(() => {
+    const id = activeConvoIdRef.current;
+    if (!id || messages.length === 0) return;
+    setConversations((prev) => {
+      const exists = prev.some((c) => c.id === id);
+      if (!exists) return prev;
+      const updated = prev.map((c) =>
+        c.id === id
+          ? { ...c, messages, updatedAt: Date.now() }
+          : c
+      );
+      saveConversations(updated);
+      return updated;
+    });
+  }, [messages]);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const activeCitations = useMemo(() => {
+    if (selectedMsgId) {
+      const msg = messages.find((m) => m.id === selectedMsgId);
+      return msg?.response?.citations || [];
     }
-    return messages[selectedIndex] || null;
-  }, [messages, selectedIndex]);
+    const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
+    return lastAssistant?.response?.citations || [];
+  }, [messages, selectedMsgId]);
 
   const apiBase = process.env.NEXT_PUBLIC_KIB_API_BASE_URL || "http://localhost:8000";
   const mockUser = process.env.NEXT_PUBLIC_KIB_MOCK_USER || "demo@kib.com";
-  const mockRoles = process.env.NEXT_PUBLIC_KIB_MOCK_ROLES || "front_desk";
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
-    const trimmed = question.trim();
-    if (!trimmed) {
-      return;
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 160) + "px";
     }
+  }, [input]);
 
+  async function sendMessage(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+
+    setError(null);
     const inferred = detectLanguage(trimmed);
     const language = forcedLanguage === "auto" ? inferred : forcedLanguage;
 
+    const userMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      text: trimmed,
+      timestamp: Date.now(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
     setLoading(true);
 
     try {
       const headers: Record<string, string> = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Mock-User": mockUser,
+        "X-Mock-Roles": activeRole,
       };
-      if (mockUser) {
-        headers["X-Mock-User"] = mockUser;
-      }
-      if (mockRoles) {
-        headers["X-Mock-Roles"] = mockRoles;
-      }
 
+      const history = messages.map((m) => ({ role: m.role, text: m.text }));
       const response = await fetch(`${apiBase}/chat`, {
         method: "POST",
         headers,
-        body: JSON.stringify({
-          question: trimmed,
-          language,
-          top_k: 5
-        })
+        body: JSON.stringify({ question: trimmed, language, top_k: 5, history }),
       });
 
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
 
       const data = (await response.json()) as ChatResponse;
-      const newMessage: Message = {
+      const assistantMsg: Message = {
         id: crypto.randomUUID(),
-        question: trimmed,
-        response: data
+        role: "assistant",
+        text: data.answer,
+        response: data,
+        timestamp: Date.now(),
       };
 
-      setMessages((prev) => [...prev, newMessage]);
-      setSelectedIndex(null);
-      setQuestion("");
+      setStreamingMsgId(assistantMsg.id);
+      setMessages((prev) => [...prev, assistantMsg]);
+      setSelectedMsgId(assistantMsg.id);
+
+      // Create conversation on first response in this chat
+      if (!activeConvoIdRef.current) {
+        const newId = assistantMsg.id;
+        activeConvoIdRef.current = newId;
+        setActiveConvoId(newId);
+        setConversations((c) => {
+          if (c.some((x) => x.id === newId)) return c;
+          const newConvo: Conversation = {
+            id: newId,
+            title: trimmed.length > 50 ? trimmed.slice(0, 50) + "..." : trimmed,
+            messages: [userMsg, assistantMsg],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          };
+          const next = [newConvo, ...c];
+          saveConversations(next);
+          return next;
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error");
     } finally {
@@ -110,122 +233,299 @@ export default function Page() {
     }
   }
 
-  return (
-    <main className="page">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">Kuwait International Bank</p>
-          <h1>Knowledge Copilot</h1>
-          <p className="lead">
-            Grounded answers from approved KIB policies, procedures, and compliance documents.
-          </p>
-        </div>
-        <div className="controls">
-          <label className="select">
-            <span>Language</span>
-            <select
-              value={forcedLanguage}
-              onChange={(event) => setForcedLanguage(event.target.value as "en" | "ar" | "auto")}
-            >
-              <option value="auto">Auto</option>
-              <option value="en">English</option>
-              <option value="ar">Arabic</option>
-            </select>
-          </label>
-        </div>
-      </header>
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    sendMessage(input);
+  }
 
-      <section className="workspace">
-        <div className="chat-panel">
-          <div className="messages">
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage(input);
+    }
+  }
+
+  function newConversation() {
+    setMessages([]);
+    setSelectedMsgId(null);
+    setActiveConvoId(null);
+    activeConvoIdRef.current = null;
+    setStreamingMsgId(null);
+    setError(null);
+  }
+
+  function loadConversation(convo: Conversation) {
+    setMessages(convo.messages);
+    setActiveConvoId(convo.id);
+    activeConvoIdRef.current = convo.id;
+    setSelectedMsgId(null);
+    setStreamingMsgId(null);
+    setError(null);
+  }
+
+  function deleteConversation(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    setConversations((prev) => {
+      const next = prev.filter((c) => c.id !== id);
+      saveConversations(next);
+      return next;
+    });
+    if (activeConvoId === id) newConversation();
+  }
+
+  const isRefusal = (text: string) =>
+    text.trim() === REFUSAL_EN || text.trim() === REFUSAL_AR;
+
+  return (
+    <div className="app-shell">
+      {/* Sidebar */}
+      <nav className="sidebar">
+        <div className="sidebar-brand">
+          <div className="brand-icon">K</div>
+          <div>
+            <div className="brand-name">KIB Copilot</div>
+            <div className="brand-sub">Knowledge Assistant</div>
+          </div>
+        </div>
+
+        <div className="sidebar-section">
+          <label className="sidebar-label">Role</label>
+          <div className="role-switcher">
+            {["front_desk", "compliance"].map((role) => (
+              <button
+                key={role}
+                className={`role-btn ${activeRole === role ? "active" : ""}`}
+                onClick={() => setActiveRole(role)}
+              >
+                {role === "front_desk" ? "Front Desk" : "Compliance"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {conversations.length > 0 && (
+          <div className="sidebar-section">
+            <label className="sidebar-label">History</label>
+            <div className="convo-list">
+              {conversations.map((convo) => (
+                <div
+                  key={convo.id}
+                  className={`convo-item ${activeConvoId === convo.id ? "active" : ""}`}
+                  onClick={() => loadConversation(convo)}
+                >
+                  <span className="convo-title">{convo.title}</span>
+                  <button
+                    className="convo-delete"
+                    onClick={(e) => deleteConversation(convo.id, e)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="sidebar-spacer" />
+
+        <button className="sidebar-btn" onClick={newConversation}>
+          <span>+</span> New conversation
+        </button>
+      </nav>
+
+      {/* Main chat area */}
+      <main className="main-area">
+        <header className="topbar">
+          <div>
+            <h1 className="topbar-title">Knowledge Copilot</h1>
+            <p className="topbar-sub">
+              Grounded answers from approved KIB &amp; CBK documents
+            </p>
+          </div>
+          <div className="topbar-actions">
+            <button
+              className={`toggle-sources ${sourcesPanelOpen ? "active" : ""}`}
+              onClick={() => setSourcesPanelOpen(!sourcesPanelOpen)}
+            >
+              Sources {activeCitations.length > 0 && `(${activeCitations.length})`}
+            </button>
+          </div>
+        </header>
+
+        <div className="chat-body">
+          <div className="chat-scroll">
             {messages.length === 0 ? (
-              <div className="empty">
-                <p>Ask about KIB policies, procedures, product terms, or compliance rules.</p>
-                <p>Answers are grounded in approved documents only.</p>
+              <div className="welcome">
+                <img src="/kib-logo.png" alt="KIB" className="welcome-logo" />
+                <h2>Ask me anything about KIB</h2>
+                <p>
+                  I answer from approved policies, product T&amp;Cs, compliance
+                  documents, and CBK regulations. All answers include source
+                  citations.
+                </p>
+                <div className="suggestions">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s}
+                      className="suggestion-chip"
+                      onClick={() => sendMessage(s)}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : (
-              messages.map((message, index) => {
-                const lang = message.response.language;
-                const isRefusal = message.response.answer.trim() === REFUSAL_TEXT;
-                const confidence = message.response.confidence;
+              messages.map((msg) => {
+                const isUser = msg.role === "user";
+                const resp = msg.response;
+                const confidence = resp?.confidence;
+                const refused = resp ? isRefusal(resp.answer) : false;
+                const isAr = resp?.language === "ar";
+
                 return (
                   <div
-                    key={message.id}
-                    className={`message ${selectedIndex === index ? "active" : ""}`}
-                    onClick={() => setSelectedIndex(index)}
+                    key={msg.id}
+                    className={`chat-row ${isUser ? "user-row" : "assistant-row"}`}
+                    onClick={() => !isUser && setSelectedMsgId(msg.id)}
                   >
-                    <div className="bubble question">
-                      <p>{message.question}</p>
-                    </div>
-                    <div className={`bubble answer ${lang === "ar" ? "rtl" : ""}`}>
-                      <div className="answer-header">
-                        <span className={`confidence ${confidence}`}>{confidence}</span>
-                        {isRefusal && <span className="refusal-tag">Refusal</span>}
+                    {!isUser && (
+                      <div className="avatar assistant-avatar">K</div>
+                    )}
+                    <div className={`chat-bubble ${isUser ? "user-bubble" : "assistant-bubble"} ${
+                      !isUser && selectedMsgId === msg.id ? "selected" : ""
+                    } ${isAr ? "rtl" : ""}`}>
+                      {!isUser && confidence && (
+                        <div className="bubble-meta">
+                          <span className={`badge ${confidence}`}>{confidence}</span>
+                          {refused && <span className="badge refusal">Refusal</span>}
+                          <span className="time">{formatTime(msg.timestamp)}</span>
+                        </div>
+                      )}
+                      <div className="bubble-text">
+                        {!isUser && streamingMsgId === msg.id
+                          ? <StreamingText text={msg.text} speed={25} onDone={() => setStreamingMsgId(null)} />
+                          : msg.text
+                        }
                       </div>
-                      <p>{message.response.answer}</p>
-                      {message.response.missing_info && confidence !== "high" && (
-                        <div className="missing">
-                          <p>{message.response.missing_info}</p>
+                      {!isUser && resp?.missing_info && confidence !== "high" && (
+                        <div className="missing-block">
+                          <p>{resp.missing_info}</p>
                           <ul>
-                            {message.response.safe_next_steps.map((step) => (
-                              <li key={step}>{step}</li>
+                            {resp.safe_next_steps.map((s) => (
+                              <li key={s}>{s}</li>
                             ))}
                           </ul>
                         </div>
                       )}
+                      {!isUser && resp?.citations && resp.citations.length > 0 && (
+                        <div className="inline-sources">
+                          {resp.citations.length} source{resp.citations.length > 1 ? "s" : ""} cited
+                        </div>
+                      )}
                     </div>
+                    {isUser && (
+                      <div className="avatar user-avatar">
+                        {mockUser.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                 );
               })
             )}
+
+            {loading && (
+              <div className="chat-row assistant-row">
+                <div className="avatar assistant-avatar">K</div>
+                <div className="chat-bubble assistant-bubble">
+                  <div className="typing">
+                    <span></span><span></span><span></span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="chat-row assistant-row">
+                <div className="avatar assistant-avatar">K</div>
+                <div className="chat-bubble error-bubble">
+                  <strong>Error:</strong> {error}
+                </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
           </div>
 
           <form className="composer" onSubmit={handleSubmit}>
-            <textarea
-              placeholder="Ask a question about KIB policies or procedures"
-              value={question}
-              onChange={(event) => setQuestion(event.target.value)}
-              rows={3}
-            />
-            <div className="composer-actions">
-              {error && <span className="error">{error}</span>}
-              <button type="submit" disabled={loading}>
-                {loading ? "Asking..." : "Ask Copilot"}
+            <div className="composer-inner">
+              <textarea
+                ref={textareaRef}
+                placeholder="Ask about KIB policies, products, or CBK regulations..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={1}
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading || !input.trim()}
+                className="send-btn"
+                aria-label="Send"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5" />
+                  <polyline points="5 12 12 5 19 12" />
+                </svg>
               </button>
             </div>
+            <p className="composer-hint">
+              Press <kbd>Enter</kbd> to send, <kbd>Shift+Enter</kbd> for new line
+              {activeRole === "front_desk" ? " · Front Desk mode (concise answers)" : " · Compliance mode (detailed answers)"}
+            </p>
           </form>
         </div>
+      </main>
 
+      {/* Sources panel */}
+      {sourcesPanelOpen && (
         <aside className="sources-panel">
           <div className="sources-header">
             <h2>Sources</h2>
-            <p>{activeMessage ? "Citations from approved documents." : "No sources yet."}</p>
+            <button className="close-sources" onClick={() => setSourcesPanelOpen(false)}>×</button>
           </div>
-          {activeMessage ? (
+          {activeCitations.length > 0 ? (
             <div className="sources-list">
-              {activeMessage.response.citations.map((citation, idx) => (
-                <div key={`${citation.doc_id}-${idx}`} className="source-card">
-                  <div>
-                    <p className="source-title">{citation.doc_title}</p>
+              {activeCitations.map((cit, idx) => (
+                <div key={`${cit.doc_id}-${idx}`} className="source-card">
+                  <div className="source-num">{idx + 1}</div>
+                  <div className="source-body">
+                    <p className="source-title">{cit.doc_title}</p>
                     <p className="source-meta">
-                      Version {citation.document_version}
-                      {citation.page_number ? ` • Page ${citation.page_number}` : ""}
+                      v{cit.document_version}
+                      {cit.page_number ? ` · Page ${cit.page_number}` : ""}
                     </p>
+                    <blockquote className="source-quote">&ldquo;{cit.quote}&rdquo;</blockquote>
+                    <a
+                      className="source-link"
+                      href={cit.source_uri}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open document ↗
+                    </a>
                   </div>
-                  <blockquote className="source-quote">"{citation.quote}"</blockquote>
-                  <a className="source-link" href={citation.source_uri} target="_blank" rel="noreferrer">
-                    Open document
-                  </a>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="empty sources-empty">
-              <p>Sources will appear after the first answer.</p>
+            <div className="sources-empty">
+              <p>Citations will appear here when you ask a question.</p>
             </div>
           )}
         </aside>
-      </section>
-    </main>
+      )}
+    </div>
   );
 }

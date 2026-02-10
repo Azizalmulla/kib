@@ -52,10 +52,16 @@ class Citation(BaseModel):
     source_uri: str
 
 
+class HistoryTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    text: str
+
+
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1)
     language: Literal["en", "ar"] = Field(default="en")
     top_k: int = Field(default=5, ge=1, le=20)
+    history: List[HistoryTurn] = Field(default_factory=list)
 
 
 class ChatResponse(BaseModel):

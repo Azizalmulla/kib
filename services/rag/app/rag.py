@@ -1,24 +1,31 @@
+import math
 from typing import Any, Dict, List
 
+import httpx
 from psycopg.types.json import Json
-from sentence_transformers import SentenceTransformer
 
 from .core.config import settings
 
-_MODEL = None
 
-
-def _get_model() -> SentenceTransformer:
-    global _MODEL
-    if _MODEL is None:
-        _MODEL = SentenceTransformer(settings.embedding_model)
-    return _MODEL
+def _truncate_normalize(vec: List[float], dim: int) -> List[float]:
+    truncated = vec[:dim]
+    norm = math.sqrt(sum(x * x for x in truncated))
+    return [x / norm for x in truncated] if norm > 0 else truncated
 
 
 def _embed_query(question: str) -> List[float]:
-    model = _get_model()
-    vector = model.encode([f"query: {question}"], normalize_embeddings=True)[0]
-    return vector.tolist()
+    resp = httpx.post(
+        settings.fireworks_embed_url,
+        json={
+            "model": settings.embedding_model,
+            "input": [question],
+            "dimensions": settings.embedding_dim,
+        },
+        headers={"Authorization": f"Bearer {settings.fireworks_api_key}"},
+        timeout=30.0,
+    )
+    resp.raise_for_status()
+    return resp.json()["data"][0]["embedding"]
 
 
 def get_accessible_document_ids(
@@ -28,18 +35,31 @@ def get_accessible_document_ids(
 ) -> List[str]:
     if not role_names:
         return []
-    rows = conn.execute(
-        """
-        SELECT DISTINCT d.id
-        FROM documents d
-        JOIN document_acl a ON a.document_id = d.id
-        JOIN roles r ON r.id = a.role_id
-        WHERE d.status = 'approved'
-          AND r.name = ANY(%s)
-          AND d.access_tags <@ %s::jsonb
-        """,
-        (role_names, Json(attributes or {})),
-    ).fetchall()
+    if attributes:
+        rows = conn.execute(
+            """
+            SELECT DISTINCT d.id
+            FROM documents d
+            JOIN document_acl a ON a.document_id = d.id
+            JOIN roles r ON r.id = a.role_id
+            WHERE d.status = 'approved'
+              AND r.name = ANY(%s)
+              AND d.access_tags <@ %s::jsonb
+            """,
+            (role_names, Json(attributes)),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            """
+            SELECT DISTINCT d.id
+            FROM documents d
+            JOIN document_acl a ON a.document_id = d.id
+            JOIN roles r ON r.id = a.role_id
+            WHERE d.status = 'approved'
+              AND r.name = ANY(%s)
+            """,
+            (role_names,),
+        ).fetchall()
     return [str(row["id"]) for row in rows]
 
 
@@ -53,6 +73,7 @@ def retrieve_chunks(
         return []
 
     query_vector = _embed_query(question)
+    vec_str = "[" + ",".join(str(x) for x in query_vector) + "]"
     rows = conn.execute(
         """
         SELECT
@@ -69,7 +90,7 @@ def retrieve_chunks(
             d.title AS document_title,
             d.status AS document_status,
             dv.source_uri,
-            (e.embedding <=> %s) AS distance
+            (e.embedding <=> %s::vector) AS distance
         FROM embeddings e
         JOIN chunks c ON c.id = e.chunk_id
         JOIN document_versions dv ON dv.id = c.document_version_id
@@ -78,10 +99,10 @@ def retrieve_chunks(
           AND d.status = 'approved'
           AND dv.is_active = true
           AND e.model = %s
-        ORDER BY e.embedding <=> %s
+        ORDER BY e.embedding <=> %s::vector
         LIMIT %s
         """,
-        (query_vector, allowed_doc_ids, settings.embedding_model, query_vector, top_k),
+        (vec_str, allowed_doc_ids, settings.embedding_model, vec_str, top_k),
     ).fetchall()
 
     return rows

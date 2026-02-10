@@ -2,8 +2,8 @@
 
 import os
 
-# Ingestion service URL
-INGEST_URL = os.getenv("KIB_INGEST_URL", "https://kib-ingestion.onrender.com/ingest")
+# Ingestion service URL (kept for ingest_client; not used with direct_ingest)
+INGEST_URL = os.getenv("KIB_INGEST_URL", "http://localhost:8001/ingest")
 
 # Rate limiting
 REQUEST_DELAY_SECONDS = float(os.getenv("SCRAPER_DELAY", "1.5"))

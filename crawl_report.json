@@ -1,0 +1,3526 @@
+{
+  "started": "2026-02-09T08:47:07.514152+00:00",
+  "finished": "2026-02-09T10:47:09.059400+00:00",
+  "stats": {
+    "kib_html": 0,
+    "kib_pdfs": 40,
+    "cbk_html": 1,
+    "cbk_pdfs": 264,
+    "total_chunks": 51888,
+    "total_errors": 153
+  },
+  "html_pages": [
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/banknotes-and-coins/commemorative-banknotes-and-coins/commemorative-coins",
+      "title": "بنك الكويت المركزي: المسكوكات التذكارية",
+      "lang": "ar",
+      "chunks": 12
+    }
+  ],
+  "pdfs": [
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:06b7e088-61d9-4dc0-9dba-7d8348ab3270/Q4%202015.pdf",
+      "title": "Q4 2015",
+      "lang": "en",
+      "pages": 53,
+      "chunks": 156,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0a3e5608-bdbd-424a-a692-2279dca76b6d/Q1%202014.pdf",
+      "title": "Q1 2014",
+      "lang": "ar",
+      "pages": 72,
+      "chunks": 204,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0bbd02de-41f7-4a0f-85c7-0ef414d907ef/KIB%20Annual%20Report%202023%20AR.pdf",
+      "title": "KIB Annual Report 2023 AR",
+      "lang": "en",
+      "pages": 217,
+      "chunks": 942,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0bc732fe-7ea8-45ea-89c0-adf4ba207268/KIB%20Real%20Estate%20Report%20Q4%202019.pdf",
+      "title": "KIB Real Estate Report Q4 2019",
+      "lang": "ar",
+      "pages": 48,
+      "chunks": 148,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0f590ac0-abc6-45ec-aa0b-692364ba4383/Annual_report_2015_AR.pdf",
+      "title": "Annual report 2015 AR",
+      "lang": "en",
+      "pages": 131,
+      "chunks": 392,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:18530dda-d92d-4092-91fb-ea449a131f8e/Annual_report_2016_AR.pdf",
+      "title": "Annual report 2016 AR",
+      "lang": "ar",
+      "pages": 153,
+      "chunks": 596,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:1b61e184-c5d1-4498-9e7a-36318aa7e5aa/KIB%20Annual%20Report%202019%20A%20low%20.pdf",
+      "title": "KIB Annual Report 2019 A low ",
+      "lang": "ar",
+      "pages": 200,
+      "chunks": 869,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:22e18d6c-d057-4a0e-9a49-50ca6d0d89ca/full%20set%20Earnings%20Call%202Q%20%206M%202023-transcript%20Arb%20v4.pdf",
+      "title": "full set Earnings Call 2Q  6M 2023 transcript Arb v4",
+      "lang": "ar",
+      "pages": 34,
+      "chunks": 89,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:27dff1c2-e346-455b-98ec-68b7fdb797e1/Boursa%20Letter%20Earnings%20call_Disclosure_CEO%20Letter%20YE&%23039;%202020%20Arb.pdf",
+      "title": "Boursa Letter Earnings call Disclosure CEO Letter YE&%23039; 2020 Arb",
+      "lang": "en",
+      "pages": 33,
+      "chunks": 87,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:2d61be55-6f55-4390-8315-c07429667d72/Corp%20Acct%20Opening%20Form%20v2.9s_AR%202.pdf",
+      "title": "Corp Acct Opening Form v2.9s AR 2",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 2,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:33a8b350-9d8c-468d-a8df-54463a45ea85/KIB%20Annual%20Report%202018%20Arabic.pdf",
+      "title": "KIB Annual Report 2018 Arabic",
+      "lang": "ar",
+      "pages": 31,
+      "chunks": 91,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:36f0c4e9-2345-4a59-8a27-8dea7723758e/KIB-2014-CSR-and-CG-Reports-AR.pdf",
+      "title": "KIB 2014 CSR and CG Reports AR",
+      "lang": "en",
+      "pages": 28,
+      "chunks": 101,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:3942da37-ad79-4acd-91e4-bcfe1e8fb93b/Leverage_Ratio%209M&%23039;2020_A.pdf",
+      "title": "Leverage Ratio 9M&%23039;2020 A",
+      "lang": "ar",
+      "pages": 2,
+      "chunks": 8,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:426dc507-1770-4317-828d-970e96bfc1f7/%D8%B3%D9%88%D9%82%20%D8%A7%D9%84%D8%B9%D9%82%D8%A7%D8%B1%20%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA%D9%8A%20-%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202017.pdf",
+      "title": "%D8%B3%D9%88%D9%82 %D8%A7%D9%84%D8%B9%D9%82%D8%A7%D8%B1 %D8%A7%D9%84%D9%83%D9%88",
+      "lang": "ar",
+      "pages": 52,
+      "chunks": 139,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:44dc0afc-2c19-420e-9336-58d44f69eaf9/Customer%20Protection%20Manual-Arabic.pdf",
+      "title": "Customer Protection Manual Arabic",
+      "lang": "en",
+      "pages": 30,
+      "chunks": 97,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:46530430-a281-4e9c-81fd-3496f7113366/KIB%20Annual%20Report%202022%20A.PDF",
+      "title": "KIB Annual Report 2022 A.PDF",
+      "lang": "ar",
+      "pages": 219,
+      "chunks": 951,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:4e7629fc-6b6b-44ad-a63a-10ab286c6959/Commenting%20on%20Published%20News%20-%2031%20March.pdf",
+      "title": "Commenting on Published News   31 March",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 5,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:4ea5dbe2-b8ea-4c4b-806d-f550b0eeba28/Arabic%2028%20March.pdf",
+      "title": "Arabic 28 March",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 19,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:5286ebca-3200-4457-ba92-4adcab67f504/Kammco_Arabic.pdf",
+      "title": "Kammco Arabic",
+      "lang": "ar",
+      "pages": 377,
+      "chunks": 1821,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:5593bffd-9b36-449d-bea4-916c308c6773/KIB%20signed%20FS%20YE%202020%20-%20Arb.pdf",
+      "title": "KIB signed FS YE 2020   Arb",
+      "lang": "ar",
+      "pages": 56,
+      "chunks": 320,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:5e3d2a1a-be6a-4ea0-b458-56a737a23fe1/Earnings%20Call%201Q-1H&%23039;2020-transcript_A.pdf",
+      "title": "Earnings Call 1Q 1H&%23039;2020 transcript A",
+      "lang": "en",
+      "pages": 36,
+      "chunks": 106,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:62d2e58b-2696-4302-804a-78576fb4e164/%D8%A7%D9%84%D9%86%D8%AA%D8%A7%D8%A6%D8%AC%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%81%D8%AA%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%AA%D9%87%D9%8A%D8%A9%20%D9%81%D9%8A%2031-03-2020.pdf",
+      "title": "%D8%A7%D9%84%D9%86%D8%AA%D8%A7%D8%A6%D8%AC %D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%",
+      "lang": "en",
+      "pages": 40,
+      "chunks": 185,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:63c7a9eb-31de-4e79-8908-403cc92f79c7/issued%20shares%20ar0.pdf",
+      "title": "issued shares ar0",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 7,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:6f2ef87b-66e6-473a-9382-69e1ad10a9de/%D8%B3%D9%88%D9%82%20%D8%A7%D9%84%D8%B9%D9%82%D8%A7%D8%B1%20%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA%D9%8A%20-%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202017.pdf",
+      "title": "%D8%B3%D9%88%D9%82 %D8%A7%D9%84%D8%B9%D9%82%D8%A7%D8%B1 %D8%A7%D9%84%D9%83%D9%88",
+      "lang": "en",
+      "pages": 50,
+      "chunks": 141,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:70641ff8-2d08-4ee2-8505-4d86424f0755/Transcript%20of%20the%20Analysts%20Conference%20-%2016-05-2023%20Ar.pdf",
+      "title": "Transcript of the Analysts Conference   16 05 2023 Ar",
+      "lang": "ar",
+      "pages": 34,
+      "chunks": 85,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:714921d6-2fa4-4950-961c-70dc3922b8b3/Basel%20III%20Pillar%20III%20Dec&%23039;24%20A.pdf",
+      "title": "Basel III Pillar III Dec&%23039;24 A",
+      "lang": "ar",
+      "pages": 17,
+      "chunks": 71,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:76bd5201-0ee8-43e5-9cc4-c0127e51305c/EC%201Q&%23039;22%20cover%20letter%20-%20Ar.pdf",
+      "title": "EC 1Q&%23039;22 cover letter   Ar",
+      "lang": "en",
+      "pages": 34,
+      "chunks": 86,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:7b9da0c7-6f80-407d-ab63-734e5342f129/Earnings%20Call%20Q3-2018-transcript-23Oct18%20AR.pdf",
+      "title": "Earnings Call Q3 2018 transcript 23Oct18 AR",
+      "lang": "ar",
+      "pages": 35,
+      "chunks": 96,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:800a36ac-366d-4683-8cdc-a6b623c88ac9/Earnings%20Call%203Q-9M&%23039;2020-transcript%20A.pdf",
+      "title": "Earnings Call 3Q 9M&%23039;2020 transcript A",
+      "lang": "en",
+      "pages": 37,
+      "chunks": 99,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:855d8804-8264-4888-bad1-e8329aed4fe1/KIB%20Earnings%20Call%20transcript.pdf",
+      "title": "KIB Earnings Call transcript",
+      "lang": "ar",
+      "pages": 29,
+      "chunks": 80,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:9672eaf4-9bb8-42a8-a3ad-98d4a662c613/kib-terms-conditions-binder-online-banking-sep-2018.pdf",
+      "title": "kib terms conditions binder online banking sep 2018",
+      "lang": "ar",
+      "pages": 24,
+      "chunks": 156,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:a15cc583-a96c-4ff2-bf08-eac5c8ee88a5/KIB%20Earnings%20Call%20transcript%20YE2024%20A_moh10838_2025Feb16090436.pdf",
+      "title": "KIB Earnings Call transcript YE2024 A moh10838 2025Feb16090436",
+      "lang": "ar",
+      "pages": 35,
+      "chunks": 88,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:b2c40a93-8311-4e64-ab4d-6fa357785448/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%20%D8%B9%D9%86%20%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%AA%D8%BA%D8%B7%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B3%D9%8A%D9%88%D9%84%D8%A9%20%D9%84%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB-%202017.pdf",
+      "title": "%D8%A5%D9%81%D8%B5%D8%A7%D8%AD %D8%B9%D9%86 %D9%85%D8%B9%D9%8A%D8%A7%D8%B1 %D8%A",
+      "lang": "ar",
+      "pages": 2,
+      "chunks": 10,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:d3093a96-ee3a-424c-8f33-e062939a901a/KIB%20Cs_Accounts%20Terms%20and%20Conditions%20PDF.PDF",
+      "title": "KIB Cs Accounts Terms and Conditions PDF.PDF",
+      "lang": "ar",
+      "pages": 8,
+      "chunks": 77,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:d5343be3-3db4-4e9e-be04-31069bc00abc/KIB%20Earnings%20Call%20transcript-YE2025%20A.pdf",
+      "title": "KIB Earnings Call transcript YE2025 A",
+      "lang": "ar",
+      "pages": 35,
+      "chunks": 93,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:e09bbca6-904a-4faf-963b-cb4f0887a3c8/Boursa%20Kuwait_Earnings%20call_Disclosure_DCEO%20Letter%202Q&%23039;2022%20Arb.pdf",
+      "title": "Boursa Kuwait Earnings call Disclosure DCEO Letter 2Q&%23039;2022 Arb",
+      "lang": "en",
+      "pages": 32,
+      "chunks": 85,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:e0e486a2-4ef1-4c7f-991b-0385baf7c0a6/Earnings%20Call%203Q%202019-transcript%20Arb%20Final.pdf",
+      "title": "Earnings Call 3Q 2019 transcript Arb Final",
+      "lang": "ar",
+      "pages": 33,
+      "chunks": 89,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:e0efb07b-1c4b-4808-bdc7-72b793ae2b67/Full%20set%20Earnings%20Call%20YE%202019%20Arb.pdf",
+      "title": "Full set Earnings Call YE 2019 Arb",
+      "lang": "ar",
+      "pages": 36,
+      "chunks": 94,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:f6edfdbf-7d07-45be-b7e9-7d3fff5da5b4/Boursa%20Kuwait_Earnings%20call_Disclosure%202Q&%23039;2021%20Arb.pdf",
+      "title": "Boursa Kuwait Earnings call Disclosure 2Q&%23039;2021 Arb",
+      "lang": "en",
+      "pages": 32,
+      "chunks": 85,
+      "ocr": false
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/en/dam/jcr:81ec46cf-25ad-4c1f-a8c0-d1d3a0674737/Customer%20Communication%20KIB%20Rewards%20EN.pdf",
+      "title": "Customer Communication KIB Rewards EN",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 51,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=127870&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 69,
+      "chunks": 200,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=127913&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 52,
+      "chunks": 55,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=128047&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 91,
+      "chunks": 354,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=128048&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 89,
+      "chunks": 345,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=128488&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 63,
+      "chunks": 201,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=129089&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 88,
+      "chunks": 340,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=129090&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 62,
+      "chunks": 68,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=143640&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 103,
+      "chunks": 412,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=143908&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 72,
+      "chunks": 202,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=150258&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 90,
+      "chunks": 400,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=150819&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 59,
+      "chunks": 193,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=150926&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 31,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=150927&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 104,
+      "chunks": 453,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=154758&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 122,
+      "chunks": 627,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=154759&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 22,
+      "chunks": 44,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=155204&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 73,
+      "chunks": 298,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=155241&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 110,
+      "chunks": 536,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159715&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159717&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 31,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159718&esIndex=speeches",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159719&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 11,
+      "chunks": 42,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159720&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 19,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159721&esIndex=speeches",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 18,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159722&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 11,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159723&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 10,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159724&esIndex=speeches",
+      "title": "download",
+      "lang": "ar",
+      "pages": 4,
+      "chunks": 16,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=159725&esIndex=speeches",
+      "title": "download",
+      "lang": "ar",
+      "pages": 7,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=160561&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 83,
+      "chunks": 435,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=162679&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 116,
+      "chunks": 676,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=162795&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 118,
+      "chunks": 669,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=162977&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 106,
+      "chunks": 615,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163329&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 42,
+      "chunks": 95,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163338&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 105,
+      "chunks": 465,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163339&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 22,
+      "chunks": 44,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163342&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 67,
+      "chunks": 222,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163377&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 106,
+      "chunks": 616,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163562&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 82,
+      "chunks": 341,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163563&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 18,
+      "chunks": 21,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163655&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 21,
+      "chunks": 73,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163656&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 11,
+      "chunks": 37,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163657&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 26,
+      "chunks": 97,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163658&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 14,
+      "chunks": 53,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=163779&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 106,
+      "chunks": 611,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=164146&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 19,
+      "chunks": 71,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=165259&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 105,
+      "chunks": 607,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=165993&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 84,
+      "chunks": 341,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=165994&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 101,
+      "chunks": 357,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=166017&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 136,
+      "chunks": 440,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=166025&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 106,
+      "chunks": 612,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=166039&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 12,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=166053&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 12,
+      "chunks": 33,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=166850&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 18,
+      "chunks": 55,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=166892&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 106,
+      "chunks": 612,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167671&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 13,
+      "chunks": 31,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167685&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167707&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 64,
+      "chunks": 340,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167734&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167738&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 113,
+      "chunks": 668,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167876&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 64,
+      "chunks": 342,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167879&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=167883&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168234&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168253&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 24,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168255&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 64,
+      "chunks": 342,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168381&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 22,
+      "chunks": 69,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168389&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 24,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168396&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 64,
+      "chunks": 342,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168406&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168651&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 86,
+      "chunks": 300,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168668&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 64,
+      "chunks": 342,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168669&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=168680&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 26,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169010&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 64,
+      "chunks": 341,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169011&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169046&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169297&esIndex=speeches",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 14,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169298&esIndex=speeches",
+      "title": "download",
+      "lang": "ar",
+      "pages": 8,
+      "chunks": 25,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169445&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 22,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169447&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 65,
+      "chunks": 345,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169479&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169485&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 118,
+      "chunks": 700,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169489&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 113,
+      "chunks": 497,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169504&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 91,
+      "chunks": 276,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169647&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 118,
+      "chunks": 705,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169676&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 122,
+      "chunks": 456,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169683&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169685&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 65,
+      "chunks": 344,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169745&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170094&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 21,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170097&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 65,
+      "chunks": 344,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170122&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170278&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 5,
+      "chunks": 22,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170281&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 65,
+      "chunks": 345,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170294&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 20,
+      "chunks": 60,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170315&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170634&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 65,
+      "chunks": 349,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170639&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 26,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=170673&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/10p2-135610_v50_tcm10-135610.pdf",
+      "title": "10p2 135610 v50 tcm10 135610",
+      "lang": "en",
+      "pages": 17,
+      "chunks": 77,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/12p2-147138_v20_tcm10-147138.pdf",
+      "title": "12p2 147138 v20 tcm10 147138",
+      "lang": "en",
+      "pages": 19,
+      "chunks": 82,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/13part1-2783_v60_tcm10-2783.pdf",
+      "title": "13part1 2783 v60 tcm10 2783",
+      "lang": "en",
+      "pages": 45,
+      "chunks": 204,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/16part1-2788_v60_tcm10-2788.pdf",
+      "title": "16part1 2788 v60 tcm10 2788",
+      "lang": "en",
+      "pages": 172,
+      "chunks": 847,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/19p1-142638_v10_tcm10-142638.pdf",
+      "title": "19p1 142638 v10 tcm10 142638",
+      "lang": "en",
+      "pages": 17,
+      "chunks": 77,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/1p1-156678_v10_tcm10-156678.pdf",
+      "title": "1p1 156678 v10 tcm10 156678",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 39,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/1part1-2786_v40_tcm10-2786.pdf",
+      "title": "1part1 2786 v40 tcm10 2786",
+      "lang": "en",
+      "pages": 60,
+      "chunks": 267,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/36part2-142657_v10_tcm10-142657.pdf",
+      "title": "36part2 142657 v10 tcm10 142657",
+      "lang": "en",
+      "pages": 17,
+      "chunks": 77,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/38part2-142658_v10_tcm10-142658.pdf",
+      "title": "38part2 142658 v10 tcm10 142658",
+      "lang": "en",
+      "pages": 17,
+      "chunks": 77,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/38part2-160278_v30_tcm10-160278.pdf",
+      "title": "38part2 160278 v30 tcm10 160278",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/40part2-160277_v30_tcm10-160277.pdf",
+      "title": "40part2 160277 v30 tcm10 160277",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/7p2-155879_v30_tcm10-155879.pdf",
+      "title": "7p2 155879 v30 tcm10 155879",
+      "lang": "en",
+      "pages": 38,
+      "chunks": 181,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/9p1-151549_v20_tcm10-151549.pdf",
+      "title": "9p1 151549 v20 tcm10 151549",
+      "lang": "en",
+      "pages": 47,
+      "chunks": 227,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/bank-establishment-app-form-169767_v20_tcm10-169767.pdf",
+      "title": "bank establishment app form 169767 v20 tcm10 169767",
+      "lang": "en",
+      "pages": 21,
+      "chunks": 62,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/bylaw-1096-year-1993-11713_v30_tcm10-11713.pdf",
+      "title": "bylaw 1096 year 1993 11713 v30 tcm10 11713",
+      "lang": "en",
+      "pages": 21,
+      "chunks": 65,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/bylaw-285-year-2009-11716_v30_tcm10-11716.pdf",
+      "title": "bylaw 285 year 2009 11716 v30 tcm10 11716",
+      "lang": "en",
+      "pages": 39,
+      "chunks": 143,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/bylaw-631-year-1994-11714_v30_tcm10-11714.pdf",
+      "title": "bylaw 631 year 1994 11714 v30 tcm10 11714",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 21,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/bylaw-804-year-1995-11715_v30_tcm10-11715.pdf",
+      "title": "bylaw 804 year 1995 11715 v30 tcm10 11715",
+      "lang": "en",
+      "pages": 22,
+      "chunks": 65,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/cbk-brochure-building-fa-123439_v50_tcm10-123439.pdf",
+      "title": "cbk brochure building fa 123439 v50 tcm10 123439",
+      "lang": "ar",
+      "pages": 43,
+      "chunks": 74,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/cbk-brochure-building-fa-128371_v30_tcm10-128371.pdf",
+      "title": "cbk brochure building fa 128371 v30 tcm10 128371",
+      "lang": "ar",
+      "pages": 43,
+      "chunks": 74,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/cbk-chart-nov-2025-169748_v10_tcm10-169748.pdf",
+      "title": "cbk chart nov 2025 169748 v10 tcm10 169748",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 3,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/cbk-history-brochure-123465_v60_tcm10-123465.pdf",
+      "title": "cbk history brochure 123465 v60 tcm10 123465",
+      "lang": "en",
+      "pages": 40,
+      "chunks": 101,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/cbk-history-brochure-128372_v30_tcm10-128372.pdf",
+      "title": "cbk history brochure 128372 v30 tcm10 128372",
+      "lang": "en",
+      "pages": 40,
+      "chunks": 101,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/cbk-law-32-1968-114233_v90_tcm10-114233.pdf",
+      "title": "cbk law 32 1968 114233 v90 tcm10 114233",
+      "lang": "en",
+      "pages": 70,
+      "chunks": 223,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/central-registration-system-for-customers-of-bounced-cheques-2792_v40_tcm10-2792.pdf",
+      "title": "central registration system for customers of bounced cheques 2792 v40 tcm10 2792",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 26,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/ch1part1-126233_v50_tcm10-126233.pdf",
+      "title": "ch1part1 126233 v50 tcm10 126233",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 51,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chap1-part1-154208_v30_tcm10-154208.pdf",
+      "title": "chap1 part1 154208 v30 tcm10 154208",
+      "lang": "en",
+      "pages": 11,
+      "chunks": 48,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chap1-part2-154209_v30_tcm10-154209.pdf",
+      "title": "chap1 part2 154209 v30 tcm10 154209",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 39,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chap2-part1-154210_v10_tcm10-154210.pdf",
+      "title": "chap2 part1 154210 v10 tcm10 154210",
+      "lang": "en",
+      "pages": 2,
+      "chunks": 6,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chap3-part1-154211_v10_tcm10-154211.pdf",
+      "title": "chap3 part1 154211 v10 tcm10 154211",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 20,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-12-board-member-159591_v20_tcm10-159591.pdf",
+      "title": "chapter 12 board member 159591 v20 tcm10 159591",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 22,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-12-exec-form-159578_v30_tcm10-159578.pdf",
+      "title": "chapter 12 exec form 159578 v30 tcm10 159578",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 21,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-12-exec-form-159592_v20_tcm10-159592.pdf",
+      "title": "chapter 12 exec form 159592 v20 tcm10 159592",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 21,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-12-exec-form-160420_v10_tcm10-160420.pdf",
+      "title": "chapter 12 exec form 160420 v10 tcm10 160420",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 21,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-12-independent-board-member-159586_v30_tcm10-159586.pdf",
+      "title": "chapter 12 independent board member 159586 v30 tcm10 159586",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 33,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-12-independent-board-member-160421_v10_tcm10-160421.pdf",
+      "title": "chapter 12 independent board member 160421 v10 tcm10 160421",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 33,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-3-board-member-158435_v30_tcm10-158435.pdf",
+      "title": "chapter 3 board member 158435 v30 tcm10 158435",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 18,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/chapter-3-exec-form-158436_v10_tcm10-158436.pdf",
+      "title": "chapter 3 exec form 158436 v10 tcm10 158436",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 16,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/circular-concerning-investment-placements-with-both-local-and-foreign-banks-and-financial-institutions-2791_v40_tcm10-2791.pdf",
+      "title": "circular concerning investment placements with both local and foreign banks and ",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 11,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/classification-policy-for-investment-and-finance-transactions-with-customers-2777_v50_tcm10-2777.pdf",
+      "title": "classification policy for investment and finance transactions with customers 277",
+      "lang": "en",
+      "pages": 34,
+      "chunks": 157,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/controls-for-finance-concentration-2776_v40_tcm10-2776.pdf",
+      "title": "controls for finance concentration 2776 v40 tcm10 2776",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 60,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/covid-steps-and-measures-154523_v10_tcm10-154523.pdf",
+      "title": "covid steps and measures 154523 v10 tcm10 154523",
+      "lang": "ar",
+      "pages": 6,
+      "chunks": 20,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/digit-banks-app-form-157060_v20_tcm10-157060.pdf",
+      "title": "digit banks app form 157060 v20 tcm10 157060",
+      "lang": "en",
+      "pages": 17,
+      "chunks": 50,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/digit-banks-guidelines-157059_v10_tcm10-157059.pdf",
+      "title": "digit banks guidelines 157059 v10 tcm10 157059",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/digital-bank-establishment-app-form-169768_v20_tcm10-169768.pdf",
+      "title": "digital bank establishment app form 169768 v20 tcm10 169768",
+      "lang": "en",
+      "pages": 21,
+      "chunks": 62,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/e-payment-draft-reg-1_v00_tcm10-157057.pdf",
+      "title": "e payment draft reg 1 v00 tcm10 157057",
+      "lang": "ar",
+      "pages": 16,
+      "chunks": 64,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/e-payment-faqs-157907_v10_tcm10-157907.pdf",
+      "title": "e payment faqs 157907 v10 tcm10 157907",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 18,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/epayment-chap1-1-144306_v30_tcm10-144306.pdf",
+      "title": "epayment chap1 1 144306 v30 tcm10 144306",
+      "lang": "en",
+      "pages": 17,
+      "chunks": 78,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/epayment-chap1-2-161855_v30_tcm10-161855.pdf",
+      "title": "epayment chap1 2 161855 v30 tcm10 161855",
+      "lang": "en",
+      "pages": 27,
+      "chunks": 112,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/epayment-chap2-152798_v120_tcm10-152798.pdf",
+      "title": "epayment chap2 152798 v120 tcm10 152798",
+      "lang": "en",
+      "pages": 66,
+      "chunks": 235,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/exchange-co-establishment-app-form-169769_v20_tcm10-169769.pdf",
+      "title": "exchange co establishment app form 169769 v20 tcm10 169769",
+      "lang": "en",
+      "pages": 18,
+      "chunks": 56,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/exec-reg-law-9-year-2019-158101_v10_tcm10-158101.pdf",
+      "title": "exec reg law 9 year 2019 158101 v10 tcm10 158101",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 36,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/executive-procedures-of-the-rules-of-item-2-of-article-57-concerning-the-increase-of-ownership-per-person-for-5-of-the-bank-capital-2804_v40_tcm10-2804.pdf",
+      "title": "executive procedures of the rules of item 2 of article 57 concerning the increas",
+      "lang": "en",
+      "pages": 12,
+      "chunks": 49,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/exintroen-127094_v60_tcm10-127094.pdf",
+      "title": "exintroen 127094 v60 tcm10 127094",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/exp-note-law-9-year-2019-158099_v20_tcm10-158099.pdf",
+      "title": "exp note law 9 year 2019 158099 v20 tcm10 158099",
+      "lang": "en",
+      "pages": 2,
+      "chunks": 10,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/expart1-112514_v90_tcm10-112514.pdf",
+      "title": "expart1 112514 v90 tcm10 112514",
+      "lang": "en",
+      "pages": 16,
+      "chunks": 71,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/expart2en-127096_v70_tcm10-127096.pdf",
+      "title": "expart2en 127096 v70 tcm10 127096",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 14,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/expart3-112516_v90_tcm10-112516.pdf",
+      "title": "expart3 112516 v90 tcm10 112516",
+      "lang": "en",
+      "pages": 191,
+      "chunks": 782,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/expart4-118687_v110_tcm10-118687.pdf",
+      "title": "expart4 118687 v110 tcm10 118687",
+      "lang": "en",
+      "pages": 134,
+      "chunks": 638,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/expart5-154235_v10_tcm10-154235.pdf",
+      "title": "expart5 154235 v10 tcm10 154235",
+      "lang": "en",
+      "pages": 72,
+      "chunks": 267,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/expart6en-137774_v30_tcm10-137774.pdf",
+      "title": "expart6en 137774 v30 tcm10 137774",
+      "lang": "en",
+      "pages": 24,
+      "chunks": 97,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/explanatory-note-res_v20_tcm10-156425.pdf",
+      "title": "explanatory note res v20 tcm10 156425",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 12,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/explanatory-note-res_v30_tcm10-156662.pdf",
+      "title": "explanatory note res v30 tcm10 156662",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 19,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/financing-co-establishment-app-form-169770_v20_tcm10-169770.pdf",
+      "title": "financing co establishment app form 169770 v20 tcm10 169770",
+      "lang": "en",
+      "pages": 19,
+      "chunks": 59,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/inn-hub-pre-app-162708_v70_tcm10-162708.pdf",
+      "title": "inn hub pre app 162708 v70 tcm10 162708",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 13,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-credit-cards-issued-by-islamic-banks-2793_v40_tcm10-2793.pdf",
+      "title": "instructions concerning credit cards issued by islamic banks 2793 v40 tcm10 2793",
+      "lang": "en",
+      "pages": 11,
+      "chunks": 45,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-external-auditors-2790_v40_tcm10-2790.pdf",
+      "title": "instructions concerning external auditors 2790 v40 tcm10 2790",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 16,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-finance-activity-2781_v50_tcm10-2781.pdf",
+      "title": "instructions concerning finance activity 2781 v50 tcm10 2781",
+      "lang": "en",
+      "pages": 39,
+      "chunks": 150,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-financial-investment-policy-2779_v40_tcm10-2779.pdf",
+      "title": "instructions concerning financial investment policy 2779 v40 tcm10 2779",
+      "lang": "en",
+      "pages": 10,
+      "chunks": 42,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-internal-control-system-and-risk-management-2784_v40_tcm10-2784.pdf",
+      "title": "instructions concerning internal control system and risk management 2784 v40 tcm",
+      "lang": "en",
+      "pages": 53,
+      "chunks": 231,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-islamic-banks-budgets-and-future-business-plans-2802_v40_tcm10-2802.pdf",
+      "title": "instructions concerning islamic banks budgets and future business plans 2802 v40",
+      "lang": "en",
+      "pages": 13,
+      "chunks": 47,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-islamic-banks-foreign-exchange-transactions-2797_v40_tcm10-2797.pdf",
+      "title": "instructions concerning islamic banks foreign exchange transactions 2797 v40 tcm",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 18,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-post-dated-cheques-2800_v40_tcm10-2800.pdf",
+      "title": "instructions concerning post dated cheques 2800 v40 tcm10 2800",
+      "lang": "en",
+      "pages": 2,
+      "chunks": 5,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-robbery-and-embezzlement-acts-2803_v40_tcm10-2803.pdf",
+      "title": "instructions concerning robbery and embezzlement acts 2803 v40 tcm10 2803",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 12,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-the-buying-and-selling-of-gcc-currency-notes-2794_v40_tcm10-2794.pdf",
+      "title": "instructions concerning the buying and selling of gcc currency notes 2794 v40 tc",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 7,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-the-financial-data-submitted-to-stock-exchanges-where-a-banks-shares-are-listed-2801_v40_tcm10-2801.pdf",
+      "title": "instructions concerning the financial data submitted to stock exchanges where a ",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 9,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-concerning-the-ratio-of-national-manpower-at-local-banks-2796_v40_tcm10-2796.pdf",
+      "title": "instructions concerning the ratio of national manpower at local banks 2796 v40 t",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/instructions-regarding-the-necessity-of-notifying-the-central-bank-before-proceeding-with-any-communications-with-regulatory-financial-or-banking-authorities-in-other-countries-2799_v40_tcm10-2799.pdf",
+      "title": "instructions regarding the necessity of notifying the central bank before procee",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 10,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/introduction-2729_v40_tcm10-2729.pdf",
+      "title": "introduction 2729 v40 tcm10 2729",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 3,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/introduction-2773_v40_tcm10-2773.pdf",
+      "title": "introduction 2773 v40 tcm10 2773",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/is-section-15-banks-relationship-with-their-customers-2785_v50_tcm10-2785.pdf",
+      "title": "is section 15 banks relationship with their customers 2785 v50 tcm10 2785",
+      "lang": "en",
+      "pages": 77,
+      "chunks": 304,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-102-year-1994-12031_v40_tcm10-12031.pdf",
+      "title": "law 102 year 1994 12031 v40 tcm10 12031",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 11,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-2-year-2009-12036_v30_tcm10-12036.pdf",
+      "title": "law 2 year 2009 12036 v30 tcm10 12036",
+      "lang": "en",
+      "pages": 34,
+      "chunks": 120,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-30-year-2008-12035_v30_tcm10-12035.pdf",
+      "title": "law 30 year 2008 12035 v30 tcm10 12035",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 12,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-32-of-1960-1_v00_tcm10-147866.pdf",
+      "title": "law 32 of 1960 1 v00 tcm10 147866",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 9,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-41-year-1993-11965_v30_tcm10-11965.pdf",
+      "title": "law 41 year 1993 11965 v30 tcm10 11965",
+      "lang": "en",
+      "pages": 49,
+      "chunks": 151,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-63-year-1998-12033_v30_tcm10-12033.pdf",
+      "title": "law 63 year 1998 12033 v30 tcm10 12033",
+      "lang": "en",
+      "pages": 8,
+      "chunks": 25,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-80-year-1995-12032_v30_tcm10-12032.pdf",
+      "title": "law 80 year 1995 12032 v30 tcm10 12032",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 44,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/law-9-2019-credit-info-158102_v20_tcm10-158102.pdf",
+      "title": "law 9 2019 credit info 158102 v20 tcm10 158102",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 38,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/low-islamic-30-2003-1_v00_tcm10-147862.pdf",
+      "title": "low islamic 30 2003 1 v00 tcm10 147862",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 9,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/min-res-36-year-2019-158100_v10_tcm10-158100.pdf",
+      "title": "min res 36 year 2019 158100 v10 tcm10 158100",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 3,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/min_v10_tcm10-156424.pdf",
+      "title": "min v10 tcm10 156424",
+      "lang": "en",
+      "pages": 1,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/other-miscellaneous-instructions-2805_v40_tcm10-2805.pdf",
+      "title": "other miscellaneous instructions 2805 v40 tcm10 2805",
+      "lang": "en",
+      "pages": 18,
+      "chunks": 65,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/regulations-governing-islamic-banks-purchase-of-their-own-shares-2780_v40_tcm10-2780.pdf",
+      "title": "regulations governing islamic banks purchase of their own shares 2780 v40 tcm10 ",
+      "lang": "en",
+      "pages": 13,
+      "chunks": 51,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/res_v20_tcm10-156422.pdf",
+      "title": "res v20 tcm10 156422",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 20,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/res_v70_tcm10-156420.pdf",
+      "title": "res v70 tcm10 156420",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 16,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/resolution-subjugation-finance-comp_v40_tcm10-117969.pdf",
+      "title": "resolution subjugation finance comp v40 tcm10 117969",
+      "lang": "en",
+      "pages": 11,
+      "chunks": 41,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/rules-and-regulations-concerning-liquidity-system-2787_v30_tcm10-2787.pdf",
+      "title": "rules and regulations concerning liquidity system 2787 v30 tcm10 2787",
+      "lang": "en",
+      "pages": 21,
+      "chunks": 90,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/rules-and-regulations-for-consumer-finance-transactions-and-other-personal-installment-finance-transactions-2782_v50_tcm10-2782.pdf",
+      "title": "rules and regulations for consumer finance transactions and other personal insta",
+      "lang": "en",
+      "pages": 46,
+      "chunks": 186,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/rules-and-regulations-for-direct-investment-2778_v40_tcm10-2778.pdf",
+      "title": "rules and regulations for direct investment 2778 v40 tcm10 2778",
+      "lang": "en",
+      "pages": 10,
+      "chunks": 44,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/rules-and-regulations-for-opening-islamic-banks-branches-within-and-outside-kuwait-2775_v40_tcm10-2775.pdf",
+      "title": "rules and regulations for opening islamic banks branches within and outside kuwa",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-01-2732_v110_tcm10-2732.pdf",
+      "title": "section 01 2732 v110 tcm10 2732",
+      "lang": "en",
+      "pages": 63,
+      "chunks": 283,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-02-2733_v140_tcm10-2733.pdf",
+      "title": "section 02 2733 v140 tcm10 2733",
+      "lang": "en",
+      "pages": 119,
+      "chunks": 515,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-03-2734_v70_tcm10-2734.pdf",
+      "title": "section 03 2734 v70 tcm10 2734",
+      "lang": "en",
+      "pages": 27,
+      "chunks": 122,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-04-2735_v100_tcm10-2735.pdf",
+      "title": "section 04 2735 v100 tcm10 2735",
+      "lang": "en",
+      "pages": 32,
+      "chunks": 125,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-05-2736_v110_tcm10-2736.pdf",
+      "title": "section 05 2736 v110 tcm10 2736",
+      "lang": "en",
+      "pages": 90,
+      "chunks": 376,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-06-2741_v90_tcm10-2741.pdf",
+      "title": "section 06 2741 v90 tcm10 2741",
+      "lang": "en",
+      "pages": 109,
+      "chunks": 389,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-07-2742_v50_tcm10-2742.pdf",
+      "title": "section 07 2742 v50 tcm10 2742",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 33,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-08-2743_v70_tcm10-2743.pdf",
+      "title": "section 08 2743 v70 tcm10 2743",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 40,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-09-2744_v50_tcm10-2744.pdf",
+      "title": "section 09 2744 v50 tcm10 2744",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 17,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-10-2745_v70_tcm10-2745.pdf",
+      "title": "section 10 2745 v70 tcm10 2745",
+      "lang": "en",
+      "pages": 90,
+      "chunks": 375,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-11-2746_v70_tcm10-2746.pdf",
+      "title": "section 11 2746 v70 tcm10 2746",
+      "lang": "en",
+      "pages": 283,
+      "chunks": 1199,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-12-2747_v60_tcm10-2747.pdf",
+      "title": "section 12 2747 v60 tcm10 2747",
+      "lang": "en",
+      "pages": 67,
+      "chunks": 301,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-13-2748_v50_tcm10-2748.pdf",
+      "title": "section 13 2748 v50 tcm10 2748",
+      "lang": "en",
+      "pages": 69,
+      "chunks": 279,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-14-2749_v70_tcm10-2749.pdf",
+      "title": "section 14 2749 v70 tcm10 2749",
+      "lang": "en",
+      "pages": 22,
+      "chunks": 90,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-15-2750_v60_tcm10-2750.pdf",
+      "title": "section 15 2750 v60 tcm10 2750",
+      "lang": "en",
+      "pages": 78,
+      "chunks": 318,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-16-2751_v70_tcm10-2751.pdf",
+      "title": "section 16 2751 v70 tcm10 2751",
+      "lang": "en",
+      "pages": 172,
+      "chunks": 842,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-17-2752_v60_tcm10-2752.pdf",
+      "title": "section 17 2752 v60 tcm10 2752",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 68,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-18-2753_v50_tcm10-2753.pdf",
+      "title": "section 18 2753 v50 tcm10 2753",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 14,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-19-2754_v50_tcm10-2754.pdf",
+      "title": "section 19 2754 v50 tcm10 2754",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-20-2755_v60_tcm10-2755.pdf",
+      "title": "section 20 2755 v60 tcm10 2755",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 51,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-21-2756_v50_tcm10-2756.pdf",
+      "title": "section 21 2756 v50 tcm10 2756",
+      "lang": "en",
+      "pages": 2,
+      "chunks": 6,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-22-2757_v50_tcm10-2757.pdf",
+      "title": "section 22 2757 v50 tcm10 2757",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-23-2758_v50_tcm10-2758.pdf",
+      "title": "section 23 2758 v50 tcm10 2758",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 14,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-24-2759_v50_tcm10-2759.pdf",
+      "title": "section 24 2759 v50 tcm10 2759",
+      "lang": "en",
+      "pages": 2,
+      "chunks": 5,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-25-2760_v50_tcm10-2760.pdf",
+      "title": "section 25 2760 v50 tcm10 2760",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 25,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-26-2761_v60_tcm10-2761.pdf",
+      "title": "section 26 2761 v60 tcm10 2761",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 20,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-27-2762_v50_tcm10-2762.pdf",
+      "title": "section 27 2762 v50 tcm10 2762",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 9,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-28-2763_v50_tcm10-2763.pdf",
+      "title": "section 28 2763 v50 tcm10 2763",
+      "lang": "en",
+      "pages": 65,
+      "chunks": 262,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-29-2764_v50_tcm10-2764.pdf",
+      "title": "section 29 2764 v50 tcm10 2764",
+      "lang": "en",
+      "pages": 6,
+      "chunks": 18,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-30-2765_v60_tcm10-2765.pdf",
+      "title": "section 30 2765 v60 tcm10 2765",
+      "lang": "en",
+      "pages": 7,
+      "chunks": 27,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-31-2766_v50_tcm10-2766.pdf",
+      "title": "section 31 2766 v50 tcm10 2766",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 8,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-32-2767_v50_tcm10-2767.pdf",
+      "title": "section 32 2767 v50 tcm10 2767",
+      "lang": "en",
+      "pages": 13,
+      "chunks": 40,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-33-2768_v50_tcm10-2768.pdf",
+      "title": "section 33 2768 v50 tcm10 2768",
+      "lang": "en",
+      "pages": 2,
+      "chunks": 4,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-34-2769_v60_tcm10-2769.pdf",
+      "title": "section 34 2769 v60 tcm10 2769",
+      "lang": "en",
+      "pages": 23,
+      "chunks": 82,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-35-2770_v50_tcm10-2770.pdf",
+      "title": "section 35 2770 v50 tcm10 2770",
+      "lang": "en",
+      "pages": 13,
+      "chunks": 49,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/section-37-11269_v60_tcm10-11269.pdf",
+      "title": "section 37 11269 v60 tcm10 11269",
+      "lang": "en",
+      "pages": 55,
+      "chunks": 207,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/the-accounting-treatment-of-goodwill-2795_v40_tcm10-2795.pdf",
+      "title": "the accounting treatment of goodwill 2795 v40 tcm10 2795",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 11,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/the-bases-of-preparing-closing-financial-data-of-islamic-banks-2798_v40_tcm10-2798.pdf",
+      "title": "the bases of preparing closing financial data of islamic banks 2798 v40 tcm10 27",
+      "lang": "en",
+      "pages": 5,
+      "chunks": 16,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/images/the-regulations-organizing-the-management-of-third-parties-portfolios-with-islamic-banks-2789_v40_tcm10-2789.pdf",
+      "title": "the regulations organizing the management of third parties portfolios with islam",
+      "lang": "en",
+      "pages": 9,
+      "chunks": 35,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=128047&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 95,
+      "chunks": 364,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=128048&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 91,
+      "chunks": 363,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=129089&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 90,
+      "chunks": 353,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=129090&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 66,
+      "chunks": 280,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=129091&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 67,
+      "chunks": 300,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=143640&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 105,
+      "chunks": 416,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=150258&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 89,
+      "chunks": 420,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=150926&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 15,
+      "chunks": 31,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=150927&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 108,
+      "chunks": 411,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=154758&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 123,
+      "chunks": 569,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=155241&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 112,
+      "chunks": 510,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=160561&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 87,
+      "chunks": 413,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=163338&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 103,
+      "chunks": 434,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=163339&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 22,
+      "chunks": 44,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=163562&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 98,
+      "chunks": 419,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=163563&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 22,
+      "chunks": 43,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=165994&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 108,
+      "chunks": 165,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=166017&esIndex=reports",
+      "title": "download",
+      "lang": "ar",
+      "pages": 136,
+      "chunks": 440,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=166039&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 12,
+      "chunks": 23,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=168651&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 95,
+      "chunks": 151,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=169297&esIndex=speeches",
+      "title": "download",
+      "lang": "en",
+      "pages": 4,
+      "chunks": 15,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=170094&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 16,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=170097&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 64,
+      "chunks": 340,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=170278&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 3,
+      "chunks": 18,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=170281&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 64,
+      "chunks": 341,
+      "ocr": false
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?compId=170634&esIndex=reports",
+      "title": "download",
+      "lang": "en",
+      "pages": 64,
+      "chunks": 344,
+      "ocr": false
+    }
+  ],
+  "errors": [
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/.tab01",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/.tab02",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/.tab03",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Accounts.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Financing.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Deposits.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Digital-Banking.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Takaful.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Business/Accounts.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Business/Financing.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Business/Trade-Finance.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Business/Treasury.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Accounts/Savings-Account.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Accounts/Current-Account.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Accounts/Al-Boushra-Account.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Financing/Personal-Financing.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Financing/Auto-Financing.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Financing/Real-Estate-Financing.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Cards/Credit-Cards.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Cards/Debit-Cards.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Cards/Prepaid-Cards.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Deposits/Term-Deposit.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Digital-Banking/KIB-Mobile.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/home/Personal/Digital-Banking/KIB-Online.html",
+      "error": "navigation failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:036d55b4-0712-4bd4-9804-252848b25b3d/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0411ccfb-0b62-45b1-aa15-6f2b2b43d7e4/%D8%A7%D9%84%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B3%D9%86%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%AA%D9%87%D9%8A%D8%A9%202018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0419a674-bc68-411a-91be-6c0ae1377d30/Boursa%20Letter%20Fitch%20Rating%20Apr%202022%20Arb.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:0994ef99-a335-4a34-ad8d-612fbb21c3dd/%D8%A7%D9%81%D8%B5%D8%A7%D8%AD%20%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%AC%D9%88%D9%87%D8%B1%D9%8A%D8%A9%20%D8%A8%D8%B4%D8%A3%D9%86%20%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84%20%D8%B9%D9%84%D9%89%20%D9%85%D9%88%D8%A7%D9%81%D9%82%D8%A9%20%D9%85%D8%A8%D8%AF%D8%A6%D9%8A%D8%A9%20%D9%85%D9%86%20%D9%87%D9%8A%D8%A6%D8%A9%20%D8%A3%D8%B3%D9%88%D8%A7%D9%82%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%D8%B9%D9%84%D9%89%20%D8%AA%D8%A3%D8%B3%D9%8A%D8%B3%20%D8%B4%D8%B1%D9%83%D8%A9%20%D8%AA%D9%85%D8%A7%D8%B1%D8%B3%20%D8%A3%D9%86%D8%B4%D8%B7%D8%A9%20%D8%A3%D9%88%D8%B1%D8%A7%D9%82%20%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20-%2013-11-2022.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:11dea6cb-b3f2-43ec-9f2c-79a12dc6f989/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B3%D9%86%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%AA%D9%87%D9%8A%D8%A9%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:12488925-39e2-4eda-bedf-4cb72c8fb018/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:1bff27fb-c91d-4b9d-bec1-ac6014254b3b/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%B5%D8%A7%D9%81%D9%8A%20%D8%A7%D9%84%D8%AA%D9%85%D9%88%D9%8A%D9%84%20%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%82%D8%B1%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202018%20-%2014-05-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:1f7b5a65-86fc-4379-82d4-43ab0458bf8a/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:275d412b-fedb-4d07-84ae-2a14b7940d64/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:2a313f8c-f9da-48db-87c1-628522601979/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:2e61c551-0b9c-4076-9dad-3121b192f644/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:312f4330-d6a0-4b4f-a616-0c5562fcf45c/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202018%20-%2030-07-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:374adaed-fcff-49f5-ad98-905ede46b019/Terms%20of%20service%20%E2%80%93%20Click%20to%20Pay%20-%20a%20.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:3a80e18d-5a53-4a88-8d73-749c5a44aad7/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%B5%D8%A7%D9%81%D9%8A%20%D8%A7%D9%84%D8%AA%D9%85%D9%88%D9%8A%D9%84%20%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%82%D8%B1%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%B1%D8%A7%D8%A8%D8%B92018%20-%2006-02-2019.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:3e845401-25c1-4444-838a-d1bc52b90a58/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D9%86%D8%AA%D8%A7%D8%A6%D8%AC%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%D8%A9%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:4116bdf0-7e88-4929-8dd7-d5c609806520/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:4852a440-1eab-4090-9a8e-67c5ce2de736/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:590ee8ce-7f71-4673-aa28-6a7dd3f1b883/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:60dcec6b-80ff-47f3-b850-52104f5d81fe/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D9%86%D8%AA%D8%A7%D8%A6%D8%AC%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%D8%A9%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:6ada0765-7bc2-448e-9883-08997b4e5273/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:71108d28-c218-475f-b402-a173f337dea1/Boursa%20Letter%2023%20FEB%202023%20Arb.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:74f03f01-8e2b-471e-b41f-1d1a185a97d0/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:75f75360-af47-48d8-a057-a450b1e78102/Boursa%20letter%2016%20May%202022%20Arb.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:79490fdd-bcca-4035-902d-39cc3498f4b2/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202018%20-%2028-10-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:8074ac4f-942b-43ad-82d1-327e0f131fbf/Mubader%20Account%20FAQ%E2%80%99s.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:8bffb8bf-569a-45c0-ba6e-c9c4e6f7dc38/%D8%A7%D9%81%D8%B5%D8%A7%D8%AD%20%D8%A8%D8%B4%D8%A3%D9%86%20%D9%86%D8%AA%D8%A7%D8%A6%D8%AC%20%D8%A7%D9%84%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%D8%B9%D9%86%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%20%D9%84%D8%B9%D8%A7%D9%85%202017.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:95934115-5c40-47b3-8de6-1b4ba83b8e3b/Boursa%20A%20-%20Fitch%20May%202023.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:a92d5b11-da3f-4292-ae69-d8605c801346/%D8%A7%D9%81%D8%B5%D8%A7%D8%AD%20%D9%85%D9%83%D9%85%D9%84%20%D8%A8%D8%B4%D8%A3%D9%86%20%D8%A7%D9%84%D8%AD%D9%83%D9%85%20%D8%A7%D9%84%D8%B5%D8%A7%D8%AF%D8%B1%20%D8%B9%D9%86%20%D9%85%D8%AD%D9%83%D9%85%D8%A9%20%D8%A7%D9%84%D8%AA%D9%85%D9%8A%D9%8A%D8%B2%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B7%D8%B9%D9%86%D9%8A%D9%86%20%D8%B1%D9%82%D9%85%D9%8A%20827%D8%8C%209042016%20%D8%AA%D8%AC%D8%A7%D8%B1%D9%89%20-%2009-01-2019.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:aa1f5af6-993d-4e85-908a-65e3fe381761/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:aef2bcda-a063-48b7-9312-7f60127eb25a/%D9%86%D8%AA%D8%A7%D8%A6%D8%AC%20%D8%A7%D9%84%D8%AC%D9%85%D8%B9%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B9%D8%A7%D9%85%D8%A9%2006-05-2021%20-%20AR.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:b09da959-ec87-4fda-b409-40ee068c823a/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%20201.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:b8838bc3-43a4-498b-a1f4-a27d0ea29183/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:b97e4195-13a0-4030-9c5e-ca906b4980fc/%D8%B3%D9%88%D9%82%20%D8%A7%D9%84%D8%B9%D9%82%D8%A7%D8%B1%20%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:bd6770f3-d84b-41e7-b209-62b5b2fa0740/08-02-2022%20-%20Ar.pdf",
+      "error": "no extractable text"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:c06679bf-2092-4a3d-b7e7-280d13c6fdf8/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:cfebdd81-1b44-4f82-bb1e-314ec2f555ee/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B3%D9%86%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%AA%D9%87%D9%8A%D8%A9%202017.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:d2e8afd9-7b06-4ff4-a609-f43a4a862e7e/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:d770d891-f0f8-4c1d-9770-a9278108bc14/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:d845dc34-4248-4311-ad0a-4c28558f6048/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:dbd4179c-d6e0-44a1-b725-ed97e8b1a162/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB%202018%20-%2028-10-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:e2315d0a-c93a-44a9-8e55-5c8c66bb61e9/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%B5%D8%A7%D9%81%D9%8A%20%D8%A7%D9%84%D8%AA%D9%85%D9%88%D9%8A%D9%84%20%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%82%D8%B1%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB2018-%2023-10-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:e3ad54fb-5c87-4b64-b3ae-c8d7907cc856/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202019.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:e7b937fe-6ce3-4027-bb43-74f417b7f0b5/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%B5%D8%A7%D9%81%D9%8A%20%D8%A7%D9%84%D8%AA%D9%85%D9%88%D9%8A%D9%84%20%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%82%D8%B1%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A2018%20-%2003-09-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:ef64532a-0e9b-477d-b1b8-4f13f224b57e/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202018%20-%2030-07-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:efa8bc06-ab0d-4aa3-aaf4-b8cf9c8622e5/%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D9%84%D9%8A%D8%A9%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%202016.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:f27a9b9f-08c7-4ea4-8fa8-a695b5ee12c6/%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D8%A7%D8%AA%20%D8%B1%D8%A3%D8%B3%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202018%20-%2002-05-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "kib",
+      "url": "https://www.kib.com.kw/dam/jcr:f528ddaa-cc25-4703-92ed-c8a13f31b5d8/%D9%85%D8%B9%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D9%81%D8%B9%20%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%20%E2%80%93%20%D8%A7%D9%84%D8%B1%D8%A8%D8%B9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%202018%20-%2002-05-2018.pdf",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=127914&esIndex=reports",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?compId=169449&esIndex=reports",
+      "error": "no extractable text"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv~m1VxAYaWzhV8o2tWFeA5Lyd2fjSPNVZBglKnv1kA7u8M5hsVg3VcsF9TayP0aMbxCD~gyfqspcCXmgEcaqpv53A3&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv~m1VxAYaWzhV8o2tWFeA5Lyd2fjSPNVZBglKnv1kA7u8M5hsVg3VcsF9TayP0aMbxCD~gyfqspcCXmgEcaqpv53Eoeg==&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv~m1VxEpGfwBNx6nwcWKYmMiN2fjKGKgUaxEC9s1Ea7OUN9goKz21WukxGeTDrN4K3Ej6hzPOrosGelQMEJ/Iy5w==&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv~m1VxEpGfwBNx6nwcWKYmMiN2fjKGKgUaxEC9s1Ea7OUN9goKz21WukxGeTDrN4K3Ej6hzPOrosGelQMEJ/Mt&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn0UHEO2Af/4QtBtrVepUhO0i9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn0UHEO2Af/4QtBtrVepUhO0i9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn1UHMO2Af/4QtBtrVcokxO0y9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn1UHMO2Af/4QtBtrVcokxO0y9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn3XXEO2Af/4QtBtrVdoE9K2i9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn3XXEO2Af/4QtBtrVdoE9K2i9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn5VWcO2Af/4QtBtrVeoUpI0y9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn5VWcO2Af/4QtBtrVeoUpI0y9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn8SGwO2Af/4QtBtrVcp09I1S9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPyn8SGwO2Af/4QtBtrVcp09I1S9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrBco01I1i9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrBco01I1i9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrBdpU9M2y9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrBdpU9M2y9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynjS3EO2Af/4QtBtrVbpUpA2i9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynjS3EO2Af/4QtBtrVbpUpA2i9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynlWWcO2Af/4QtBtrVdpE5L2y9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynlWWcO2Af/4QtBtrVdpE5L2y9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynnWWcO2Af/4QtBtrVdo0ZN1S9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynnWWcO2Af/4QtBtrVdo0ZN1S9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynxWmUO2Af/4QtBtrVbrUpK0y9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynxWmUO2Af/4QtBtrVbrUpK0y9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynzTWcO2Af/4QtBtrVboUtA2y9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv54MvLBSt31VuUMuY1Bl6pnYeX/97fGUjPynzTWcO2Af/4QtBtrVboUtA2y9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfilePath=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZcpi~NT1TgSpXmD4P3zqZByMRav20xxUtY=&dfile=lcYVtnxONYos5WZWBUNl/iHCgN8jTm2YF8t/1b0siWVK8y3Hvbau/p1zZg==&esIndex=mainindicators",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/ar/redirects/download?dfilePath=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZcpi~NT1TgSpXmD4P3zqZByMRav20xxUtY=&dfile=lcYVtnxONYos5WZWBUNl/iHCgN8jTm2YF8t/1b0siWVK8y3Hvbau/pxs&esIndex=mainindicators",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv6h1VxAYaWzhV8o2tWFeA5Lyd2fjSPNVZBglKnv1kA7u8M5hsVg3VcsF9TayP0aMbxCD~gyfqspcCRnwAYa6xv53A3&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv6h1VxAYaWzhV8o2tWFeA5Lyd2fjSPNVZBglKnv1kA7u8M5hsVg3VcsF9TayP0aMbxCD~gyfqspcCRnwAYa6xv53Eoeg==&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv6h1VxEpGfwBNx6nwcWKYmMiN2fjKGKgUaxEC9s1Ea7OUN9goKz21WukxGeTDrN4K3Ej6hzPOtpcCemgYEJ/Iy5w==&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=14gJ6GAIdJkg5HRLHlRl/DyR0II8Uy7VW44hgaI1zDkerXSO~~7i6pRzMQv6h1VxEpGfwBNx6nwcWKYmMiN2fjKGKgUaxEC9s1Ea7OUN9goKz21WukxGeTDrN4K3Ej6hzPOtpcCemgYEJ/Mt&esIndex=weeklytables",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7oGObn9gmSWmQAqU~17Qq5CgYqynHor61s8UxJgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7sHGBn9gmSW~XDKU~17sq5CgYqynHor61s8M2KArrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7sXyChMQiSWmTD8kXlLsuiwMPpXXGv6Kxs8UyKxexnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7t3CBn9gmSG~SAqU~17Qq5CgYqynHor61ssMzJgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7tWCbn9gmSW~XDaU~1LQq5CgYqynHor61s8M2KQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7tXKBn9gmSG~XCqU~1Lwq5CgYqynHor61ssM2LgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7tmuAn9gmSG~UDaU~17Qq5CgYqynHor61ssM1KQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7tmuWn9gmSG~UDqU~1L4q5CgYqynHor61ssM1KgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7un2An9gmSW~XAqU~17Qq5CgYqynHor61s8M2JgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7unqChMQiSWmTD8wXlLsriwMPpXXGv6Kxs8UyKxKxnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBCFo7un~Eg8QiSWmTD88XlLgtiwMPpXXGv6Kxs8UyKxGxnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7o2Obn9gmSG~ZA6U~17gq5CgYqynHor61ssM4JwrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7o3yCn9gmSG~ZAqU~17gq5CgYqynHor61ssM4JgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7sGObn9gmSG~ZCaU~17sq5CgYqynHor61ssM4LQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7t3yGwcQiSWiTCc8XlLgoiwMPpXXGv6Kxs8QyLRGxnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7v36bn9gmSG~ZD6U~17gq5CgYqynHor61ssM4KwrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7vXKVn9gmSW~SCaU~17kq5CgYqynHor61s8MzLQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShBGVM7vnaGn9gmSW~SDqU~17kq5CgYqynHor61s8MzKgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShPBVc7sHSdn9gmSWyVD6U~0bQq5CgYqynHor61s8A0KwrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18IS9zhKOokg9ShPBVc7tHSdn9gmSWyVDKU~0bUq5CgYqynHor61s8A0KArrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7oGObn9gmSWmQAqU~17Qq5CgYqynGor61s8UxJgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7sHGBn9gmSW~XDKU~17sq5CgYqynGor61s8M2KArrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7sXyChMQiSWmTD8kXlLsuiwMPpXXGvqKxs8UyKxexnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7t3CBn9gmSG~SAqU~17Qq5CgYqynGor61ssMzJgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7tWCbn9gmSW~XDaU~1LQq5CgYqynGor61s8M2KQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7tXKBn9gmSG~XCqU~1Lwq5CgYqynGor61ssM2LgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7tmuAn9gmSG~UDaU~17Qq5CgYqynGor61ssM1KQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7tmuWn9gmSG~UDqU~1L4q5CgYqynGor61ssM1KgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7un2An9gmSW~XAqU~17Qq5CgYqynGor61s8M2JgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7unqChMQiSWmTD8wXlLsriwMPpXXGvqKxs8UyKxKxnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBCFo7un~Eg8QiSWmTD88XlLgtiwMPpXXGvqKxs8UyKxGxnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7o2Obn9gmSG~ZA6U~17gq5CgYqynGor61ssM4JwrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7o3yCn9gmSG~ZAqU~17gq5CgYqynGor61ssM4JgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7sGObn9gmSG~ZCaU~17sq5CgYqynGor61ssM4LQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7t3yGwcQiSWiTCc8XlLgoiwMPpXXGvqKxs8QyLRGxnQIq&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7v36bn9gmSG~ZD6U~17gq5CgYqynGor61ssM4KwrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7vXKVn9gmSW~SCaU~17kq5CgYqynGor61s8MzLQrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShBGVM7vnaGn9gmSW~SDqU~17kq5CgYqynGor61s8MzKgrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShPBVc7sHSdn9gmSWyVD6U~0bQq5CgYqynGor61s8A0KwrrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=18YO9zhKOokg9ShPBVc7tHSdn9gmSWyVDKU~0bUq5CgYqynGor61s8A0KArrkQ4=&cext=xml&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv458vLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrZZo0dB1C9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv458vLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrZZo0dB1C9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv458vLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrZapUlI1S9BuFhK&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfile=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZ8wgeV71TsetHmD6vyv458vLBSt31VuUMuY1Bl6pnYeX/97fGUjPynXdFkO2Af/4QtBtrZapUlI1S9BuUc=&esIndex=autogenerated",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfilePath=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZcpi~NT1TgSpXmD4P3zqZRuMRav20xxUtY=&dfile=lcYVtnxONYos5WZWBUNl/iHCgN8jTm2YF8t/1b0siWVM9C3Pu7yu/p1zZg==&esIndex=mainindicators",
+      "error": "download failed"
+    },
+    {
+      "site": "cbk",
+      "url": "https://www.cbk.gov.kw/en/redirects/download?dfilePath=19JM6X5QPow273NHGR51sXjdwZ1yCDTCFZcpi~NT1TgSpXmD4P3zqZRuMRav20xxUtY=&dfile=lcYVtnxONYos5WZWBUNl/iHCgN8jTm2YF8t/1b0siWVM9C3Pu7yu/pxs&esIndex=mainindicators",
+      "error": "download failed"
+    }
+  ]
+}

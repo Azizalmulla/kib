@@ -1,14 +1,17 @@
 """Scrape KIB website (public pages only)."""
 
 import hashlib
+import re
 import sys
 import time
+from urllib.parse import urljoin
 
 from .config import KIB_BASE_URL, KIB_SITEMAP_URL
 from .discovery import discover_urls
 from .extractor import detect_language, extract_text, extract_title
 from .fetcher import fetch_html
-from .ingest_client import ingest_page
+from .direct_ingest import ingest_page, ingest_pdf
+from .pdf_parser import download_pdf, extract_text_from_pdf, detect_pdf_language
 
 # KIB-specific exclusions
 KIB_EXCLUDE = [
@@ -25,10 +28,16 @@ KIB_ACCESS_TAGS = {
     "tags": ["public", "internal_site", "kib"],
 }
 
+PDF_URLS: set = set()
+
 
 def _is_kib_excluded(url: str) -> bool:
     lower = url.lower()
     return any(pat in lower for pat in KIB_EXCLUDE)
+
+
+def _is_pdf(url: str) -> bool:
+    return url.lower().rstrip("/").endswith(".pdf")
 
 
 def run() -> dict:
@@ -42,19 +51,34 @@ def run() -> dict:
     ingested = 0
     skipped = 0
     errors = 0
+    pdfs_ingested = 0
+    pdfs_failed = 0
     seen_hashes: set = set()
 
-    for i, url in enumerate(urls, 1):
-        if _is_kib_excluded(url):
+    # Separate PDFs from HTML pages
+    html_urls = []
+    for url in urls:
+        if _is_pdf(url):
+            PDF_URLS.add(url)
+        elif _is_kib_excluded(url):
             skipped += 1
-            continue
+        else:
+            html_urls.append(url)
 
-        print(f"[{i}/{len(urls)}] {url}")
+    print(f"[KIB] {len(html_urls)} HTML pages, {len(PDF_URLS)} PDFs discovered")
+
+    # --- Phase 1: HTML pages ---
+    for i, url in enumerate(html_urls, 1):
+        print(f"[{i}/{len(html_urls)}] {url}")
 
         html = fetch_html(url)
         if not html:
             skipped += 1
             continue
+
+        # Discover PDF links from the page
+        for match in re.findall(r'href=["\']([^"\']*\.pdf)["\']', html, re.IGNORECASE):
+            PDF_URLS.add(urljoin(url, match))
 
         text = extract_text(html)
         if not text:
@@ -89,6 +113,44 @@ def run() -> dict:
         else:
             errors += 1
 
+    # --- Phase 2: PDF ingestion ---
+    if PDF_URLS:
+        print(f"\n[KIB] Downloading and parsing {len(PDF_URLS)} PDFs...")
+        for j, pdf_url in enumerate(sorted(PDF_URLS), 1):
+            print(f"  [PDF {j}/{len(PDF_URLS)}] {pdf_url}")
+            pdf_bytes = download_pdf(pdf_url)
+            if not pdf_bytes:
+                pdfs_failed += 1
+                continue
+
+            pages = extract_text_from_pdf(pdf_bytes)
+            if not pages:
+                print(f"    [SKIP] No extractable text")
+                pdfs_failed += 1
+                continue
+
+            lang = detect_pdf_language(pages)
+            filename = pdf_url.split("/")[-1].replace(".pdf", "").replace("-", " ").replace("_", " ")
+            total_chars = sum(len(p["text"]) for p in pages)
+            print(f"    {len(pages)} pages, {total_chars} chars, lang={lang}")
+
+            result = ingest_pdf(
+                pages=pages,
+                title=filename,
+                source_uri=pdf_url,
+                language=lang,
+                doc_type="pdf",
+                access_tags=KIB_ACCESS_TAGS,
+            )
+            if result:
+                pdfs_ingested += 1
+                print(f"    [OK] {result['chunks_ingested']} chunks from {result['pages']} pages")
+            else:
+                pdfs_failed += 1
+                print(f"    [ERROR] Ingestion returned None")
+
+            time.sleep(0.5)
+
     summary = {
         "site": "KIB",
         "urls_discovered": len(urls),
@@ -96,6 +158,8 @@ def run() -> dict:
         "ingested": ingested,
         "skipped": skipped,
         "errors": errors,
+        "pdfs_ingested": pdfs_ingested,
+        "pdfs_failed": pdfs_failed,
     }
 
     print("\n" + "=" * 60)

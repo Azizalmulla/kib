@@ -11,14 +11,22 @@ class UserContext(BaseModel):
     attributes: Dict[str, Any] = Field(default_factory=dict)
 
 
+class HistoryTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    text: str
+
+
 class RagRequest(BaseModel):
     question: str
     language: Literal["en", "ar"] = "en"
     top_k: int = 5
     user: UserContext
+    history: List[HistoryTurn] = Field(default_factory=list)
 
 
 class Citation(BaseModel):
+    model_config = {"extra": "forbid"}
+
     doc_title: str
     doc_id: str
     document_version: str
@@ -28,20 +36,16 @@ class Citation(BaseModel):
     quote: str
     source_uri: str
 
-    class Config:
-        extra = "forbid"
-
 
 class StrictRagResponse(BaseModel):
+    model_config = {"extra": "forbid"}
+
     language: Literal["en", "ar"]
     answer: str
     confidence: Literal["high", "medium", "low"]
     citations: List[Citation]
     missing_info: Optional[str] = None
     safe_next_steps: List[str]
-
-    class Config:
-        extra = "forbid"
 
 
 class ModelInfo(BaseModel):

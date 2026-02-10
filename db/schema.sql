@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS chunks (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
--- NOTE: set embedding dimension via migrations when model choice is finalized.
+-- Embedding dimension: 768 (qwen3-embedding:8b truncated via Matryoshka)
 CREATE TABLE IF NOT EXISTS embeddings (
   chunk_id uuid PRIMARY KEY REFERENCES chunks(id) ON DELETE CASCADE,
   embedding vector(768) NOT NULL,

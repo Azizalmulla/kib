@@ -26,12 +26,14 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     reranked = rerank_chunks(rows)
 
     provider = get_provider()
+    history = [(h.role, h.text) for h in request.history] if request.history else []
     payload, meta = answer_with_llm(
         reranked,
         request.question,
         request.language,
         request.user.role_names,
         provider,
+        history=history,
     )
 
     if not meta.get("trace_id"):

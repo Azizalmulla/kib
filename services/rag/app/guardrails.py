@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 from .schemas import StrictRagResponse
 
-LLM_SYSTEM_PROMPT = (
+LLM_SYSTEM_PROMPT_BASE = (
     "You are the KIB Knowledge Copilot. Answer ONLY using the provided chunks. "
     "If the chunks do not contain enough evidence, refuse with the exact message: "
     "\"I can't answer from KIB's approved documents for this question.\" "
@@ -13,6 +13,30 @@ LLM_SYSTEM_PROMPT = (
     "Return JSON that matches the response schema exactly. "
     "Every non-refusal answer must include citations derived from the provided chunks only."
 )
+
+ROLE_PROMPT_OVERRIDES = {
+    "front_desk": (
+        " Keep answers concise (2-4 sentences). Focus on the key facts the employee "
+        "needs to help a customer quickly: amounts, deadlines, steps, or eligibility. "
+        "Use simple, clear language. Avoid legal jargon."
+    ),
+    "compliance": (
+        " Provide thorough, detailed answers. Include all relevant clauses, conditions, "
+        "exceptions, and regulatory references. Quote exact policy language where possible. "
+        "Cite every chunk that contributed to the answer. Err on the side of completeness."
+    ),
+}
+
+
+def get_system_prompt(role_names: list) -> str:
+    """Return a role-tailored system prompt."""
+    prompt = LLM_SYSTEM_PROMPT_BASE
+    for role in role_names:
+        override = ROLE_PROMPT_OVERRIDES.get(role)
+        if override:
+            prompt += override
+            break
+    return prompt
 
 REFUSAL_TEXT_EN = "I can't answer from KIB's approved documents for this question."
 REFUSAL_TEXT_AR = "لا أستطيع الإجابة من مستندات KIB المعتمدة لهذا السؤال."
@@ -103,44 +127,46 @@ def translate_missing_info(confidence: str, language: str) -> Optional[str]:
     return MISSING_INFO_EN
 
 
-def _citation_key(citation: Dict[str, Any]) -> Optional[Tuple[str, str, Optional[int], Optional[int], Optional[int], str]]:
-    try:
-        return (
-            str(citation.get("doc_id")),
-            str(citation.get("document_version")),
-            citation.get("page_number"),
-            citation.get("start_offset"),
-            citation.get("end_offset"),
-            str(citation.get("source_uri")),
-        )
-    except Exception:
-        return None
+def _find_matching_row(
+    citation: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+) -> Optional[Dict[str, Any]]:
+    """Find the best matching row for an LLM-generated citation.
 
+    Match by doc_id + page_number first (most reliable from LLM).
+    Falls back to doc_id only if page doesn't match."""
+    cit_doc_id = str(citation.get("doc_id", ""))
+    cit_page = citation.get("page_number")
 
-def _row_key(row: Dict[str, Any]) -> Tuple[str, str, Optional[int], Optional[int], Optional[int], str]:
-    return (
-        str(row.get("document_id")),
-        str(row.get("document_version")),
-        row.get("page_start"),
-        row.get("offset_start"),
-        row.get("offset_end"),
-        str(row.get("source_uri")),
-    )
+    # Try doc_id + page_number match
+    for row in rows:
+        if str(row.get("document_id")) == cit_doc_id and row.get("page_start") == cit_page:
+            return row
+
+    # Fall back to doc_id only
+    for row in rows:
+        if str(row.get("document_id")) == cit_doc_id:
+            return row
+
+    return None
 
 
 def normalize_citations(
     citations: List[Dict[str, Any]],
     rows: List[Dict[str, Any]],
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-    row_map = {_row_key(row): row for row in rows}
     normalized: List[Dict[str, Any]] = []
     used_rows: List[Dict[str, Any]] = []
+    seen_doc_pages: set = set()
 
     for citation in citations:
-        key = _citation_key(citation)
-        if key is None or key not in row_map:
-            return [], []
-        row = row_map[key]
+        row = _find_matching_row(citation, rows)
+        if row is None:
+            continue
+        dedup_key = (str(row.get("document_id")), row.get("page_start"))
+        if dedup_key in seen_doc_pages:
+            continue
+        seen_doc_pages.add(dedup_key)
         used_rows.append(row)
         normalized.append(
             {
@@ -150,7 +176,7 @@ def normalize_citations(
                 "page_number": row.get("page_start"),
                 "start_offset": row.get("offset_start"),
                 "end_offset": row.get("offset_end"),
-                "quote": _quote_snippet(row.get("text", "")),
+                "quote": _quote_snippet(citation.get("quote") or row.get("text", "")),
                 "source_uri": row.get("source_uri"),
             }
         )

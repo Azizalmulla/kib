@@ -1,12 +1,17 @@
 import json
+import logging
+import re
 from typing import Any, Dict, List, Tuple
 
+log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+
 from .guardrails import (
-    LLM_SYSTEM_PROMPT,
     REFUSAL_TEXT_AR,
     REFUSAL_TEXT_EN,
     build_refusal_payload,
     compute_confidence,
+    get_system_prompt,
     normalize_citations,
     safe_next_steps,
     translate_missing_info,
@@ -20,6 +25,7 @@ def _build_user_prompt(
     language: str,
     role_names: List[str],
     rows: List[Dict[str, Any]],
+    history: List[Tuple[str, str]] = None,
 ) -> str:
     role_list = ", ".join(role_names) if role_names else "none"
 
@@ -60,6 +66,14 @@ def _build_user_prompt(
   ]
 }'''
 
+    history_block = ""
+    if history:
+        turns = []
+        for role, text in history[-6:]:
+            label = "User" if role == "user" else "Assistant"
+            turns.append(f"{label}: {text}")
+        history_block = "\n".join(["", "Conversation history (for context only, answer the CURRENT question):"] + turns + [""])
+
     return "\n".join(
         [
             "You MUST answer using ONLY the chunks below.",
@@ -74,6 +88,7 @@ def _build_user_prompt(
             "",
             f"User language: {language}",
             f"User roles: {role_list}",
+            history_block,
             f"User question: {question}",
             "",
             "Retrieved chunks:",
@@ -88,6 +103,7 @@ def answer_with_llm(
     language: str,
     role_names: List[str],
     provider: LLMProvider,
+    history: List[Tuple[str, str]] = None,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     language = "ar" if language == "ar" else "en"
     meta = {
@@ -97,33 +113,58 @@ def answer_with_llm(
     if not rows:
         return build_refusal_payload(language), meta
 
-    prompt = _build_user_prompt(question, language, role_names, rows)
+    prompt = _build_user_prompt(question, language, role_names, rows, history=history)
+    system_prompt = get_system_prompt(role_names)
+    log.debug("[RAG] Sending prompt to LLM (%d chars, %d chunks, roles=%s)", len(prompt), len(rows), role_names)
     try:
-        raw = provider.generate(LLM_SYSTEM_PROMPT, prompt)
-    except Exception:
+        raw = provider.generate(system_prompt, prompt)
+    except Exception as exc:
+        log.error("[RAG] LLM call failed: %s", exc)
         return build_refusal_payload(language), meta
 
+    log.debug("[RAG] Raw LLM response (%d chars): %s", len(raw), raw[:500])
+
+    # Strip <think>...</think> blocks from reasoning models (Qwen3, etc.)
+    cleaned = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+    # Also handle case where </think> is present but <think> was at the very start
+    if cleaned.startswith("</think>"):
+        cleaned = cleaned[len("</think>"):].strip()
+    # Extract JSON from markdown code fences if present
+    fence_match = re.search(r"```(?:json)?\s*(.+?)\s*```", cleaned, re.DOTALL)
+    if fence_match:
+        cleaned = fence_match.group(1).strip()
+
+    log.debug("[RAG] Cleaned LLM output (%d chars): %s", len(cleaned), cleaned[:500])
+
     try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        log.error("[RAG] JSON parse failed: %s — cleaned text: %s", exc, cleaned[:300])
         return build_refusal_payload(language), meta
 
     if not isinstance(data, dict):
+        log.error("[RAG] Parsed data is not a dict: %s", type(data))
         return build_refusal_payload(language), meta
 
     answer = str(data.get("answer", "")).strip()
     if answer in {REFUSAL_TEXT_EN, REFUSAL_TEXT_AR}:
+        log.debug("[RAG] LLM returned refusal text")
         return build_refusal_payload(language), meta
 
     citations = data.get("citations")
     if not isinstance(citations, list) or not citations:
+        log.error("[RAG] No citations in LLM response: %s", citations)
         return build_refusal_payload(language), meta
 
+    log.debug("[RAG] LLM returned %d citations", len(citations))
     normalized_citations, used_rows = normalize_citations(citations, rows)
     if not normalized_citations:
+        log.error("[RAG] Citation normalization failed. LLM citations: %s", json.dumps(citations[:2], default=str)[:500])
+        log.error("[RAG] Available row keys: %s", [str(r.get('document_id'))[:8] + '/' + str(r.get('document_version')) + '/p' + str(r.get('page_start')) for r in rows[:3]])
         return build_refusal_payload(language), meta
 
     if not answer:
+        log.error("[RAG] Empty answer after processing")
         return build_refusal_payload(language), meta
 
     confidence = compute_confidence(used_rows, normalized_citations)
