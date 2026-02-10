@@ -17,7 +17,7 @@ DB_URL = os.environ.get(
     "KIB_DATABASE_URL",
     "postgresql://localhost/kib",
 )
-FIREWORKS_API_KEY = os.environ.get("FIREWORKS_API_KEY", "fw_JQzU8TxGETYnmNxpMDDyAE")
+FIREWORKS_API_KEY = os.environ.get("FIREWORKS_API_KEY", "")
 FIREWORKS_EMBED_URL = "https://api.fireworks.ai/inference/v1/embeddings"
 EMBEDDING_MODEL = os.environ.get("KIB_EMBEDDING_MODEL", "accounts/fireworks/models/qwen3-embedding-8b")
 EMBEDDING_DIM = int(os.environ.get("KIB_EMBEDDING_DIM", "768"))

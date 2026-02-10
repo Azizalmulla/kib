@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Quick end-to-end test of the RAG pipeline against the local DB."""
 
-import sys, math, json
+import os, sys, math, json
 import httpx
 import psycopg
 from psycopg.rows import dict_row
 from pgvector.psycopg import register_vector
 
 DB_URL = "postgresql://localhost/kib"
-FIREWORKS_KEY = "fw_JQzU8TxGETYnmNxpMDDyAE"
+FIREWORKS_KEY = os.environ.get("FIREWORKS_API_KEY", "")
 FIREWORKS_URL = "https://api.fireworks.ai/inference/v1/embeddings"
 MODEL = "accounts/fireworks/models/qwen3-embedding-8b"
 DIM = 768
