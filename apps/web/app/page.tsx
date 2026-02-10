@@ -41,6 +41,15 @@ type Conversation = {
   updatedAt: number;
 };
 
+type AuthSession = {
+  token: string;
+  email: string;
+  name: string;
+  roles: string[];
+};
+
+const AUTH_KEY = "kib-auth";
+
 const STORAGE_KEY = "kib-conversations";
 
 function loadConversations(): Conversation[] {
@@ -102,15 +111,25 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [forcedLanguage, setForcedLanguage] = useState<"en" | "ar" | "auto">("auto");
-  const [activeRole, setActiveRole] = useState<string>("front_desk");
   const [selectedMsgId, setSelectedMsgId] = useState<string | null>(null);
   const [sourcesPanelOpen, setSourcesPanelOpen] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [streamingMsgId, setStreamingMsgId] = useState<string | null>(null);
 
-  // Load conversations from localStorage on mount
+  // Auth state
+  const [auth, setAuth] = useState<AuthSession | null>(null);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  // Load auth + conversations from localStorage on mount
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem(AUTH_KEY);
+      if (stored) setAuth(JSON.parse(stored));
+    } catch {}
     setConversations(loadConversations());
   }, []);
 
@@ -147,7 +166,50 @@ export default function Page() {
   }, [messages, selectedMsgId]);
 
   const apiBase = process.env.NEXT_PUBLIC_KIB_API_BASE_URL || "http://localhost:8000";
-  const mockUser = process.env.NEXT_PUBLIC_KIB_MOCK_USER || "demo@kib.com";
+
+  async function handleLogin(e: FormEvent) {
+    e.preventDefault();
+    setLoginError(null);
+    setLoginLoading(true);
+    try {
+      const res = await fetch(`${apiBase}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.detail || "Invalid credentials");
+      }
+      const data = await res.json();
+      const session: AuthSession = {
+        token: data.token,
+        email: data.email,
+        name: data.name,
+        roles: data.roles,
+      };
+      localStorage.setItem(AUTH_KEY, JSON.stringify(session));
+      setAuth(session);
+    } catch (err) {
+      setLoginError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoginLoading(false);
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem(AUTH_KEY);
+    setAuth(null);
+    setMessages([]);
+    setSelectedMsgId(null);
+    setActiveConvoId(null);
+    setStreamingMsgId(null);
+    setError(null);
+    setLoginEmail("");
+    setLoginPassword("");
+  }
+
+  const activeRole = auth?.roles?.[0] || "front_desk";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -181,8 +243,7 @@ export default function Page() {
     try {
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        "X-Mock-User": mockUser,
-        "X-Mock-Roles": activeRole,
+        "Authorization": `Bearer ${auth?.token}`,
       };
 
       const history = messages.map((m) => ({ role: m.role, text: m.text }));
@@ -254,6 +315,45 @@ export default function Page() {
     setError(null);
   }
 
+  // Show login screen if not authenticated
+  if (!auth) {
+    return (
+      <div className="login-screen">
+        <div className="login-card">
+          <img src="/kib-logo.png" alt="KIB" className="login-logo" />
+          <h1>Knowledge Copilot</h1>
+          <p className="login-sub">Sign in to access KIB&apos;s knowledge base</p>
+          <form onSubmit={handleLogin} className="login-form">
+            <input
+              type="email"
+              placeholder="Email"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+              required
+              autoFocus
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              required
+            />
+            {loginError && <div className="login-error">{loginError}</div>}
+            <button type="submit" disabled={loginLoading} className="login-btn">
+              {loginLoading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+          <div className="login-hint">
+            <p><strong>Demo accounts:</strong></p>
+            <p>Front Desk: frontdesk@kib.com / frontdesk123</p>
+            <p>Compliance: compliance@kib.com / compliance123</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function loadConversation(convo: Conversation) {
     setMessages(convo.messages);
     setActiveConvoId(convo.id);
@@ -289,17 +389,10 @@ export default function Page() {
         </div>
 
         <div className="sidebar-section">
-          <label className="sidebar-label">Role</label>
-          <div className="role-switcher">
-            {["front_desk", "compliance"].map((role) => (
-              <button
-                key={role}
-                className={`role-btn ${activeRole === role ? "active" : ""}`}
-                onClick={() => setActiveRole(role)}
-              >
-                {role === "front_desk" ? "Front Desk" : "Compliance"}
-              </button>
-            ))}
+          <label className="sidebar-label">Signed in as</label>
+          <div className="user-info">
+            <div className="user-name">{auth.name}</div>
+            <div className="user-role-badge">{activeRole === "front_desk" ? "Front Desk" : "Compliance"}</div>
           </div>
         </div>
 
@@ -330,6 +423,10 @@ export default function Page() {
 
         <button className="sidebar-btn" onClick={newConversation}>
           <span>+</span> New conversation
+        </button>
+
+        <button className="sidebar-btn logout-btn" onClick={handleLogout}>
+          Sign out
         </button>
       </nav>
 
@@ -426,7 +523,7 @@ export default function Page() {
                     </div>
                     {isUser && (
                       <div className="avatar user-avatar">
-                        {mockUser.charAt(0).toUpperCase()}
+                        {auth.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>

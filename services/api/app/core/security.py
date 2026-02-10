@@ -62,6 +62,17 @@ def _decode_jwt(token: str) -> Dict[str, Any]:
         raise HTTPException(status_code=401, detail="Invalid token") from exc
 
 
+def _decode_local_jwt(token: str) -> Dict[str, Any]:
+    try:
+        return jwt.decode(
+            token,
+            settings.jwt_secret,
+            algorithms=[settings.jwt_algorithm],
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
+
+
 def get_current_user(
     authorization: Optional[str] = Header(default=None),
     x_mock_user: Optional[str] = Header(default=None),
@@ -86,21 +97,27 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="Missing bearer token")
 
     token = authorization.split(" ", 1)[1].strip()
-    claims = _decode_jwt(token)
-    email = claims.get(settings.oidc_user_claim) or claims.get("email")
+
+    # Try local JWT first (self-signed), fall back to OIDC
+    if settings.jwt_secret:
+        claims = _decode_local_jwt(token)
+    else:
+        claims = _decode_jwt(token)
+
+    email = claims.get("email") or claims.get(settings.oidc_user_claim)
     if not email:
         raise HTTPException(status_code=401, detail="Missing user claim in token")
 
-    roles = claims.get(settings.oidc_roles_claim) or []
+    roles = claims.get("roles") or claims.get(settings.oidc_roles_claim) or []
     if isinstance(roles, str):
         roles = [roles]
 
     return AuthUser(
         subject=str(claims.get("sub") or email),
         email=email,
-        display_name=claims.get(settings.oidc_name_claim),
-        department=claims.get(settings.oidc_department_claim),
+        display_name=claims.get("name") or claims.get(settings.oidc_name_claim),
+        department=claims.get("department") or claims.get(settings.oidc_department_claim),
         roles=roles,
-        attributes=claims,
+        attributes={},
         claims=claims,
     )

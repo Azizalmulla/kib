@@ -7,7 +7,10 @@ class Settings(BaseSettings):
     rag_service_url: str = "http://localhost:8001"
     request_timeout_seconds: int = 90
 
-    mock_oidc: bool = True
+    mock_oidc: bool = False
+    jwt_secret: str = "kib-copilot-secret-key-change-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expiry_hours: int = 24
     oidc_issuer: str = ""
     oidc_audience: str = ""
     oidc_jwks_url: str = ""
