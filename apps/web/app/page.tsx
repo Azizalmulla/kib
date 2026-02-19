@@ -118,11 +118,39 @@ type FeedbackItem = {
   created_at: string;
 };
 
+type UploadResult = {
+  status: string;
+  title: string;
+  pages: number;
+  chunks: number;
+  message: string;
+};
+
+type DocItem = {
+  id: string;
+  title: string;
+  doc_type: string;
+  language: string;
+  status: string;
+  page_count?: number | null;
+  source_uri?: string | null;
+  created_at: string;
+};
+
 function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) {
-  const [tab, setTab] = useState<"audit" | "feedback">("audit");
+  const [tab, setTab] = useState<"audit" | "feedback" | "documents">("documents");
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
+  const [documents, setDocuments] = useState<DocItem[]>([]);
   const [loadingData, setLoadingData] = useState(false);
+
+  // Upload state
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadLang, setUploadLang] = useState("en");
+  const [uploading, setUploading] = useState(false);
+  const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -136,17 +164,60 @@ function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) 
       if (tab === "audit") {
         const res = await fetch(`${apiBase}/audit?limit=50`, { headers });
         if (res.ok) setAuditLogs(await res.json());
-      } else {
+      } else if (tab === "feedback") {
         const res = await fetch(`${apiBase}/feedback`, { headers });
         if (res.ok) setFeedbackList(await res.json());
+      } else if (tab === "documents") {
+        const res = await fetch(`${apiBase}/admin/documents`, { headers });
+        if (res.ok) setDocuments(await res.json());
       }
     } catch {}
     setLoadingData(false);
   }
 
+  async function handleUpload(e: React.FormEvent) {
+    e.preventDefault();
+    if (!uploadFile || !uploadTitle.trim()) return;
+
+    setUploading(true);
+    setUploadError(null);
+    setUploadResult(null);
+
+    const formData = new FormData();
+    formData.append("file", uploadFile);
+    formData.append("title", uploadTitle.trim());
+    formData.append("language", uploadLang);
+    formData.append("doc_type", "pdf");
+    formData.append("allowed_roles", "admin,employee");
+
+    try {
+      const res = await fetch(`${apiBase}/admin/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.detail || `Upload failed (${res.status})`);
+      }
+      const data = await res.json();
+      setUploadResult(data);
+      setUploadFile(null);
+      setUploadTitle("");
+      loadData();
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   return (
     <div className="admin-panel">
       <div className="admin-tabs">
+        <button className={`admin-tab ${tab === "documents" ? "active" : ""}`} onClick={() => setTab("documents")}>
+          Documents ({documents.length})
+        </button>
         <button className={`admin-tab ${tab === "audit" ? "active" : ""}`} onClick={() => setTab("audit")}>
           Audit Logs ({auditLogs.length})
         </button>
@@ -157,6 +228,88 @@ function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) 
           {loadingData ? "Loading..." : "Refresh"}
         </button>
       </div>
+
+      {tab === "documents" && (
+        <div className="admin-table-wrap">
+          <div className="upload-section">
+            <h3>Upload New Document</h3>
+            <form className="upload-form" onSubmit={handleUpload}>
+              <div className="upload-row">
+                <input
+                  type="text"
+                  placeholder="Document title"
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
+                  required
+                  className="upload-input"
+                />
+                <select value={uploadLang} onChange={(e) => setUploadLang(e.target.value)} className="upload-select">
+                  <option value="en">English</option>
+                  <option value="ar">Arabic</option>
+                </select>
+              </div>
+              <div className="upload-row">
+                <label className="upload-file-label">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                    className="upload-file-input"
+                  />
+                  <span className="upload-file-btn">
+                    {uploadFile ? uploadFile.name : "Choose PDF file..."}
+                  </span>
+                </label>
+                <button type="submit" disabled={uploading || !uploadFile || !uploadTitle.trim()} className="upload-submit">
+                  {uploading ? "Uploading & Processing..." : "Upload & Ingest"}
+                </button>
+              </div>
+            </form>
+            {uploading && (
+              <div className="upload-progress">
+                Processing PDF: extracting text, chunking, generating embeddings... This may take a minute.
+              </div>
+            )}
+            {uploadResult && (
+              <div className="upload-success">
+                {uploadResult.message}
+              </div>
+            )}
+            {uploadError && (
+              <div className="upload-error">{uploadError}</div>
+            )}
+          </div>
+
+          <h3 style={{ margin: "24px 0 12px", fontSize: "14px", fontWeight: 600 }}>All Documents ({documents.length})</h3>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Language</th>
+                <th>Pages</th>
+                <th>Status</th>
+                <th>Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              {documents.map((doc) => (
+                <tr key={doc.id}>
+                  <td className="truncate-cell">{doc.title}</td>
+                  <td>{doc.doc_type}</td>
+                  <td>{doc.language}</td>
+                  <td>{doc.page_count || "—"}</td>
+                  <td><span className={`badge ${doc.status === "approved" ? "high" : "medium"}`}>{doc.status}</span></td>
+                  <td className="nowrap">{new Date(doc.created_at).toLocaleDateString()}</td>
+                </tr>
+              ))}
+              {documents.length === 0 && !loadingData && (
+                <tr><td colSpan={6} className="empty-row">No documents yet</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {tab === "audit" && (
         <div className="admin-table-wrap">
