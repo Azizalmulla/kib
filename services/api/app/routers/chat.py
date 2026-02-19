@@ -61,7 +61,7 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
 
     with get_db() as conn:
         user_id = ensure_user(conn, current_user)
-        conn.execute(
+        row = conn.execute(
             """
             INSERT INTO audit_logs (
                 user_id,
@@ -78,6 +78,7 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
                 trace_id,
                 latency_ms
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
             """,
             (
                 user_id,
@@ -97,6 +98,8 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
                 trace_id,
                 latency_ms,
             ),
-        )
+        ).fetchone()
+        audit_log_id = str(row["id"]) if row else None
 
+    data["audit_log_id"] = audit_log_id
     return ChatResponse(**data)

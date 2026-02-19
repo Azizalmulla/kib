@@ -15,12 +15,12 @@ LLM_SYSTEM_PROMPT_BASE = (
 )
 
 ROLE_PROMPT_OVERRIDES = {
-    "front_desk": (
-        " Keep answers concise (2-4 sentences). Focus on the key facts the employee "
-        "needs to help a customer quickly: amounts, deadlines, steps, or eligibility. "
-        "Use simple, clear language. Avoid legal jargon."
+    "employee": (
+        " Provide clear, helpful answers in 3-6 sentences. Focus on the key facts: "
+        "amounts, deadlines, steps, eligibility, or requirements. "
+        "Use professional but accessible language."
     ),
-    "compliance": (
+    "admin": (
         " Provide thorough, detailed answers. Include all relevant clauses, conditions, "
         "exceptions, and regulatory references. Quote exact policy language where possible. "
         "Cite every chunk that contributed to the answer. Err on the side of completeness."

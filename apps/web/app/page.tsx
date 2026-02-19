@@ -23,6 +23,7 @@ type ChatResponse = {
   citations: Citation[];
   missing_info?: string | null;
   safe_next_steps: string[];
+  audit_log_id?: string | null;
 };
 
 type Message = {
@@ -31,6 +32,7 @@ type Message = {
   text: string;
   response?: ChatResponse;
   timestamp: number;
+  feedback?: "up" | "down" | null;
 };
 
 type Conversation = {
@@ -96,6 +98,135 @@ function StreamingText({ text, speed = 20, onDone }: { text: string; speed?: num
   }, [text]);
 
   return <>{displayed}{!done && <span className="cursor">|</span>}</>;
+}
+
+type AuditLog = {
+  id: string;
+  role_names: string[];
+  query: string;
+  answer: string;
+  retrieval_meta?: { confidence?: string; missing_info?: string } | null;
+  latency_ms?: number | null;
+  created_at: string;
+};
+
+type FeedbackItem = {
+  id: string;
+  audit_log_id: string;
+  rating: string;
+  correction?: string | null;
+  created_at: string;
+};
+
+function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) {
+  const [tab, setTab] = useState<"audit" | "feedback">("audit");
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
+
+  const headers = { Authorization: `Bearer ${token}` };
+
+  useEffect(() => {
+    loadData();
+  }, [tab]);
+
+  async function loadData() {
+    setLoadingData(true);
+    try {
+      if (tab === "audit") {
+        const res = await fetch(`${apiBase}/audit?limit=50`, { headers });
+        if (res.ok) setAuditLogs(await res.json());
+      } else {
+        const res = await fetch(`${apiBase}/feedback`, { headers });
+        if (res.ok) setFeedbackList(await res.json());
+      }
+    } catch {}
+    setLoadingData(false);
+  }
+
+  return (
+    <div className="admin-panel">
+      <div className="admin-tabs">
+        <button className={`admin-tab ${tab === "audit" ? "active" : ""}`} onClick={() => setTab("audit")}>
+          Audit Logs ({auditLogs.length})
+        </button>
+        <button className={`admin-tab ${tab === "feedback" ? "active" : ""}`} onClick={() => setTab("feedback")}>
+          Feedback ({feedbackList.length})
+        </button>
+        <button className="admin-tab refresh" onClick={loadData} disabled={loadingData}>
+          {loadingData ? "Loading..." : "Refresh"}
+        </button>
+      </div>
+
+      {tab === "audit" && (
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Role</th>
+                <th>Question</th>
+                <th>Confidence</th>
+                <th>Latency</th>
+                <th>Answer (preview)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {auditLogs.map((log) => (
+                <tr key={log.id}>
+                  <td className="nowrap">{new Date(log.created_at).toLocaleString()}</td>
+                  <td>{log.role_names.join(", ")}</td>
+                  <td className="truncate-cell">{log.query}</td>
+                  <td>
+                    <span className={`badge ${log.retrieval_meta?.confidence || "low"}`}>
+                      {log.retrieval_meta?.confidence || "—"}
+                    </span>
+                  </td>
+                  <td className="nowrap">{log.latency_ms ? `${log.latency_ms}ms` : "—"}</td>
+                  <td className="truncate-cell">{log.answer.slice(0, 100)}{log.answer.length > 100 ? "..." : ""}</td>
+                </tr>
+              ))}
+              {auditLogs.length === 0 && !loadingData && (
+                <tr><td colSpan={6} className="empty-row">No audit logs yet</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tab === "feedback" && (
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Rating</th>
+                <th>Correction</th>
+                <th>Audit Log ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {feedbackList.map((fb) => (
+                <tr key={fb.id}>
+                  <td className="nowrap">{new Date(fb.created_at).toLocaleString()}</td>
+                  <td>
+                    <span className={fb.rating === "up" ? "feedback-up" : "feedback-down"}>
+                      {fb.rating === "up" ? "👍" : "👎"}
+                    </span>
+                  </td>
+                  <td>{fb.correction || "—"}</td>
+                  <td className="mono">{fb.audit_log_id.slice(0, 8)}...</td>
+                </tr>
+              ))}
+              {feedbackList.length === 0 && !loadingData && (
+                <tr><td colSpan={4} className="empty-row">No feedback yet</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }
 
 const SUGGESTIONS = [
@@ -209,7 +340,8 @@ export default function Page() {
     setLoginPassword("");
   }
 
-  const activeRole = auth?.roles?.[0] || "front_desk";
+  const isAdmin = auth?.roles?.includes("admin") || false;
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -313,6 +445,30 @@ export default function Page() {
     activeConvoIdRef.current = null;
     setStreamingMsgId(null);
     setError(null);
+    setShowAdmin(false);
+  }
+
+  async function submitFeedback(msgId: string, rating: "up" | "down") {
+    const msg = messages.find((m) => m.id === msgId);
+    if (!msg?.response?.audit_log_id || msg.feedback) return;
+
+    try {
+      const res = await fetch(`${apiBase}/feedback`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.token}`,
+        },
+        body: JSON.stringify({
+          audit_log_id: msg.response.audit_log_id,
+          rating,
+        }),
+      });
+      if (!res.ok) return;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msgId ? { ...m, feedback: rating } : m))
+      );
+    } catch {}
   }
 
   // Show login screen if not authenticated
@@ -346,8 +502,8 @@ export default function Page() {
           </form>
           <div className="login-hint">
             <p><strong>Demo accounts:</strong></p>
-            <p>Front Desk: frontdesk@kib.com / frontdesk123</p>
-            <p>Compliance: compliance@kib.com / compliance123</p>
+            <p>Admin: admin@kib.com / admin123</p>
+            <p>Employee: employee@kib.com / employee123</p>
           </div>
         </div>
       </div>
@@ -392,7 +548,7 @@ export default function Page() {
           <label className="sidebar-label">Signed in as</label>
           <div className="user-info">
             <div className="user-name">{auth.name}</div>
-            <div className="user-role-badge">{activeRole === "front_desk" ? "Front Desk" : "Compliance"}</div>
+            <div className="user-role-badge">{isAdmin ? "Admin" : "Employee"}</div>
           </div>
         </div>
 
@@ -421,6 +577,12 @@ export default function Page() {
 
         <div className="sidebar-spacer" />
 
+        {isAdmin && (
+          <button className={`sidebar-btn ${showAdmin ? "admin-active" : ""}`} onClick={() => setShowAdmin(!showAdmin)}>
+            <span>⚙</span> Admin Dashboard
+          </button>
+        )}
+
         <button className="sidebar-btn" onClick={newConversation}>
           <span>+</span> New conversation
         </button>
@@ -434,21 +596,26 @@ export default function Page() {
       <main className="main-area">
         <header className="topbar">
           <div>
-            <h1 className="topbar-title">Knowledge Copilot</h1>
+            <h1 className="topbar-title">{showAdmin ? "Admin Dashboard" : "Knowledge Copilot"}</h1>
             <p className="topbar-sub">
-              Grounded answers from approved KIB &amp; CBK documents
+              {showAdmin ? "Audit logs, feedback review, and system management" : "Grounded answers from approved KIB & CBK documents"}
             </p>
           </div>
           <div className="topbar-actions">
-            <button
-              className={`toggle-sources ${sourcesPanelOpen ? "active" : ""}`}
-              onClick={() => setSourcesPanelOpen(!sourcesPanelOpen)}
-            >
-              Sources {activeCitations.length > 0 && `(${activeCitations.length})`}
-            </button>
+            {!showAdmin && (
+              <button
+                className={`toggle-sources ${sourcesPanelOpen ? "active" : ""}`}
+                onClick={() => setSourcesPanelOpen(!sourcesPanelOpen)}
+              >
+                Sources {activeCitations.length > 0 && `(${activeCitations.length})`}
+              </button>
+            )}
           </div>
         </header>
 
+        {showAdmin ? (
+          <AdminDashboard apiBase={apiBase} token={auth.token} />
+        ) : (
         <div className="chat-body">
           <div className="chat-scroll">
             {messages.length === 0 ? (
@@ -520,6 +687,27 @@ export default function Page() {
                           {resp.citations.length} source{resp.citations.length > 1 ? "s" : ""} cited
                         </div>
                       )}
+                      {!isUser && resp?.audit_log_id && streamingMsgId !== msg.id && (
+                        <div className="feedback-row">
+                          <button
+                            className={`feedback-btn ${msg.feedback === "up" ? "active-up" : ""}`}
+                            onClick={(e) => { e.stopPropagation(); submitFeedback(msg.id, "up"); }}
+                            disabled={!!msg.feedback}
+                            title="Helpful"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                          </button>
+                          <button
+                            className={`feedback-btn ${msg.feedback === "down" ? "active-down" : ""}`}
+                            onClick={(e) => { e.stopPropagation(); submitFeedback(msg.id, "down"); }}
+                            disabled={!!msg.feedback}
+                            title="Not helpful"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                          </button>
+                          {msg.feedback && <span className="feedback-thanks">Thanks for feedback</span>}
+                        </div>
+                      )}
                     </div>
                     {isUser && (
                       <div className="avatar user-avatar">
@@ -579,10 +767,11 @@ export default function Page() {
             </div>
             <p className="composer-hint">
               Press <kbd>Enter</kbd> to send, <kbd>Shift+Enter</kbd> for new line
-              {activeRole === "front_desk" ? " · Front Desk mode (concise answers)" : " · Compliance mode (detailed answers)"}
+              {isAdmin ? " · Admin mode (detailed answers)" : " · Employee mode"}
             </p>
           </form>
         </div>
+        )}
       </main>
 
       {/* Sources panel */}

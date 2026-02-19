@@ -98,6 +98,18 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS feedback (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  audit_log_id uuid REFERENCES audit_logs(id) ON DELETE CASCADE,
+  user_id uuid REFERENCES users(id),
+  rating text NOT NULL CHECK (rating IN ('up', 'down')),
+  correction text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_feedback_audit_log ON feedback(audit_log_id);
+CREATE INDEX IF NOT EXISTS idx_feedback_rating ON feedback(rating);
+
 CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
 CREATE INDEX IF NOT EXISTS idx_doc_acl_role ON document_acl(role_id);
 CREATE INDEX IF NOT EXISTS idx_chunks_doc_version ON chunks(document_version_id);

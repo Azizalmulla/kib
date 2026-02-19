@@ -14,17 +14,17 @@ from ..schemas import UserMeResponse, UserProfile
 router = APIRouter()
 
 DEMO_USERS = {
-    "frontdesk@kib.com": {
-        "password_hash": hashlib.sha256("frontdesk123".encode()).hexdigest(),
-        "name": "Sarah Al-Mutairi",
-        "roles": ["front_desk"],
-        "department": "Customer Service",
+    "admin@kib.com": {
+        "password_hash": hashlib.sha256("admin123".encode()).hexdigest(),
+        "name": "Fatima Al-Sabah",
+        "roles": ["admin", "employee"],
+        "department": "IT & Innovation",
     },
-    "compliance@kib.com": {
-        "password_hash": hashlib.sha256("compliance123".encode()).hexdigest(),
-        "name": "Ahmed Al-Rashidi",
-        "roles": ["compliance"],
-        "department": "Compliance & Risk",
+    "employee@kib.com": {
+        "password_hash": hashlib.sha256("employee123".encode()).hexdigest(),
+        "name": "Sarah Al-Mutairi",
+        "roles": ["employee"],
+        "department": "Customer Service",
     },
 }
 

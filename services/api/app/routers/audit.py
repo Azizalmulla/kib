@@ -37,7 +37,7 @@ def list_audit_logs(
         rows = conn.execute(
             f"""
             SELECT id, user_id, role_names, query, retrieved_chunk_ids, answer,
-                   model_name, model_version, created_at
+                   model_name, model_version, retrieval_meta, latency_ms, created_at
             FROM audit_logs
             {where_clause}
             ORDER BY created_at DESC

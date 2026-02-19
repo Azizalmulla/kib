@@ -14,8 +14,7 @@ from .direct_ingest import ingest_page
 CBK_EXCLUDE = [
     "/login",
     "/portal",
-    "/admin",
-]
+    "/admin",]
 
 CBK_ACCESS_TAGS = {
     "source": "cbk_website",

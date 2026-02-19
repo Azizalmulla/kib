@@ -71,6 +71,21 @@ class ChatResponse(BaseModel):
     citations: List[Citation]
     missing_info: Optional[str] = None
     safe_next_steps: List[str]
+    audit_log_id: Optional[str] = None
+
+
+class FeedbackRequest(BaseModel):
+    audit_log_id: str
+    rating: Literal["up", "down"]
+    correction: Optional[str] = None
+
+
+class FeedbackOut(BaseModel):
+    id: UUID
+    audit_log_id: UUID
+    rating: str
+    correction: Optional[str] = None
+    created_at: datetime
 
 
 class AuditLogOut(BaseModel):
@@ -82,4 +97,6 @@ class AuditLogOut(BaseModel):
     answer: str
     model_name: Optional[str] = None
     model_version: Optional[str] = None
+    retrieval_meta: Optional[Dict[str, Any]] = None
+    latency_ms: Optional[int] = None
     created_at: datetime

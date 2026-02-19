@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     oidc_name_claim: str = "name"
     oidc_department_claim: str = "department"
 
-    audit_read_roles: str = "compliance,audit_admin"
+    audit_read_roles: str = "admin,audit_admin"
 
     model_config = {"env_prefix": "KIB_"}
 
