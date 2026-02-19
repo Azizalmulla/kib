@@ -488,7 +488,14 @@ export default function Page() {
   }
 
   const isAdmin = auth?.roles?.includes("admin") || false;
-  const [showAdmin, setShowAdmin] = useState(false);
+  const [adminView, setAdminView] = useState<"dashboard" | "chat">("chat");
+  const showAdmin = isAdmin && adminView === "dashboard";
+
+  // Default to dashboard when admin logs in
+  useEffect(() => {
+    if (isAdmin) setAdminView("dashboard");
+    else setAdminView("chat");
+  }, [isAdmin]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -592,7 +599,7 @@ export default function Page() {
     activeConvoIdRef.current = null;
     setStreamingMsgId(null);
     setError(null);
-    setShowAdmin(false);
+    if (isAdmin) setAdminView("chat");
   }
 
   async function submitFeedback(msgId: string, rating: "up" | "down") {
@@ -664,6 +671,7 @@ export default function Page() {
     setSelectedMsgId(null);
     setStreamingMsgId(null);
     setError(null);
+    if (isAdmin) setAdminView("chat");
   }
 
   function deleteConversation(id: string, e: React.MouseEvent) {
@@ -699,7 +707,26 @@ export default function Page() {
           </div>
         </div>
 
-        {conversations.length > 0 && (
+        {isAdmin && (
+          <div className="sidebar-section">
+            <div className="admin-nav">
+              <button
+                className={`admin-nav-btn ${adminView === "dashboard" ? "active" : ""}`}
+                onClick={() => setAdminView("dashboard")}
+              >
+                Dashboard
+              </button>
+              <button
+                className={`admin-nav-btn ${adminView === "chat" ? "active" : ""}`}
+                onClick={() => setAdminView("chat")}
+              >
+                Chat
+              </button>
+            </div>
+          </div>
+        )}
+
+        {conversations.length > 0 && (!isAdmin || adminView === "chat") && (
           <div className="sidebar-section">
             <label className="sidebar-label">History</label>
             <div className="convo-list">
@@ -724,15 +751,11 @@ export default function Page() {
 
         <div className="sidebar-spacer" />
 
-        {isAdmin && (
-          <button className={`sidebar-btn ${showAdmin ? "admin-active" : ""}`} onClick={() => setShowAdmin(!showAdmin)}>
-            <span>⚙</span> Admin Dashboard
+        {(!isAdmin || adminView === "chat") && (
+          <button className="sidebar-btn" onClick={newConversation}>
+            <span>+</span> New conversation
           </button>
         )}
-
-        <button className="sidebar-btn" onClick={newConversation}>
-          <span>+</span> New conversation
-        </button>
 
         <button className="sidebar-btn logout-btn" onClick={handleLogout}>
           Sign out

@@ -799,12 +799,39 @@ body {
   font-size: 13px;
 }
 
-/* ── Admin Dashboard ── */
-.admin-active {
-  background: var(--accent) !important;
-  color: white !important;
-  border-color: var(--accent) !important;
+/* ── Admin Nav Switcher ── */
+.admin-nav {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 3px;
 }
+
+.admin-nav-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sidebar-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.admin-nav-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+.admin-nav-btn:hover:not(.active) {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ── Admin Dashboard ── */
 
 .admin-panel {
   flex: 1;
