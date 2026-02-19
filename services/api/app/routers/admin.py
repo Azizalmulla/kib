@@ -28,6 +28,14 @@ def _require_admin(current_user: AuthUser):
         raise HTTPException(status_code=403, detail="Admin access required")
 
 
+def _detect_language(text: str) -> str:
+    """Detect if text is primarily Arabic or English."""
+    import re
+    arabic_chars = len(re.findall(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]', text))
+    latin_chars = len(re.findall(r'[a-zA-Z]', text))
+    return "ar" if arabic_chars > latin_chars else "en"
+
+
 def _extract_pdf_pages(pdf_bytes: bytes) -> list[dict]:
     """Extract text from PDF page by page using PyMuPDF."""
     pages = []
@@ -84,7 +92,6 @@ def _embed_batch(texts: List[str]) -> List[List[float]]:
 async def upload_document(
     file: UploadFile = File(...),
     title: str = Form(...),
-    language: str = Form(default="en"),
     doc_type: str = Form(default="pdf"),
     allowed_roles: str = Form(default="admin,employee"),
     current_user: AuthUser = Depends(get_current_user),
@@ -121,8 +128,9 @@ async def upload_document(
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Embedding failed: {str(e)}")
 
-    # Store in database
+    # Auto-detect language and store in database
     full_text = "\n".join(p["text"] for p in pages)
+    language = _detect_language(full_text)
     sha256 = hashlib.sha256(full_text.encode()).hexdigest()
     role_names = [r.strip() for r in allowed_roles.split(",") if r.strip()]
 

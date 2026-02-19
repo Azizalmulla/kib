@@ -147,7 +147,6 @@ function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) 
   // Upload state
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadTitle, setUploadTitle] = useState("");
-  const [uploadLang, setUploadLang] = useState("en");
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -186,7 +185,6 @@ function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) 
     const formData = new FormData();
     formData.append("file", uploadFile);
     formData.append("title", uploadTitle.trim());
-    formData.append("language", uploadLang);
     formData.append("doc_type", "pdf");
     formData.append("allowed_roles", "admin,employee");
 
@@ -243,10 +241,6 @@ function AdminDashboard({ apiBase, token }: { apiBase: string; token: string }) 
                   required
                   className="upload-input"
                 />
-                <select value={uploadLang} onChange={(e) => setUploadLang(e.target.value)} className="upload-select">
-                  <option value="en">English</option>
-                  <option value="ar">Arabic</option>
-                </select>
               </div>
               <div className="upload-row">
                 <label className="upload-file-label">
