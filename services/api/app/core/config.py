@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://localhost/kib"
     rag_service_url: str = "http://localhost:8001"
     request_timeout_seconds: int = 90
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,https://kib-lemon.vercel.app"
 
     mock_oidc: bool = False
     jwt_secret: str = "kib-copilot-secret-key-change-in-production"
