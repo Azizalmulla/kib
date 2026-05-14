@@ -33,6 +33,7 @@ type Message = {
   response?: ChatResponse;
   timestamp: number;
   feedback?: "up" | "down" | null;
+  feedbackCorrection?: string | null;
 };
 
 type Conversation = {
@@ -394,6 +395,9 @@ export default function Page() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [streamingMsgId, setStreamingMsgId] = useState<string | null>(null);
+  const [feedbackPromptMsgId, setFeedbackPromptMsgId] = useState<string | null>(null);
+  const [feedbackCorrection, setFeedbackCorrection] = useState("");
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
 
   // Auth state
   const [auth, setAuth] = useState<AuthSession | null>(null);
@@ -602,10 +606,11 @@ export default function Page() {
     if (isAdmin) setAdminView("chat");
   }
 
-  async function submitFeedback(msgId: string, rating: "up" | "down") {
+  async function submitFeedback(msgId: string, rating: "up" | "down", correction?: string) {
     const msg = messages.find((m) => m.id === msgId);
-    if (!msg?.response?.audit_log_id || msg.feedback) return;
+    if (!msg?.response?.audit_log_id || msg.feedback || feedbackSubmitting) return;
 
+    setFeedbackSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/feedback`, {
         method: "POST",
@@ -616,13 +621,30 @@ export default function Page() {
         body: JSON.stringify({
           audit_log_id: msg.response.audit_log_id,
           rating,
+          correction: correction?.trim() || null,
         }),
       });
       if (!res.ok) return;
       setMessages((prev) =>
-        prev.map((m) => (m.id === msgId ? { ...m, feedback: rating } : m))
+        prev.map((m) => (
+          m.id === msgId
+            ? { ...m, feedback: rating, feedbackCorrection: correction?.trim() || null }
+            : m
+        ))
       );
-    } catch {}
+      setFeedbackPromptMsgId(null);
+      setFeedbackCorrection("");
+    } catch {
+    } finally {
+      setFeedbackSubmitting(false);
+    }
+  }
+
+  function openDownFeedback(msgId: string) {
+    const msg = messages.find((m) => m.id === msgId);
+    if (!msg?.response?.audit_log_id || msg.feedback) return;
+    setFeedbackPromptMsgId(msgId);
+    setFeedbackCorrection("");
   }
 
   // Show login screen if not authenticated
@@ -862,20 +884,59 @@ export default function Page() {
                           <button
                             className={`feedback-btn ${msg.feedback === "up" ? "active-up" : ""}`}
                             onClick={(e) => { e.stopPropagation(); submitFeedback(msg.id, "up"); }}
-                            disabled={!!msg.feedback}
+                            disabled={!!msg.feedback || feedbackSubmitting}
                             title="Helpful"
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                           </button>
                           <button
                             className={`feedback-btn ${msg.feedback === "down" ? "active-down" : ""}`}
-                            onClick={(e) => { e.stopPropagation(); submitFeedback(msg.id, "down"); }}
-                            disabled={!!msg.feedback}
+                            onClick={(e) => { e.stopPropagation(); openDownFeedback(msg.id); }}
+                            disabled={!!msg.feedback || feedbackSubmitting}
                             title="Not helpful"
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
                           </button>
                           {msg.feedback && <span className="feedback-thanks">Thanks for feedback</span>}
+                        </div>
+                      )}
+                      {!isUser && resp?.audit_log_id && feedbackPromptMsgId === msg.id && !msg.feedback && (
+                        <form
+                          className="feedback-comment"
+                          onClick={(e) => e.stopPropagation()}
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            submitFeedback(msg.id, "down", feedbackCorrection);
+                          }}
+                        >
+                          <label>What was wrong?</label>
+                          <textarea
+                            value={feedbackCorrection}
+                            onChange={(e) => setFeedbackCorrection(e.target.value)}
+                            placeholder="Example: unrelated sources, wrong number, missing citation..."
+                            rows={3}
+                            autoFocus
+                          />
+                          <div className="feedback-comment-actions">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFeedbackPromptMsgId(null);
+                                setFeedbackCorrection("");
+                              }}
+                              disabled={feedbackSubmitting}
+                            >
+                              Cancel
+                            </button>
+                            <button type="submit" disabled={feedbackSubmitting}>
+                              {feedbackSubmitting ? "Saving..." : "Save feedback"}
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                      {!isUser && msg.feedbackCorrection && (
+                        <div className="feedback-saved-comment">
+                          Saved note: {msg.feedbackCorrection}
                         </div>
                       )}
                     </div>
