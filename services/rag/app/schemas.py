@@ -22,6 +22,7 @@ class RagRequest(BaseModel):
     top_k: int = 5
     user: UserContext
     history: List[HistoryTurn] = Field(default_factory=list)
+    memory_summary: Optional[str] = None
 
 
 class Citation(BaseModel):

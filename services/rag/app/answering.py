@@ -26,6 +26,7 @@ def _build_user_prompt(
     role_names: List[str],
     rows: List[Dict[str, Any]],
     history: List[Tuple[str, str]] = None,
+    memory_summary: str = "",
 ) -> str:
     role_list = ", ".join(role_names) if role_names else "none"
 
@@ -74,9 +75,21 @@ def _build_user_prompt(
             turns.append(f"{label}: {text}")
         history_block = "\n".join(["", "Conversation history (for context only, answer the CURRENT question):"] + turns + [""])
 
+    memory_block = ""
+    if memory_summary:
+        memory_block = "\n".join(
+            [
+                "",
+                "User memory (for context only; do not use as a source of truth):",
+                memory_summary[:1200],
+                "",
+            ]
+        )
+
     return "\n".join(
         [
             "You MUST answer using ONLY the chunks below.",
+            "Conversation history and user memory may clarify intent, but they are NOT evidence.",
             "If the chunks are insufficient, return the refusal message exactly.",
             "Return ONLY valid JSON matching the EXACT schema below. No other fields allowed.",
             "Use the same language as the user for the answer.",
@@ -88,6 +101,7 @@ def _build_user_prompt(
             "",
             f"User language: {language}",
             f"User roles: {role_list}",
+            memory_block,
             history_block,
             f"User question: {question}",
             "",
@@ -104,6 +118,7 @@ def answer_with_llm(
     role_names: List[str],
     provider: LLMProvider,
     history: List[Tuple[str, str]] = None,
+    memory_summary: str = "",
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     language = "ar" if language == "ar" else "en"
     meta = {
@@ -113,7 +128,14 @@ def answer_with_llm(
     if not rows:
         return build_refusal_payload(language), meta
 
-    prompt = _build_user_prompt(question, language, role_names, rows, history=history)
+    prompt = _build_user_prompt(
+        question,
+        language,
+        role_names,
+        rows,
+        history=history,
+        memory_summary=memory_summary,
+    )
     system_prompt = get_system_prompt(role_names)
     log.debug("[RAG] Sending prompt to LLM (%d chars, %d chunks, roles=%s)", len(prompt), len(rows), role_names)
     try:

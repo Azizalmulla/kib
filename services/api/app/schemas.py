@@ -62,6 +62,7 @@ class ChatRequest(BaseModel):
     language: Literal["en", "ar"] = Field(default="en")
     top_k: int = Field(default=5, ge=1, le=20)
     history: List[HistoryTurn] = Field(default_factory=list)
+    conversation_id: Optional[UUID] = None
 
 
 class ChatResponse(BaseModel):
@@ -72,6 +73,24 @@ class ChatResponse(BaseModel):
     missing_info: Optional[str] = None
     safe_next_steps: List[str]
     audit_log_id: Optional[str] = None
+    conversation_id: Optional[str] = None
+
+
+class ChatMessageOut(BaseModel):
+    id: UUID
+    role: Literal["user", "assistant"]
+    text: str
+    response: Optional[Dict[str, Any]] = None
+    audit_log_id: Optional[UUID] = None
+    created_at: datetime
+
+
+class ConversationOut(BaseModel):
+    id: UUID
+    title: str
+    created_at: datetime
+    updated_at: datetime
+    messages: List[ChatMessageOut] = Field(default_factory=list)
 
 
 class FeedbackRequest(BaseModel):

@@ -24,6 +24,7 @@ type ChatResponse = {
   missing_info?: string | null;
   safe_next_steps: string[];
   audit_log_id?: string | null;
+  conversation_id?: string | null;
 };
 
 type Message = {
@@ -44,6 +45,22 @@ type Conversation = {
   updatedAt: number;
 };
 
+type ServerChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  response?: ChatResponse | null;
+  created_at: string;
+};
+
+type ServerConversation = {
+  id: string;
+  title: string;
+  messages: ServerChatMessage[];
+  created_at: string;
+  updated_at: string;
+};
+
 type AuthSession = {
   token: string;
   email: string;
@@ -54,18 +71,57 @@ type AuthSession = {
 const AUTH_KEY = "kib-auth";
 
 const STORAGE_KEY = "kib-conversations";
+const MAX_CONVERSATIONS = 12;
+const MAX_MESSAGES_PER_CONVO = 24;
+
+function compactConversations(convos: Conversation[]): Conversation[] {
+  return convos.slice(0, MAX_CONVERSATIONS).map((convo) => ({
+    ...convo,
+    messages: convo.messages.slice(-MAX_MESSAGES_PER_CONVO),
+  }));
+}
 
 function loadConversations(): Conversation[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return compactConversations(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
   } catch {
     return [];
   }
 }
 
 function saveConversations(convos: Conversation[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(convos));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(compactConversations(convos)));
+}
+
+function scheduleSaveConversations(convos: Conversation[]) {
+  if (typeof window === "undefined") return;
+  const save = () => saveConversations(convos);
+  const idleCallback = (window as typeof window & {
+    requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+  }).requestIdleCallback;
+
+  if (idleCallback) {
+    idleCallback(save, { timeout: 1000 });
+  } else {
+    window.setTimeout(save, 0);
+  }
+}
+
+function normalizeConversation(convo: ServerConversation): Conversation {
+  return {
+    id: convo.id,
+    title: convo.title,
+    createdAt: Date.parse(convo.created_at),
+    updatedAt: Date.parse(convo.updated_at),
+    messages: convo.messages.map((message) => ({
+      id: message.id,
+      role: message.role,
+      text: message.text,
+      response: message.response || undefined,
+      timestamp: Date.parse(message.created_at),
+    })),
+  };
 }
 
 function detectLanguage(text: string): "en" | "ar" {
@@ -397,7 +453,7 @@ export default function Page() {
   const [streamingMsgId, setStreamingMsgId] = useState<string | null>(null);
   const [feedbackPromptMsgId, setFeedbackPromptMsgId] = useState<string | null>(null);
   const [feedbackCorrection, setFeedbackCorrection] = useState("");
-  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [feedbackSubmittingId, setFeedbackSubmittingId] = useState<string | null>(null);
 
   // Auth state
   const [auth, setAuth] = useState<AuthSession | null>(null);
@@ -405,6 +461,7 @@ export default function Page() {
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loginLoading, setLoginLoading] = useState(false);
+  const apiBase = process.env.NEXT_PUBLIC_KIB_API_BASE_URL || "http://localhost:8000";
 
   // Load auth + conversations from localStorage on mount
   useEffect(() => {
@@ -414,6 +471,22 @@ export default function Page() {
     } catch {}
     setConversations(loadConversations());
   }, []);
+
+  const loadServerConversations = useCallback(async (token: string) => {
+    const res = await fetch(`${apiBase}/conversations`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error("Failed to load conversations");
+    const data = (await res.json()) as ServerConversation[];
+    const next = compactConversations(data.map(normalizeConversation));
+    setConversations(next);
+    scheduleSaveConversations(next);
+  }, [apiBase]);
+
+  useEffect(() => {
+    if (!auth?.token) return;
+    loadServerConversations(auth.token).catch(() => {});
+  }, [auth?.token, loadServerConversations]);
 
   // Save current messages to the active conversation whenever messages change
   const activeConvoIdRef = useRef(activeConvoId);
@@ -430,7 +503,7 @@ export default function Page() {
           ? { ...c, messages, updatedAt: Date.now() }
           : c
       );
-      saveConversations(updated);
+      scheduleSaveConversations(updated);
       return updated;
     });
   }, [messages]);
@@ -446,8 +519,6 @@ export default function Page() {
     const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
     return lastAssistant?.response?.citations || [];
   }, [messages, selectedMsgId]);
-
-  const apiBase = process.env.NEXT_PUBLIC_KIB_API_BASE_URL || "http://localhost:8000";
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -502,7 +573,7 @@ export default function Page() {
   }, [isAdmin]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages, loading]);
 
   useEffect(() => {
@@ -540,12 +611,20 @@ export default function Page() {
       const response = await fetch(`${apiBase}/chat`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ question: trimmed, language, top_k: 5, history }),
+        body: JSON.stringify({
+          question: trimmed,
+          language,
+          top_k: 5,
+          history,
+          conversation_id: activeConvoIdRef.current,
+        }),
       });
 
       if (!response.ok) throw new Error(`API error: ${response.status}`);
 
       const data = (await response.json()) as ChatResponse;
+      const wasNewConversation = !activeConvoIdRef.current;
+      const conversationId = data.conversation_id || activeConvoIdRef.current || crypto.randomUUID();
       const assistantMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -554,26 +633,27 @@ export default function Page() {
         timestamp: Date.now(),
       };
 
+      if (wasNewConversation) {
+        activeConvoIdRef.current = conversationId;
+        setActiveConvoId(conversationId);
+      }
       setStreamingMsgId(assistantMsg.id);
       setMessages((prev) => [...prev, assistantMsg]);
       setSelectedMsgId(assistantMsg.id);
 
       // Create conversation on first response in this chat
-      if (!activeConvoIdRef.current) {
-        const newId = assistantMsg.id;
-        activeConvoIdRef.current = newId;
-        setActiveConvoId(newId);
+      if (wasNewConversation) {
         setConversations((c) => {
-          if (c.some((x) => x.id === newId)) return c;
+          if (c.some((x) => x.id === conversationId)) return c;
           const newConvo: Conversation = {
-            id: newId,
+            id: conversationId,
             title: trimmed.length > 50 ? trimmed.slice(0, 50) + "..." : trimmed,
             messages: [userMsg, assistantMsg],
             createdAt: Date.now(),
             updatedAt: Date.now(),
           };
           const next = [newConvo, ...c];
-          saveConversations(next);
+          scheduleSaveConversations(next);
           return next;
         });
       }
@@ -608,9 +688,19 @@ export default function Page() {
 
   async function submitFeedback(msgId: string, rating: "up" | "down", correction?: string) {
     const msg = messages.find((m) => m.id === msgId);
-    if (!msg?.response?.audit_log_id || msg.feedback || feedbackSubmitting) return;
+    if (!msg?.response?.audit_log_id || msg.feedback || feedbackSubmittingId) return;
 
-    setFeedbackSubmitting(true);
+    const trimmedCorrection = correction?.trim() || null;
+    setFeedbackSubmittingId(msgId);
+    setMessages((prev) =>
+      prev.map((m) => (
+        m.id === msgId
+          ? { ...m, feedback: rating, feedbackCorrection: trimmedCorrection }
+          : m
+      ))
+    );
+    setFeedbackPromptMsgId(null);
+    setFeedbackCorrection("");
     try {
       const res = await fetch(`${apiBase}/feedback`, {
         method: "POST",
@@ -621,22 +711,20 @@ export default function Page() {
         body: JSON.stringify({
           audit_log_id: msg.response.audit_log_id,
           rating,
-          correction: correction?.trim() || null,
+          correction: trimmedCorrection,
         }),
       });
-      if (!res.ok) return;
+      if (!res.ok) throw new Error("Feedback failed");
+    } catch {
       setMessages((prev) =>
         prev.map((m) => (
           m.id === msgId
-            ? { ...m, feedback: rating, feedbackCorrection: correction?.trim() || null }
+            ? { ...m, feedback: null, feedbackCorrection: null }
             : m
         ))
       );
-      setFeedbackPromptMsgId(null);
-      setFeedbackCorrection("");
-    } catch {
     } finally {
-      setFeedbackSubmitting(false);
+      setFeedbackSubmittingId(null);
     }
   }
 
@@ -696,14 +784,20 @@ export default function Page() {
     if (isAdmin) setAdminView("chat");
   }
 
-  function deleteConversation(id: string, e: React.MouseEvent) {
+  async function deleteConversation(id: string, e: React.MouseEvent) {
     e.stopPropagation();
     setConversations((prev) => {
       const next = prev.filter((c) => c.id !== id);
-      saveConversations(next);
+      scheduleSaveConversations(next);
       return next;
     });
     if (activeConvoId === id) newConversation();
+    try {
+      await fetch(`${apiBase}/conversations/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${auth?.token}` },
+      });
+    } catch {}
   }
 
   const isRefusal = (text: string) =>
@@ -838,6 +932,7 @@ export default function Page() {
                 const confidence = resp?.confidence;
                 const refused = resp ? isRefusal(resp.answer) : false;
                 const isAr = resp?.language === "ar";
+                const feedbackPending = feedbackSubmittingId === msg.id;
 
                 return (
                   <div
@@ -884,7 +979,7 @@ export default function Page() {
                           <button
                             className={`feedback-btn ${msg.feedback === "up" ? "active-up" : ""}`}
                             onClick={(e) => { e.stopPropagation(); submitFeedback(msg.id, "up"); }}
-                            disabled={!!msg.feedback || feedbackSubmitting}
+                            disabled={!!msg.feedback || !!feedbackSubmittingId}
                             title="Helpful"
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
@@ -892,12 +987,16 @@ export default function Page() {
                           <button
                             className={`feedback-btn ${msg.feedback === "down" ? "active-down" : ""}`}
                             onClick={(e) => { e.stopPropagation(); openDownFeedback(msg.id); }}
-                            disabled={!!msg.feedback || feedbackSubmitting}
+                            disabled={!!msg.feedback || !!feedbackSubmittingId}
                             title="Not helpful"
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
                           </button>
-                          {msg.feedback && <span className="feedback-thanks">Thanks for feedback</span>}
+                          {msg.feedback && (
+                            <span className="feedback-thanks">
+                              {feedbackPending ? "Saving..." : "Thanks for feedback"}
+                            </span>
+                          )}
                         </div>
                       )}
                       {!isUser && resp?.audit_log_id && feedbackPromptMsgId === msg.id && !msg.feedback && (
@@ -924,12 +1023,12 @@ export default function Page() {
                                 setFeedbackPromptMsgId(null);
                                 setFeedbackCorrection("");
                               }}
-                              disabled={feedbackSubmitting}
+                              disabled={!!feedbackSubmittingId}
                             >
                               Cancel
                             </button>
-                            <button type="submit" disabled={feedbackSubmitting}>
-                              {feedbackSubmitting ? "Saving..." : "Save feedback"}
+                            <button type="submit" disabled={!!feedbackSubmittingId}>
+                              {feedbackPending ? "Saving..." : "Save feedback"}
                             </button>
                           </div>
                         </form>
