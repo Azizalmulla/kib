@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -12,8 +12,7 @@ class Settings(BaseSettings):
     embedding_dim: int = 768
     embedding_model: str = "intfloat/multilingual-e5-base"
 
-    class Config:
-        env_prefix = "KIB_"
+    model_config = {"env_prefix": "KIB_"}
 
 
 settings = Settings()
