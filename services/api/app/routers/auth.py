@@ -17,13 +17,13 @@ DEMO_USERS = {
     "admin@kib.com": {
         "password_hash": hashlib.sha256("admin123".encode()).hexdigest(),
         "name": "Fatima Al-Sabah",
-        "roles": ["admin", "employee"],
+        "roles": ["admin", "compliance", "front_desk"],
         "department": "IT & Innovation",
     },
     "employee@kib.com": {
         "password_hash": hashlib.sha256("employee123".encode()).hexdigest(),
         "name": "Sarah Al-Mutairi",
-        "roles": ["employee"],
+        "roles": ["employee", "front_desk"],
         "department": "Customer Service",
     },
 }
