@@ -73,37 +73,7 @@ def _decode_local_jwt(token: str) -> Dict[str, Any]:
         raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
 
 
-def get_current_user(
-    authorization: Optional[str] = Header(default=None),
-    x_mock_user: Optional[str] = Header(default=None),
-    x_mock_roles: Optional[str] = Header(default=None),
-    x_mock_department: Optional[str] = Header(default=None),
-) -> AuthUser:
-    if settings.mock_oidc:
-        if not x_mock_user:
-            raise HTTPException(status_code=401, detail="Missing X-Mock-User header")
-        roles = [r.strip() for r in (x_mock_roles or "").split(",") if r.strip()]
-        return AuthUser(
-            subject=x_mock_user,
-            email=x_mock_user,
-            display_name=x_mock_user,
-            department=x_mock_department,
-            roles=roles,
-            attributes={},
-            claims={"mock": True},
-        )
-
-    if not authorization or not authorization.lower().startswith("bearer "):
-        raise HTTPException(status_code=401, detail="Missing bearer token")
-
-    token = authorization.split(" ", 1)[1].strip()
-
-    # Try local JWT first (self-signed), fall back to OIDC
-    if settings.jwt_secret:
-        claims = _decode_local_jwt(token)
-    else:
-        claims = _decode_jwt(token)
-
+def _user_from_claims(claims: Dict[str, Any]) -> AuthUser:
     email = claims.get("email") or claims.get(settings.oidc_user_claim)
     if not email:
         raise HTTPException(status_code=401, detail="Missing user claim in token")
@@ -121,3 +91,36 @@ def get_current_user(
         attributes={},
         claims=claims,
     )
+
+
+def get_current_user(
+    authorization: Optional[str] = Header(default=None),
+    x_mock_user: Optional[str] = Header(default=None),
+    x_mock_roles: Optional[str] = Header(default=None),
+    x_mock_department: Optional[str] = Header(default=None),
+) -> AuthUser:
+    token = None
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization.split(" ", 1)[1].strip()
+
+    if token:
+        # Demo login issues local JWTs, so accept them even if mock headers are enabled.
+        if settings.jwt_secret:
+            return _user_from_claims(_decode_local_jwt(token))
+        return _user_from_claims(_decode_jwt(token))
+
+    if settings.mock_oidc:
+        if not x_mock_user:
+            raise HTTPException(status_code=401, detail="Missing X-Mock-User header")
+        roles = [r.strip() for r in (x_mock_roles or "").split(",") if r.strip()]
+        return AuthUser(
+            subject=x_mock_user,
+            email=x_mock_user,
+            display_name=x_mock_user,
+            department=x_mock_department,
+            roles=roles,
+            attributes={},
+            claims={"mock": True},
+        )
+
+    raise HTTPException(status_code=401, detail="Missing bearer token")
