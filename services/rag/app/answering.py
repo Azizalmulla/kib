@@ -97,6 +97,68 @@ def _build_user_prompt(
     )
 
 
+def _collapse_text(text: str) -> str:
+    return re.sub(r"\s+", " ", text or "").strip()
+
+
+def _snippet_from_row(row: Dict[str, Any], max_chars: int = 360) -> str:
+    text = _collapse_text(row.get("text", ""))
+    if not text:
+        return ""
+
+    sentences = [part.strip() for part in re.split(r"(?<=[.!?])\s+", text) if part.strip()]
+    snippet = " ".join(sentences[:2]) if sentences else text
+    if len(snippet) > max_chars:
+        snippet = snippet[:max_chars].rsplit(" ", 1)[0].rstrip()
+    return snippet
+
+
+def _build_extractive_payload(
+    rows: List[Dict[str, Any]],
+    language: str,
+    reason: str,
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """Return a grounded fallback answer when the LLM refuses despite retrieved evidence."""
+    usable_rows = [row for row in rows if _snippet_from_row(row)]
+    if not usable_rows:
+        return build_refusal_payload(language), {"retrieved_chunk_ids": [str(row["chunk_id"]) for row in rows]}
+
+    snippets = [_snippet_from_row(row) for row in usable_rows[:2]]
+    if language == "ar":
+        answer = "استنادا إلى مقاطع KIB المسترجعة: " + " ".join(snippets)
+    else:
+        answer = "Based on the retrieved KIB documents: " + " ".join(snippets)
+
+    citations = [
+        {
+            "doc_id": str(row.get("document_id")),
+            "document_version": row.get("document_version"),
+            "page_number": row.get("page_start"),
+            "start_offset": row.get("offset_start"),
+            "end_offset": row.get("offset_end"),
+            "source_uri": row.get("source_uri"),
+            "quote": _snippet_from_row(row, max_chars=180),
+        }
+        for row in usable_rows[:2]
+    ]
+    normalized_citations, used_rows = normalize_citations(citations, usable_rows)
+    if not normalized_citations:
+        log.error("[RAG] Extractive fallback citation normalization failed after %s", reason)
+        return build_refusal_payload(language), {"retrieved_chunk_ids": [str(row["chunk_id"]) for row in rows]}
+
+    confidence = compute_confidence(used_rows, normalized_citations)
+    payload = {
+        "language": language,
+        "answer": answer,
+        "confidence": confidence,
+        "citations": normalized_citations,
+        "missing_info": translate_missing_info(confidence, language),
+        "safe_next_steps": safe_next_steps(language),
+    }
+    log.warning("[RAG] Used extractive fallback after %s", reason)
+    return validate_or_refuse(payload, language), {"retrieved_chunk_ids": [str(row["chunk_id"]) for row in rows]}
+
+
 def answer_with_llm(
     rows: List[Dict[str, Any]],
     question: str,
@@ -120,7 +182,7 @@ def answer_with_llm(
         raw = provider.generate(system_prompt, prompt)
     except Exception as exc:
         log.error("[RAG] LLM call failed: %s", exc)
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "llm_error")
 
     log.debug("[RAG] Raw LLM response (%d chars): %s", len(raw), raw[:500])
 
@@ -140,32 +202,32 @@ def answer_with_llm(
         data = json.loads(cleaned)
     except json.JSONDecodeError as exc:
         log.error("[RAG] JSON parse failed: %s — cleaned text: %s", exc, cleaned[:300])
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "json_parse_error")
 
     if not isinstance(data, dict):
         log.error("[RAG] Parsed data is not a dict: %s", type(data))
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "non_object_response")
 
     answer = str(data.get("answer", "")).strip()
     if answer in {REFUSAL_TEXT_EN, REFUSAL_TEXT_AR}:
         log.debug("[RAG] LLM returned refusal text")
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "llm_refusal")
 
     citations = data.get("citations")
     if not isinstance(citations, list) or not citations:
         log.error("[RAG] No citations in LLM response: %s", citations)
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "missing_citations")
 
     log.debug("[RAG] LLM returned %d citations", len(citations))
     normalized_citations, used_rows = normalize_citations(citations, rows)
     if not normalized_citations:
         log.error("[RAG] Citation normalization failed. LLM citations: %s", json.dumps(citations[:2], default=str)[:500])
         log.error("[RAG] Available row keys: %s", [str(r.get('document_id'))[:8] + '/' + str(r.get('document_version')) + '/p' + str(r.get('page_start')) for r in rows[:3]])
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "citation_normalization_failed")
 
     if not answer:
         log.error("[RAG] Empty answer after processing")
-        return build_refusal_payload(language), meta
+        return _build_extractive_payload(rows, language, "empty_answer")
 
     confidence = compute_confidence(used_rows, normalized_citations)
     missing_info = translate_missing_info(confidence, language)
