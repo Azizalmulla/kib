@@ -2,6 +2,7 @@
 """Initialize the KIB database schema."""
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -21,6 +22,13 @@ def main() -> int:
         return 1
 
     schema_sql = schema_path.read_text()
+    if os.environ.get("KIB_CREATE_VECTOR_INDEX", "").lower() not in {"1", "true", "yes"}:
+        schema_sql = re.sub(
+            r"\n-- Vector index for similarity search.*?USING hnsw \(embedding vector_cosine_ops\);\n",
+            "\n-- Vector index skipped during deploy. Set KIB_CREATE_VECTOR_INDEX=true to create it.\n",
+            schema_sql,
+            flags=re.DOTALL,
+        )
 
     print(f"Connecting to database...")
     try:
