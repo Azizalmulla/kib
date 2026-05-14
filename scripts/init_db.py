@@ -13,6 +13,7 @@ def main() -> int:
     if not db_url:
         print("ERROR: KIB_DATABASE_URL not set", file=sys.stderr)
         return 1
+    strict = os.environ.get("KIB_STRICT_DB_INIT", "").lower() in {"1", "true", "yes"}
 
     schema_path = Path(__file__).resolve().parents[1] / "db" / "schema.sql"
     if not schema_path.exists():
@@ -31,7 +32,14 @@ def main() -> int:
         return 0
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
-        return 1
+        if strict:
+            return 1
+        print(
+            "WARNING: Database schema initialization failed; continuing because "
+            "KIB_STRICT_DB_INIT is not enabled.",
+            file=sys.stderr,
+        )
+        return 0
 
 
 if __name__ == "__main__":
