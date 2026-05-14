@@ -20,8 +20,12 @@ def list_documents(
     if not roles:
         return []
 
-    params = [roles, Json(current_user.attributes or {})]
-    filters = ["r.name = ANY(%s)", "d.status = 'approved'", "d.access_tags <@ %s::jsonb"]
+    params = [roles]
+    filters = ["r.name = ANY(%s)", "d.status = 'approved'"]
+
+    if current_user.attributes:
+        filters.append("d.access_tags <@ %s::jsonb")
+        params.append(Json(current_user.attributes))
 
     if language:
         filters.append("d.language = %s")
@@ -58,8 +62,14 @@ def get_document(
         raise HTTPException(status_code=404, detail="Document not found")
 
     with get_db() as conn:
+        params = [document_id, roles]
+        access_filter = ""
+        if current_user.attributes:
+            access_filter = "AND d.access_tags <@ %s::jsonb"
+            params.append(Json(current_user.attributes))
+
         doc = conn.execute(
-            """
+            f"""
             SELECT d.id, d.title, d.doc_type, d.language, d.status
             FROM documents d
             JOIN document_acl a ON a.document_id = d.id
@@ -67,9 +77,9 @@ def get_document(
             WHERE d.id = %s
               AND r.name = ANY(%s)
               AND d.status = 'approved'
-              AND d.access_tags <@ %s::jsonb
+              {access_filter}
             """,
-            (document_id, roles, Json(current_user.attributes or {})),
+            params,
         ).fetchone()
 
         if not doc:
