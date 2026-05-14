@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://localhost/kib"
 
     default_top_k: int = 5
+    vector_probes: int = 10
 
     fireworks_api_key: str = ""
     fireworks_embed_url: str = "https://api.fireworks.ai/inference/v1/embeddings"

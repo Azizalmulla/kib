@@ -74,6 +74,7 @@ def retrieve_chunks(
 
     query_vector = _embed_query(question)
     vec_str = "[" + ",".join(str(x) for x in query_vector) + "]"
+    conn.execute(f"SET LOCAL ivfflat.probes = {settings.vector_probes}")
     rows = conn.execute(
         """
         SELECT
