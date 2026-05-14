@@ -81,6 +81,7 @@ def _user_from_claims(claims: Dict[str, Any]) -> AuthUser:
     roles = claims.get("roles") or claims.get(settings.oidc_roles_claim) or []
     if isinstance(roles, str):
         roles = [roles]
+    roles = _expand_demo_roles(roles)
 
     return AuthUser(
         subject=str(claims.get("sub") or email),
@@ -91,6 +92,18 @@ def _user_from_claims(claims: Dict[str, Any]) -> AuthUser:
         attributes={},
         claims=claims,
     )
+
+
+def _expand_demo_roles(roles: List[str]) -> List[str]:
+    """Keep older demo JWTs aligned with current document ACL roles."""
+    expanded = list(dict.fromkeys(roles))
+    if "employee" in expanded and "front_desk" not in expanded:
+        expanded.append("front_desk")
+    if "admin" in expanded:
+        for role in ("compliance", "front_desk"):
+            if role not in expanded:
+                expanded.append(role)
+    return expanded
 
 
 def get_current_user(
