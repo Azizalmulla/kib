@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_timeout_seconds: int = 60
     llm_max_tokens: int = 700
+    llm_reasoning_effort: str = "low"
+    llm_response_format: str = "json_object"
 
     model_config = {"env_prefix": "KIB_"}
 

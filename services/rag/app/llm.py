@@ -20,6 +20,8 @@ class OpenAICompatibleProvider:
     api_key: str = ""
     timeout_seconds: int = 30
     max_tokens: int = 700
+    reasoning_effort: str = "low"
+    response_format: str = "json_object"
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         url = self.base_url.rstrip("/")
@@ -40,6 +42,10 @@ class OpenAICompatibleProvider:
                 {"role": "user", "content": user_prompt},
             ],
         }
+        if self.reasoning_effort:
+            payload["reasoning_effort"] = self.reasoning_effort
+        if self.response_format:
+            payload["response_format"] = {"type": self.response_format}
 
         with httpx.Client(timeout=self.timeout_seconds) as client:
             resp = client.post(url, json=payload, headers=headers)
@@ -91,6 +97,8 @@ def get_provider() -> LLMProvider:
             api_key=settings.llm_api_key,
             timeout_seconds=settings.llm_timeout_seconds,
             max_tokens=settings.llm_max_tokens,
+            reasoning_effort=settings.llm_reasoning_effort,
+            response_format=settings.llm_response_format,
         )
     if provider == "ollama":
         return OllamaProvider(
