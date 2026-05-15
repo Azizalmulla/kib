@@ -19,6 +19,7 @@ class OpenAICompatibleProvider:
     model: str
     api_key: str = ""
     timeout_seconds: int = 30
+    max_tokens: int = 700
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         url = self.base_url.rstrip("/")
@@ -33,6 +34,7 @@ class OpenAICompatibleProvider:
         payload = {
             "model": self.model,
             "temperature": 0,
+            "max_tokens": self.max_tokens,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -88,6 +90,7 @@ def get_provider() -> LLMProvider:
             model=settings.llm_model,
             api_key=settings.llm_api_key,
             timeout_seconds=settings.llm_timeout_seconds,
+            max_tokens=settings.llm_max_tokens,
         )
     if provider == "ollama":
         return OllamaProvider(
