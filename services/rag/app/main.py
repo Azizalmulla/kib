@@ -27,50 +27,31 @@ def _should_rewrite_question(question: str, history: list[tuple[str, str]], memo
         return False
 
     normalized = " ".join(question.lower().split())
-    if len(normalized.split()) <= 3 and (history or memory_summary):
+    if len(normalized.split()) <= 3 and history:
         return True
 
     return any(re.search(pattern, normalized) for pattern in FOLLOW_UP_PATTERNS)
 
 
-def _rewrite_question(question: str, history: list[tuple[str, str]], memory_summary: str, provider) -> str:
+def _last_user_turn(history: list[tuple[str, str]]) -> str:
+    for role, text in reversed(history):
+        if role == "user" and text.strip():
+            return " ".join(text.split())[:300]
+    return ""
+
+
+def _rewrite_question(question: str, history: list[tuple[str, str]], memory_summary: str) -> str:
     if not _should_rewrite_question(question, history, memory_summary):
         return question
 
-    history_lines = []
-    for role, text in history[-6:]:
-        label = "User" if role == "user" else "Assistant"
-        history_lines.append(f"{label}: {text}")
+    last_user_turn = _last_user_turn(history)
+    if last_user_turn:
+        return f"{last_user_turn}. Follow-up question: {question}"[:500]
 
-    prompt = "\n".join(
-        [
-            "Rewrite the current user question as a standalone search query for a banking knowledge base.",
-            "Use the conversation history and user memory only to resolve references like 'that', 'it', or 'the second one'.",
-            "Do not answer the question. Do not add facts that are not implied by the current question/history.",
-            "Return only the rewritten search query, with no quotes or markdown.",
-            "",
-            "User memory:",
-            memory_summary[:1000] if memory_summary else "(none)",
-            "",
-            "Conversation history:",
-            "\n".join(history_lines) if history_lines else "(none)",
-            "",
-            f"Current question: {question}",
-        ]
-    )
+    if memory_summary and re.search(r"\b(previous|continue|last time|earlier|before)\b", question.lower()):
+        return f"{memory_summary[:300]}. Follow-up question: {question}"[:500]
 
-    try:
-        rewritten = provider.generate(
-            "You rewrite follow-up questions into standalone retrieval queries.",
-            prompt,
-        ).strip()
-    except Exception:
-        return question
-
-    rewritten = rewritten.strip("\"'` \n")
-    if not rewritten or len(rewritten) > 500:
-        return question
-    return rewritten
+    return question
 
 
 @app.post("/rag/answer", response_model=StrictRagResponse)
@@ -80,9 +61,11 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     history = [(h.role, h.text) for h in request.history] if request.history else []
     memory_summary = request.memory_summary or ""
     rewrite_started_at = perf_counter()
-    retrieval_question = _rewrite_question(request.question, history, memory_summary, provider)
+    retrieval_question = _rewrite_question(request.question, history, memory_summary)
     rewrite_ms = int((perf_counter() - rewrite_started_at) * 1000)
     rewrite_used = retrieval_question != request.question
+    answer_history = history if rewrite_used else []
+    answer_memory_summary = memory_summary if rewrite_used else ""
 
     retrieval_started_at = perf_counter()
     with get_db() as conn:
@@ -105,8 +88,8 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
         request.language,
         request.user.role_names,
         provider,
-        history=history,
-        memory_summary=memory_summary,
+        history=answer_history,
+        memory_summary=answer_memory_summary,
     )
     answer_ms = int((perf_counter() - answer_started_at) * 1000)
     if not meta.get("trace_id"):
