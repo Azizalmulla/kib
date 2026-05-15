@@ -1,5 +1,6 @@
 import logging
 import time
+import json
 from typing import Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
@@ -43,15 +44,26 @@ def _model_dump(model: Any) -> Dict[str, Any]:
     return model.dict()
 
 
-def _answer_in_process(payload: Dict[str, Any]) -> tuple[Dict[str, Any], List[UUID], str]:
+def _parse_json_header(value: Optional[str]) -> Dict[str, Any]:
+    if not value:
+        return {}
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def _answer_in_process(payload: Dict[str, Any]) -> tuple[Dict[str, Any], List[UUID], str, Dict[str, Any]]:
     response = Response()
     rag_response = answer_rag(RagRequest(**payload), response)
     retrieved_ids = _parse_uuid_list(response.headers.get("X-Retrieved-Chunk-Ids"))
     trace_id = response.headers.get("X-Trace-Id", str(uuid4()))
-    return _model_dump(rag_response), retrieved_ids, trace_id
+    timings = _parse_json_header(response.headers.get("X-RAG-Timings"))
+    return _model_dump(rag_response), retrieved_ids, trace_id, timings
 
 
-def _answer_via_rag(payload: Dict[str, Any], trace_id: str) -> tuple[Dict[str, Any], List[UUID], str]:
+def _answer_via_rag(payload: Dict[str, Any], trace_id: str) -> tuple[Dict[str, Any], List[UUID], str, Dict[str, Any]]:
     if _is_local_rag_url(settings.rag_service_url):
         return _answer_in_process(payload)
 
@@ -66,7 +78,8 @@ def _answer_via_rag(payload: Dict[str, Any], trace_id: str) -> tuple[Dict[str, A
 
     retrieved_ids = _parse_uuid_list(resp.headers.get("X-Retrieved-Chunk-Ids"))
     trace_id = resp.headers.get("X-Trace-Id", trace_id)
-    return data, retrieved_ids, trace_id
+    timings = _parse_json_header(resp.headers.get("X-RAG-Timings"))
+    return data, retrieved_ids, trace_id, timings
 
 
 def _unavailable_payload(language: str) -> Dict[str, Any]:
@@ -91,6 +104,23 @@ def _load_memory_summary(conn, user_id: UUID) -> str:
     return (row or {}).get("summary") or ""
 
 
+def _load_conversation_summary(conn, conversation_id: UUID) -> str:
+    row = conn.execute(
+        "SELECT memory_snapshot FROM chat_conversations WHERE id = %s",
+        (conversation_id,),
+    ).fetchone()
+    return (row or {}).get("memory_snapshot") or ""
+
+
+def _context_summary(user_memory: str, conversation_summary: str) -> str:
+    parts = []
+    if user_memory:
+        parts.append(f"User memory: {user_memory}")
+    if conversation_summary:
+        parts.append(f"Current conversation summary: {conversation_summary}")
+    return "\n".join(parts)
+
+
 def _ensure_conversation(conn, user_id: UUID, request: ChatRequest, memory_summary: str) -> UUID:
     if request.conversation_id:
         row = conn.execute(
@@ -107,7 +137,7 @@ def _ensure_conversation(conn, user_id: UUID, request: ChatRequest, memory_summa
         VALUES (%s, %s, %s)
         RETURNING id
         """,
-        (user_id, _conversation_title(request.question), memory_summary or None),
+        (user_id, _conversation_title(request.question), None),
     ).fetchone()
     return row["id"]
 
@@ -153,7 +183,7 @@ def _store_message(
     )
 
 
-def _update_user_memory(conn, user_id: UUID, language: str) -> None:
+def _update_memory(conn, user_id: UUID, conversation_id: UUID, language: str) -> None:
     rows = conn.execute(
         """
         SELECT m.text
@@ -190,6 +220,35 @@ def _update_user_memory(conn, user_id: UUID, language: str) -> None:
             updated_at = now()
         """,
         (user_id, summary, language),
+    )
+
+    message_rows = conn.execute(
+        """
+        SELECT role, text
+        FROM chat_messages
+        WHERE conversation_id = %s
+        ORDER BY created_at DESC
+        LIMIT 10
+        """,
+        (conversation_id,),
+    ).fetchall()
+    turns = []
+    for row in reversed(message_rows):
+        text = " ".join(str(row["text"]).split())
+        if not text:
+            continue
+        label = "User" if row["role"] == "user" else "Assistant"
+        turns.append(f"{label}: {text[:180]}")
+
+    conversation_summary = "Recent conversation turns: " + " | ".join(turns)
+    conn.execute(
+        """
+        UPDATE chat_conversations
+        SET memory_snapshot = %s,
+            updated_at = now()
+        WHERE id = %s
+        """,
+        (conversation_summary[:1200], conversation_id),
     )
 
 
@@ -260,8 +319,11 @@ def delete_conversation(
 def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user)) -> ChatResponse:
     with get_db() as conn:
         user_id = ensure_user(conn, current_user)
-        memory_summary = _load_memory_summary(conn, user_id)
+        user_memory = _load_memory_summary(conn, user_id)
+        memory_summary = user_memory
         conversation_id = _ensure_conversation(conn, user_id, request, memory_summary)
+        conversation_summary = _load_conversation_summary(conn, conversation_id)
+        memory_summary = _context_summary(user_memory, conversation_summary)
         history = _load_history(conn, conversation_id)
         _store_message(conn, conversation_id, "user", request.question)
 
@@ -283,8 +345,9 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
 
     start_time = time.time()
     trace_id = str(uuid4())
+    rag_timings: Dict[str, Any] = {}
     try:
-        data, retrieved_ids, trace_id = _answer_via_rag(payload, trace_id)
+        data, retrieved_ids, trace_id, rag_timings = _answer_via_rag(payload, trace_id)
     except Exception as exc:
         log.exception("RAG answer failed: %s", exc)
         data = _unavailable_payload(request.language)
@@ -330,6 +393,7 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
                         "missing_info": data.get("missing_info"),
                         "conversation_id": str(conversation_id),
                         "memory_used": bool(memory_summary),
+                        "rag_timings": rag_timings,
                     }),
                     trace_id,
                     latency_ms,
@@ -347,7 +411,7 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
                 response_payload=response_payload,
                 audit_log_id=audit_log_id,
             )
-            _update_user_memory(conn, user_id, data.get("language") or request.language)
+            _update_memory(conn, user_id, conversation_id, data.get("language") or request.language)
     except Exception as exc:
         log.warning("Skipping audit log write: %s", exc)
 
