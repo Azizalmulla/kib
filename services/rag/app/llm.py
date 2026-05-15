@@ -21,7 +21,47 @@ class OpenAICompatibleProvider:
     timeout_seconds: int = 30
     max_tokens: int = 700
     reasoning_effort: str = "low"
-    response_format: str = "json_object"
+    response_format: str = "tool"
+
+    def _answer_tool(self) -> dict:
+        return {
+            "type": "function",
+            "function": {
+                "name": "submit_answer",
+                "description": "Submit the final grounded answer and citations.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "answer": {"type": "string"},
+                        "citations": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "doc_id": {"type": "string"},
+                                    "document_version": {"type": "string"},
+                                    "page_number": {"type": ["integer", "null"]},
+                                    "start_offset": {"type": ["integer", "null"]},
+                                    "end_offset": {"type": ["integer", "null"]},
+                                    "source_uri": {"type": "string"},
+                                    "quote": {"type": "string"},
+                                },
+                                "required": [
+                                    "doc_id",
+                                    "document_version",
+                                    "page_number",
+                                    "start_offset",
+                                    "end_offset",
+                                    "source_uri",
+                                    "quote",
+                                ],
+                            },
+                        },
+                    },
+                    "required": ["answer", "citations"],
+                },
+            },
+        }
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         url = self.base_url.rstrip("/")
@@ -44,7 +84,13 @@ class OpenAICompatibleProvider:
         }
         if self.reasoning_effort:
             payload["reasoning_effort"] = self.reasoning_effort
-        if self.response_format:
+        if self.response_format == "tool":
+            payload["tools"] = [self._answer_tool()]
+            payload["tool_choice"] = {
+                "type": "function",
+                "function": {"name": "submit_answer"},
+            }
+        elif self.response_format:
             payload["response_format"] = {"type": self.response_format}
 
         with httpx.Client(timeout=self.timeout_seconds) as client:
@@ -52,7 +98,15 @@ class OpenAICompatibleProvider:
             resp.raise_for_status()
             data = resp.json()
 
-        return data["choices"][0]["message"]["content"]
+        message = data["choices"][0]["message"]
+        tool_calls = message.get("tool_calls") or []
+        if tool_calls:
+            function = tool_calls[0].get("function") or {}
+            arguments = function.get("arguments")
+            if arguments:
+                return arguments
+
+        return message.get("content") or ""
 
 
 @dataclass
