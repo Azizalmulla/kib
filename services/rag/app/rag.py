@@ -121,6 +121,51 @@ def filter_rows_by_status(rows: List[Dict[str, Any]], status: str = "approved") 
     return [row for row in rows if row.get("document_status") == status]
 
 
-def rerank_chunks(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    # Placeholder: replace with embedding or cross-encoder reranking.
-    return rows
+def rerank_chunks(question: str, rows: List[Dict[str, Any]], top_n: int | None = None) -> List[Dict[str, Any]]:
+    if not rows:
+        return []
+
+    limit = top_n or settings.rerank_top_n
+    if not settings.rerank_enabled:
+        return rows[:limit]
+
+    documents = []
+    for row in rows:
+        documents.append(
+            "\n".join(
+                [
+                    f"Title: {row.get('document_title')}",
+                    f"Page: {row.get('page_start')}",
+                    str(row.get("text", ""))[:2500],
+                ]
+            )
+        )
+
+    try:
+        resp = httpx.post(
+            settings.fireworks_rerank_url,
+            json={
+                "model": settings.reranker_model,
+                "query": question,
+                "documents": documents,
+                "top_n": min(limit, len(documents)),
+                "return_documents": False,
+                "task": "Rerank banking policy and financial document chunks for answering a user question.",
+            },
+            headers={"Authorization": f"Bearer {settings.fireworks_api_key}"},
+            timeout=20.0,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception:
+        return rows[:limit]
+
+    reranked = []
+    for item in data.get("results", []):
+        index = item.get("index")
+        if isinstance(index, int) and 0 <= index < len(rows):
+            row = dict(rows[index])
+            row["rerank_score"] = item.get("relevance_score")
+            reranked.append(row)
+
+    return reranked or rows[:limit]

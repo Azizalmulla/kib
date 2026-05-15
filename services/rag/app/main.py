@@ -68,18 +68,21 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     answer_memory_summary = memory_summary if rewrite_used else ""
 
     retrieval_started_at = perf_counter()
+    candidate_k = max(request.top_k, settings.rerank_candidate_k) if settings.rerank_enabled else request.top_k
     with get_db() as conn:
         allowed_doc_ids = get_accessible_document_ids(
             conn,
             request.user.role_names,
             request.user.attributes,
         )
-        rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, request.top_k)
+        rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, candidate_k)
     retrieval_ms = int((perf_counter() - retrieval_started_at) * 1000)
 
     rows = filter_rows_by_doc_ids(rows, allowed_doc_ids)
     rows = filter_rows_by_status(rows)
-    reranked = rerank_chunks(rows)
+    rerank_started_at = perf_counter()
+    reranked = rerank_chunks(retrieval_question, rows, settings.rerank_top_n)
+    rerank_ms = int((perf_counter() - rerank_started_at) * 1000)
 
     answer_started_at = perf_counter()
     payload, meta = answer_with_llm(
@@ -99,6 +102,9 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
         "rewrite_ms": rewrite_ms,
         "rewrite_used": rewrite_used,
         "retrieval_ms": retrieval_ms,
+        "rerank_ms": rerank_ms,
+        "candidate_k": candidate_k,
+        "final_k": len(reranked),
         "answer_ms": answer_ms,
         "total_ms": int((perf_counter() - started_at) * 1000),
     }
