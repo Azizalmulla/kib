@@ -14,12 +14,24 @@ def _truncate_normalize(vec: List[float], dim: int) -> List[float]:
     return [x / norm for x in truncated] if norm > 0 else truncated
 
 
+QWEN3_QUERY_INSTRUCTION = (
+    "Instruct: Given a question about KIB (Kuwait International Bank) policies, "
+    "products, regulations, and CBK (Central Bank of Kuwait) instructions, "
+    "retrieve the most relevant passages from approved KIB documents.\n"
+    "Query: "
+)
+
+
 def _embed_query(question: str) -> List[float]:
+    # Qwen3-Embedding-8B is asymmetric: queries get an instruction prefix,
+    # documents do not. The official Qwen3 recommendation is a 1-5% recall
+    # gain on short conversational queries vs. long doc chunks.
+    prompt = QWEN3_QUERY_INSTRUCTION + question
     resp = httpx.post(
         settings.fireworks_embed_url,
         json={
             "model": settings.embedding_model,
-            "input": [question],
+            "input": [prompt],
             "dimensions": settings.embedding_dim,
         },
         headers={"Authorization": f"Bearer {settings.fireworks_api_key}"},
@@ -75,7 +87,11 @@ def retrieve_chunks(
 
     query_vector = _embed_query(question)
     vec_str = "[" + ",".join(str(x) for x in query_vector) + "]"
-    conn.execute(f"SET LOCAL ivfflat.probes = {settings.vector_probes}")
+    # The vector index is HNSW (see db/schema.sql). Bumping ef_search from the
+    # pgvector default of 40 to ~100 raises recall to near-exact at modest
+    # latency cost, which matters for banking/compliance retrieval where a
+    # missed clause becomes a refusal even though the doc is in the corpus.
+    conn.execute(f"SET LOCAL hnsw.ef_search = {settings.hnsw_ef_search}")
     rows = conn.execute(
         """
         SELECT

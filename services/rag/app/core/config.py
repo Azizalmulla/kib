@@ -7,9 +7,10 @@ class Settings(BaseSettings):
 
     default_top_k: int = 5
     vector_probes: int = 10
+    hnsw_ef_search: int = 100
     rerank_enabled: bool = True
-    rerank_candidate_k: int = 15
-    recovery_candidate_k: int = 40
+    rerank_candidate_k: int = 80
+    recovery_candidate_k: int = 120
     keyword_candidate_k: int = 30
     rerank_top_n: int = 4
 
