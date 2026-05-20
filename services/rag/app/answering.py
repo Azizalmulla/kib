@@ -18,6 +18,7 @@ from .guardrails import (
     translate_missing_info,
     validate_or_refuse,
 )
+from .core.config import settings
 from .llm import LLMProvider
 
 
@@ -148,7 +149,7 @@ def answer_with_llm(
 
     raw = ""
     last_exc: Exception | None = None
-    for attempt in range(1, 3):
+    for attempt in range(1, max(1, settings.llm_max_attempts) + 1):
         try:
             raw = provider.generate(system_prompt, prompt)
             last_exc = None
