@@ -129,6 +129,33 @@ def test_strong_evidence_is_main_answer_then_llm_polishes():
     assert meta.get("extractive_fallback") is not True
 
 
+def test_high_rerank_score_triggers_extractive_main_without_literal_term_overlap():
+    rows = [
+        {
+            **_row(
+                "At 30 September 2025, the total CAR was 22.03%. Tier 1 was 17.26%.",
+                0.8,
+                "doc-car",
+            ),
+            "rerank_score": 0.92,
+        }
+    ]
+    provider = MockProvider(json.dumps({"answer": REFUSAL_TEXT_EN, "citations": []}))
+
+    payload, meta = answer_with_llm(
+        rows,
+        "What is KIB's capital adequacy ratio?",
+        "en",
+        ["admin"],
+        provider,
+    )
+
+    assert payload["answer"] != REFUSAL_TEXT_EN
+    assert "22.03%" in payload["answer"]
+    assert meta.get("extractive_main") is True
+    assert meta.get("extractive_fallback_reason") == "llm_refusal"
+
+
 def test_unrelated_question_still_refuses_even_with_banking_evidence():
     rows = [
         _row(
@@ -150,6 +177,32 @@ def test_unrelated_question_still_refuses_even_with_banking_evidence():
     assert payload["answer"] == REFUSAL_TEXT_EN
     assert payload["citations"] == []
     assert meta.get("extractive_fallback") is not True
+
+
+def test_low_rerank_score_does_not_trigger_extractive_answer():
+    rows = [
+        {
+            **_row(
+                "At 30 September 2025, the total CAR was 22.03%. Tier 1 was 17.26%.",
+                0.8,
+                "doc-car",
+            ),
+            "rerank_score": 0.05,
+        }
+    ]
+    provider = MockProvider(json.dumps({"answer": REFUSAL_TEXT_EN, "citations": []}))
+
+    payload, meta = answer_with_llm(
+        rows,
+        "Is Trump president?",
+        "en",
+        ["front_desk"],
+        provider,
+    )
+
+    assert payload["answer"] == REFUSAL_TEXT_EN
+    assert payload["citations"] == []
+    assert meta.get("extractive_main") is not True
 
 
 def test_unapproved_docs_filtered_out():

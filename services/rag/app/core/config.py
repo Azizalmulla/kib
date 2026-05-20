@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     recovery_candidate_k: int = 120
     keyword_candidate_k: int = 30
     rerank_top_n: int = 4
+    evidence_rerank_score_threshold: float = 0.45
+    evidence_rerank_min_score: float = 0.25
+    evidence_rerank_gap_threshold: float = 0.12
 
     fireworks_api_key: str = ""
     fireworks_embed_url: str = "https://api.fireworks.ai/inference/v1/embeddings"

@@ -97,7 +97,14 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
             request.user.role_names,
             request.user.attributes,
         )
-        rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, candidate_k)
+        vector_rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, candidate_k)
+        keyword_rows = retrieve_keyword_chunks(
+            conn,
+            expand_retrieval_question(retrieval_question),
+            allowed_doc_ids,
+            settings.keyword_candidate_k,
+        )
+        rows = merge_chunk_rows(keyword_rows, vector_rows)
     retrieval_ms = int((perf_counter() - retrieval_started_at) * 1000)
 
     rows = filter_rows_by_doc_ids(rows, allowed_doc_ids)

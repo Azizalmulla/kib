@@ -89,6 +89,16 @@ def _row_similarity(row: Dict[str, Any]) -> float:
         return 0.0
 
 
+def _row_rerank_score(row: Dict[str, Any]) -> float | None:
+    score = row.get("rerank_score")
+    if score is None:
+        return None
+    try:
+        return float(score)
+    except (TypeError, ValueError):
+        return None
+
+
 def _row_evidence_score(row: Dict[str, Any], terms: List[str]) -> tuple[int, float, List[str]]:
     haystack = " ".join(
         [
@@ -108,6 +118,36 @@ def _is_strong_evidence(row: Dict[str, Any], terms: List[str]) -> bool:
     matched_count, similarity, _ = _row_evidence_score(row, terms)
     required_matches = 2 if len(terms) >= 2 else 1
     return matched_count >= required_matches and similarity >= 0.35
+
+
+def _strong_rows_from_reranker(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    scored_rows = [(row, _row_rerank_score(row)) for row in rows]
+    scored_rows = [(row, score) for row, score in scored_rows if score is not None]
+    if not scored_rows:
+        return []
+
+    scored_rows.sort(key=lambda item: item[1], reverse=True)
+    top_row, top_score = scored_rows[0]
+    second_score = scored_rows[1][1] if len(scored_rows) > 1 else 0.0
+    score_gap = top_score - second_score
+
+    if top_score >= settings.evidence_rerank_score_threshold:
+        return [row for row, score in scored_rows[:2] if score >= settings.evidence_rerank_min_score]
+
+    if top_score >= settings.evidence_rerank_min_score and score_gap >= settings.evidence_rerank_gap_threshold:
+        return [top_row]
+
+    if len(scored_rows) > 1 and top_score >= settings.evidence_rerank_min_score:
+        top_doc_id = str(top_row.get("document_id"))
+        same_doc_rows = [
+            row
+            for row, score in scored_rows[:3]
+            if str(row.get("document_id")) == top_doc_id and score >= settings.evidence_rerank_min_score
+        ]
+        if len(same_doc_rows) >= 2:
+            return same_doc_rows[:2]
+
+    return []
 
 
 def _best_evidence_sentences(row: Dict[str, Any], terms: List[str], limit: int = 2) -> List[str]:
@@ -147,11 +187,18 @@ def _extractive_fallback_payload(
     language: str,
 ) -> tuple[Dict[str, Any] | None, List[Dict[str, Any]]]:
     terms = _answer_terms(question)
-    strong_rows = [row for row in rows if _is_strong_evidence(row, terms)]
+    strong_rows = _strong_rows_from_reranker(rows) or [row for row in rows if _is_strong_evidence(row, terms)]
     if not strong_rows:
         return None, []
 
-    strong_rows.sort(key=lambda row: (_row_evidence_score(row, terms)[0], _row_similarity(row)), reverse=True)
+    strong_rows.sort(
+        key=lambda row: (
+            _row_rerank_score(row) if _row_rerank_score(row) is not None else -1.0,
+            _row_evidence_score(row, terms)[0],
+            _row_similarity(row),
+        ),
+        reverse=True,
+    )
     used_rows = strong_rows[:2]
     sentences: List[str] = []
     citations: List[Dict[str, Any]] = []
