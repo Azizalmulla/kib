@@ -22,6 +22,169 @@ from .core.config import settings
 from .llm import LLMProvider
 
 
+ANSWER_STOPWORDS = {
+    "about",
+    "also",
+    "and",
+    "are",
+    "can",
+    "does",
+    "for",
+    "from",
+    "has",
+    "how",
+    "into",
+    "kib",
+    "kuwait",
+    "please",
+    "some",
+    "that",
+    "the",
+    "their",
+    "there",
+    "this",
+    "what",
+    "when",
+    "where",
+    "which",
+    "who",
+    "why",
+    "with",
+    "قانون",
+    "ما",
+    "ماهي",
+    "ماهي",
+    "هي",
+    "عن",
+    "في",
+    "من",
+}
+
+
+def _answer_terms(text: str) -> List[str]:
+    terms: List[str] = []
+    for token in re.findall(r"[\w\u0600-\u06ff]+", text.lower()):
+        if len(token) < 3 or token in ANSWER_STOPWORDS:
+            continue
+        if token not in terms:
+            terms.append(token)
+    return terms
+
+
+def _sentence_candidates(text: str) -> List[str]:
+    cleaned = " ".join(str(text or "").split())
+    if not cleaned:
+        return []
+    sentences = re.split(r"(?<=[.!؟?])\s+|\n+", cleaned)
+    return [sentence.strip() for sentence in sentences if len(sentence.strip()) >= 20]
+
+
+def _row_similarity(row: Dict[str, Any]) -> float:
+    distance = row.get("distance")
+    if distance is None:
+        return 0.0
+    try:
+        return max(0.0, min(1.0, 1.0 - float(distance)))
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _row_evidence_score(row: Dict[str, Any], terms: List[str]) -> tuple[int, float, List[str]]:
+    haystack = " ".join(
+        [
+            str(row.get("document_title") or ""),
+            str(row.get("section") or ""),
+            str(row.get("text") or ""),
+            str(row.get("source_uri") or ""),
+        ]
+    ).lower()
+    matched = [term for term in terms if term in haystack]
+    return len(matched), _row_similarity(row), matched
+
+
+def _is_strong_evidence(row: Dict[str, Any], terms: List[str]) -> bool:
+    if not terms:
+        return False
+    matched_count, similarity, _ = _row_evidence_score(row, terms)
+    required_matches = 2 if len(terms) >= 2 else 1
+    return matched_count >= required_matches and similarity >= 0.35
+
+
+def _best_evidence_sentences(row: Dict[str, Any], terms: List[str], limit: int = 2) -> List[str]:
+    scored: List[tuple[int, int, str]] = []
+    for index, sentence in enumerate(_sentence_candidates(str(row.get("text") or ""))):
+        lowered = sentence.lower()
+        score = sum(1 for term in terms if term in lowered)
+        if re.search(r"\d+(?:\.\d+)?\s*%|\b\d{4}\b|law no\.?|article", lowered):
+            score += 1
+        if score:
+            scored.append((score, index, sentence))
+
+    if not scored:
+        fallback = " ".join(str(row.get("text") or "").split())
+        return [fallback[:500]] if fallback else []
+
+    selected = sorted(sorted(scored, key=lambda item: item[0], reverse=True)[:limit], key=lambda item: item[1])
+    return [sentence for _, _, sentence in selected]
+
+
+def _citation_from_row(row: Dict[str, Any], quote_text: str) -> Dict[str, Any]:
+    return {
+        "doc_title": row.get("document_title"),
+        "doc_id": str(row.get("document_id")),
+        "document_version": row.get("document_version"),
+        "page_number": row.get("page_start"),
+        "start_offset": row.get("offset_start"),
+        "end_offset": row.get("offset_end"),
+        "quote": " ".join(quote_text.split()[:25]),
+        "source_uri": row.get("source_uri"),
+    }
+
+
+def _extractive_fallback_payload(
+    rows: List[Dict[str, Any]],
+    question: str,
+    language: str,
+) -> tuple[Dict[str, Any] | None, List[Dict[str, Any]]]:
+    terms = _answer_terms(question)
+    strong_rows = [row for row in rows if _is_strong_evidence(row, terms)]
+    if not strong_rows:
+        return None, []
+
+    strong_rows.sort(key=lambda row: (_row_evidence_score(row, terms)[0], _row_similarity(row)), reverse=True)
+    used_rows = strong_rows[:2]
+    sentences: List[str] = []
+    citations: List[Dict[str, Any]] = []
+    for row in used_rows:
+        row_sentences = _best_evidence_sentences(row, terms, limit=2)
+        if not row_sentences:
+            continue
+        sentences.extend(row_sentences)
+        citations.append(_citation_from_row(row, row_sentences[0]))
+
+    if not sentences or not citations:
+        return None, []
+
+    body = " ".join(sentences)
+    if language == "ar":
+        answer = f"وفقاً للأدلة المتاحة من مستندات KIB المعتمدة: {body}"
+    else:
+        answer = body
+
+    confidence = compute_confidence(used_rows, citations)
+    if confidence == "low":
+        confidence = "medium"
+
+    return {
+        "language": language,
+        "answer": answer,
+        "confidence": confidence,
+        "citations": citations,
+        "missing_info": None,
+        "safe_next_steps": safe_next_steps(language),
+    }, used_rows
+
+
 def _build_user_prompt(
     question: str,
     language: str,
@@ -136,6 +299,15 @@ def answer_with_llm(
     if not rows:
         return build_refusal_payload(language), meta
 
+    def maybe_extractive_fallback(reason: str) -> Tuple[Dict[str, Any] | None, Dict[str, Any]]:
+        fallback_payload, fallback_rows = _extractive_fallback_payload(rows, question, language)
+        if fallback_payload is None:
+            return None, meta
+        meta["extractive_fallback"] = True
+        meta["extractive_fallback_reason"] = reason
+        meta["extractive_fallback_chunk_ids"] = [str(row.get("chunk_id")) for row in fallback_rows]
+        return fallback_payload, meta
+
     prompt = _build_user_prompt(
         question,
         language,
@@ -160,6 +332,9 @@ def answer_with_llm(
     if last_exc is not None:
         log.error("[RAG] LLM call failed after retries: %s", last_exc)
         meta["llm_error"] = str(last_exc)
+        fallback_payload, fallback_meta = maybe_extractive_fallback("llm_exception")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         return build_answer_failed_payload(language), meta
 
     log.debug("[RAG] Raw LLM response (%d chars): %s", len(raw), raw[:500])
@@ -179,6 +354,9 @@ def answer_with_llm(
     if not cleaned:
         log.error("[RAG] LLM returned empty content")
         meta["llm_error"] = "empty_response"
+        fallback_payload, fallback_meta = maybe_extractive_fallback("empty_response")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         return build_answer_failed_payload(language), meta
 
     try:
@@ -186,21 +364,33 @@ def answer_with_llm(
     except json.JSONDecodeError as exc:
         log.error("[RAG] JSON parse failed: %s — cleaned text: %s", exc, cleaned[:300])
         meta["llm_error"] = "json_parse_failed"
+        fallback_payload, fallback_meta = maybe_extractive_fallback("json_parse_failed")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         return build_answer_failed_payload(language), meta
 
     if not isinstance(data, dict):
         log.error("[RAG] Parsed data is not a dict: %s", type(data))
         meta["llm_error"] = "non_dict_response"
+        fallback_payload, fallback_meta = maybe_extractive_fallback("non_dict_response")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         return build_answer_failed_payload(language), meta
 
     answer = str(data.get("answer", "")).strip()
     if answer in {REFUSAL_TEXT_EN, REFUSAL_TEXT_AR}:
         log.debug("[RAG] LLM returned refusal text")
+        fallback_payload, fallback_meta = maybe_extractive_fallback("llm_refusal")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         return build_refusal_payload(language), meta
 
     if not answer:
         log.error("[RAG] Empty answer after processing")
         meta["llm_error"] = "empty_answer"
+        fallback_payload, fallback_meta = maybe_extractive_fallback("empty_answer")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         return build_answer_failed_payload(language), meta
 
     citations = data.get("citations") if isinstance(data.get("citations"), list) else []

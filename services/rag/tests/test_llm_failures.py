@@ -63,6 +63,56 @@ def test_citation_with_wrong_doc_id_is_corrected_to_retrieved_row():
     assert payload["citations"][0]["doc_id"] == "doc-1"
 
 
+def test_llm_refusal_falls_back_to_strong_extractive_evidence():
+    rows = [
+        _row(
+            "At 30 September 2025, KIB's total Capital Adequacy Ratio stood at 22.03%. "
+            "Tier 1 Capital was 17.26% and Tier 2 Capital was 4.77%.",
+            0.12,
+            "doc-car",
+        )
+    ]
+    provider = MockProvider(json.dumps({"answer": REFUSAL_TEXT_EN, "citations": []}))
+
+    payload, meta = answer_with_llm(
+        rows,
+        "What is KIB's capital adequacy ratio?",
+        "en",
+        ["admin"],
+        provider,
+    )
+
+    assert payload["answer"] != REFUSAL_TEXT_EN
+    assert "22.03%" in payload["answer"]
+    assert payload["citations"]
+    assert payload["citations"][0]["doc_id"] == "doc-car"
+    assert meta.get("extractive_fallback") is True
+    assert meta.get("extractive_fallback_reason") == "llm_refusal"
+
+
+def test_unrelated_question_still_refuses_even_with_banking_evidence():
+    rows = [
+        _row(
+            "At 30 September 2025, KIB's total Capital Adequacy Ratio stood at 22.03%.",
+            0.12,
+            "doc-car",
+        )
+    ]
+    provider = MockProvider(json.dumps({"answer": REFUSAL_TEXT_EN, "citations": []}))
+
+    payload, meta = answer_with_llm(
+        rows,
+        "Is Trump president?",
+        "en",
+        ["front_desk"],
+        provider,
+    )
+
+    assert payload["answer"] == REFUSAL_TEXT_EN
+    assert payload["citations"] == []
+    assert meta.get("extractive_fallback") is not True
+
+
 def test_unapproved_docs_filtered_out():
     rows = [_row("Draft text.", 0.2, "doc-1", status="draft")]
     filtered = filter_rows_by_status(rows, status="approved")
