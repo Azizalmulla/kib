@@ -282,6 +282,83 @@ def _build_user_prompt(
     )
 
 
+def _build_polish_prompt(
+    question: str,
+    language: str,
+    role_names: List[str],
+    rows: List[Dict[str, Any]],
+    draft_payload: Dict[str, Any],
+) -> str:
+    role_list = ", ".join(role_names) if role_names else "none"
+    draft_citations = draft_payload.get("citations") or []
+    evidence_excerpts = []
+    for idx, row in enumerate(rows, start=1):
+        evidence_excerpts.append(
+            "\n".join(
+                [
+                    f"Evidence excerpt {idx}:",
+                    f"doc_id: {row.get('document_id')}",
+                    f"document_version: {row.get('document_version')}",
+                    f"page_number: {row.get('page_start')}",
+                    f"start_offset: {row.get('offset_start')}",
+                    f"end_offset: {row.get('offset_end')}",
+                    f"source_uri: {row.get('source_uri')}",
+                    "text:",
+                    row.get("text", ""),
+                ]
+            )
+        )
+
+    schema_example = '''{
+  "answer": "Polished version of the grounded draft. Do not add facts.",
+  "citations": [
+    {
+      "doc_id": "<exact doc_id from evidence excerpt>",
+      "document_version": "<exact document_version from evidence excerpt>",
+      "page_number": <exact page_number from evidence excerpt>,
+      "start_offset": <exact start_offset from evidence excerpt>,
+      "end_offset": <exact end_offset from evidence excerpt>,
+      "source_uri": "<exact source_uri from evidence excerpt>",
+      "quote": "<exact snippet from evidence text, max 25 words>"
+    }
+  ]
+}'''
+
+    return "\n".join(
+        [
+            "Polish the grounded draft answer below for the user.",
+            "The draft answer is already grounded in approved KIB evidence and is the source of truth.",
+            "Do NOT decide whether to refuse. Do NOT return a refusal. Do NOT add facts, numbers, dates, policies, fees, or limits not present in the draft/evidence.",
+            "Preserve all material facts from the draft. Use concise professional wording.",
+            "Return ONLY valid JSON matching the schema. No other fields allowed.",
+            "",
+            "REQUIRED JSON SCHEMA:",
+            schema_example,
+            "",
+            f"User language: {language}",
+            f"User roles: {role_list}",
+            f"User question: {question}",
+            "",
+            "Grounded draft answer:",
+            str(draft_payload.get("answer") or ""),
+            "",
+            "Grounded draft citations:",
+            json.dumps(draft_citations, ensure_ascii=False),
+            "",
+            "Evidence excerpts:",
+            "\n\n".join(evidence_excerpts),
+        ]
+    )
+
+
+def _polish_system_prompt() -> str:
+    return (
+        "You are the KIB Knowledge Copilot. Your task is only to polish a grounded draft answer. "
+        "The backend has already selected approved evidence and decided the question is answerable. "
+        "Do not refuse, do not add facts, and do not use outside knowledge. Return JSON only."
+    )
+
+
 def answer_with_llm(
     rows: List[Dict[str, Any]],
     question: str,
@@ -299,24 +376,32 @@ def answer_with_llm(
     if not rows:
         return build_refusal_payload(language), meta
 
+    extractive_payload, extractive_rows = _extractive_fallback_payload(rows, question, language)
+    if extractive_payload is not None:
+        meta["extractive_main"] = True
+        meta["extractive_chunk_ids"] = [str(row.get("chunk_id")) for row in extractive_rows]
+
     def maybe_extractive_fallback(reason: str) -> Tuple[Dict[str, Any] | None, Dict[str, Any]]:
-        fallback_payload, fallback_rows = _extractive_fallback_payload(rows, question, language)
-        if fallback_payload is None:
+        if extractive_payload is None:
             return None, meta
         meta["extractive_fallback"] = True
         meta["extractive_fallback_reason"] = reason
-        meta["extractive_fallback_chunk_ids"] = [str(row.get("chunk_id")) for row in fallback_rows]
-        return fallback_payload, meta
+        meta["extractive_fallback_chunk_ids"] = [str(row.get("chunk_id")) for row in extractive_rows]
+        return extractive_payload, meta
 
-    prompt = _build_user_prompt(
-        question,
-        language,
-        role_names,
-        rows,
-        history=history,
-        memory_summary=memory_summary,
-    )
-    system_prompt = get_system_prompt(role_names)
+    if extractive_payload is not None:
+        prompt = _build_polish_prompt(question, language, role_names, rows, extractive_payload)
+        system_prompt = _polish_system_prompt()
+    else:
+        prompt = _build_user_prompt(
+            question,
+            language,
+            role_names,
+            rows,
+            history=history,
+            memory_summary=memory_summary,
+        )
+        system_prompt = get_system_prompt(role_names)
     log.debug("[RAG] Sending prompt to LLM (%d chars, %d chunks, roles=%s)", len(prompt), len(rows), role_names)
 
     raw = ""
@@ -398,6 +483,9 @@ def answer_with_llm(
     normalized_citations, used_rows = normalize_citations(citations, rows)
 
     if not normalized_citations:
+        fallback_payload, fallback_meta = maybe_extractive_fallback("citation_normalization_failed")
+        if fallback_payload is not None:
+            return fallback_payload, fallback_meta
         log.warning(
             "[RAG] Citation normalization failed; falling back to top retrieved row. "
             "LLM citations=%s rows=%s",

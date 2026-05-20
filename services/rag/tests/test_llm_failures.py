@@ -90,6 +90,45 @@ def test_llm_refusal_falls_back_to_strong_extractive_evidence():
     assert meta.get("extractive_fallback_reason") == "llm_refusal"
 
 
+def test_strong_evidence_is_main_answer_then_llm_polishes():
+    rows = [
+        _row(
+            "At 30 September 2025, KIB's total Capital Adequacy Ratio stood at 22.03%. "
+            "Tier 1 Capital was 17.26% and Tier 2 Capital was 4.77%.",
+            0.12,
+            "doc-car",
+        )
+    ]
+    polished = {
+        "answer": "KIB's total Capital Adequacy Ratio was 22.03% as of 30 September 2025.",
+        "citations": [
+            {
+                "doc_id": "doc-car",
+                "document_version": "v1",
+                "page_number": 2,
+                "start_offset": 10,
+                "end_offset": 60,
+                "source_uri": "/docs/savings.pdf",
+                "quote": "KIB's total Capital Adequacy Ratio stood at 22.03%.",
+            }
+        ],
+    }
+    provider = MockProvider(json.dumps(polished))
+
+    payload, meta = answer_with_llm(
+        rows,
+        "What is KIB's capital adequacy ratio?",
+        "en",
+        ["admin"],
+        provider,
+    )
+
+    assert payload["answer"].startswith("KIB's total Capital Adequacy Ratio was 22.03%")
+    assert payload["citations"][0]["doc_id"] == "doc-car"
+    assert meta.get("extractive_main") is True
+    assert meta.get("extractive_fallback") is not True
+
+
 def test_unrelated_question_still_refuses_even_with_banking_evidence():
     rows = [
         _row(
