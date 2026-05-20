@@ -29,11 +29,12 @@ class Settings(BaseSettings):
     llm_model: str = "accounts/fireworks/models/qwen3p6-plus"
     llm_api_key: str = ""
     llm_timeout_seconds: int = 22
+    llm_hard_timeout_seconds: int = 14
     llm_max_attempts: int = 1
     llm_max_tokens: int = 700
     llm_reasoning_effort: str = "none"
     llm_response_format: str = "json_object"
-    answer_time_budget_ms: int = 26000
+    answer_time_budget_ms: int = 24000
 
     model_config = {"env_prefix": "KIB_"}
 

@@ -182,7 +182,7 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     # common failure mode we see in production — a single transient LLM hiccup
     # (slow cold call, malformed JSON, citation that doesn't normalize) on rows
     # that clearly contain the answer. Cost: one extra LLM call, no DB hits.
-    if _is_refusal_payload(payload) and reranked and _within_time_budget(started_at, reserve_ms=9000):
+    if _is_refusal_payload(payload) and reranked and _within_time_budget(started_at, reserve_ms=14000):
         retry_started_at = perf_counter()
         retry_payload, retry_meta = answer_with_llm(
             reranked,
@@ -203,7 +203,7 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
 
     # Stage 2: full recovery — expand the query, run keyword search alongside
     # vector retrieval, rerank a larger candidate pool, and call the LLM again.
-    if _is_refusal_payload(payload) and _within_time_budget(started_at, reserve_ms=9000):
+    if _is_refusal_payload(payload) and _within_time_budget(started_at, reserve_ms=14000):
         recovery_started_at = perf_counter()
         expanded_question = expand_retrieval_question(retrieval_question)
         recovery_candidate_k = max(candidate_k, settings.recovery_candidate_k)

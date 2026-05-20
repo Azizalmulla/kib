@@ -144,12 +144,13 @@ class MockProvider:
 
 def get_provider() -> LLMProvider:
     provider = settings.llm_provider.lower()
+    timeout_seconds = min(settings.llm_timeout_seconds, settings.llm_hard_timeout_seconds)
     if provider == "openai_compatible":
         return OpenAICompatibleProvider(
             base_url=settings.llm_base_url,
             model=settings.llm_model,
             api_key=settings.llm_api_key,
-            timeout_seconds=settings.llm_timeout_seconds,
+            timeout_seconds=timeout_seconds,
             max_tokens=settings.llm_max_tokens,
             reasoning_effort=settings.llm_reasoning_effort,
             response_format=settings.llm_response_format,
@@ -158,7 +159,7 @@ def get_provider() -> LLMProvider:
         return OllamaProvider(
             base_url=settings.llm_base_url,
             model=settings.llm_model,
-            timeout_seconds=settings.llm_timeout_seconds,
+            timeout_seconds=timeout_seconds,
         )
     if provider == "mock":
         return MockProvider("{}")
