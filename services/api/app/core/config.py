@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://localhost/kib"
     rag_service_url: str = "http://localhost:8001"
     request_timeout_seconds: int = 90
+    rag_retry_attempts: int = 3
+    rag_retry_backoff_seconds: float = 0.75
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,https://kib-lemon.vercel.app"
 
     mock_oidc: bool = False

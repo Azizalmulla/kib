@@ -82,6 +82,37 @@ def _answer_via_rag(payload: Dict[str, Any], trace_id: str) -> tuple[Dict[str, A
     return data, retrieved_ids, trace_id, timings
 
 
+def _answer_via_rag_with_retries(
+    payload: Dict[str, Any],
+    trace_id: str,
+) -> tuple[Dict[str, Any], List[UUID], str, Dict[str, Any]]:
+    attempts = max(1, settings.rag_retry_attempts)
+    backoff = max(0.0, settings.rag_retry_backoff_seconds)
+    last_exc: Exception | None = None
+
+    for attempt in range(1, attempts + 1):
+        try:
+            return _answer_via_rag(payload, trace_id)
+        except Exception as exc:
+            last_exc = exc
+            if attempt == attempts:
+                break
+
+            sleep_for = backoff * attempt
+            log.warning(
+                "RAG answer attempt %s/%s failed; retrying in %.2fs: %s",
+                attempt,
+                attempts,
+                sleep_for,
+                exc,
+            )
+            if sleep_for:
+                time.sleep(sleep_for)
+
+    assert last_exc is not None
+    raise last_exc
+
+
 def _unavailable_payload(language: str) -> Dict[str, Any]:
     payload = build_refusal_payload(language)
     payload["missing_info"] = (
@@ -347,7 +378,7 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
     trace_id = str(uuid4())
     rag_timings: Dict[str, Any] = {}
     try:
-        data, retrieved_ids, trace_id, rag_timings = _answer_via_rag(payload, trace_id)
+        data, retrieved_ids, trace_id, rag_timings = _answer_via_rag_with_retries(payload, trace_id)
     except Exception as exc:
         log.exception("RAG answer failed: %s", exc)
         data = _unavailable_payload(request.language)
