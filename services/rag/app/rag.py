@@ -122,10 +122,6 @@ def _keyword_terms(question: str) -> List[str]:
 
     add(normalized)
 
-    for token in re.findall(r"[\w\u0600-\u06ff]+", normalized):
-        if len(token) >= 3:
-            add(token)
-
     domain_expansions = {
         "capital adequacy": [
             "capital adequacy",
@@ -164,6 +160,10 @@ def _keyword_terms(question: str) -> List[str]:
         if trigger.lower() in lowered or trigger in normalized:
             for expansion in expansions:
                 add(expansion)
+
+    for token in re.findall(r"[\w\u0600-\u06ff]+", normalized):
+        if len(token) >= 3:
+            add(token)
 
     return terms[:24]
 

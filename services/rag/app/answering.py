@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 from .guardrails import (
     REFUSAL_TEXT_AR,
     REFUSAL_TEXT_EN,
+    build_answer_failed_payload,
     build_refusal_payload,
     compute_confidence,
     get_system_prompt,
@@ -30,12 +31,12 @@ def _build_user_prompt(
 ) -> str:
     role_list = ", ".join(role_names) if role_names else "none"
 
-    chunks = []
+    evidence_excerpts = []
     for idx, row in enumerate(rows, start=1):
-        chunks.append(
+        evidence_excerpts.append(
             "\n".join(
                 [
-                    f"Chunk {idx}:",
+                    f"Evidence excerpt {idx}:",
                     f"chunk_id: {row.get('chunk_id')}",
                     f"doc_title: {row.get('document_title')}",
                     f"doc_id: {row.get('document_id')}",
@@ -50,19 +51,19 @@ def _build_user_prompt(
             )
         )
 
-    chunks_block = "\n\n".join(chunks)
+    evidence_block = "\n\n".join(evidence_excerpts)
 
     schema_example = '''{
-  "answer": "Your answer here based only on the chunks.",
+  "answer": "Your polished answer here based only on the evidence excerpts.",
   "citations": [
     {
-      "doc_id": "<exact doc_id from chunk>",
-      "document_version": "<exact document_version from chunk>",
-      "page_number": <exact page_number from chunk>,
-      "start_offset": <exact start_offset from chunk>,
-      "end_offset": <exact end_offset from chunk>,
-      "source_uri": "<exact source_uri from chunk>",
-      "quote": "<exact snippet from chunk text, max 25 words>"
+      "doc_id": "<exact doc_id from evidence excerpt>",
+      "document_version": "<exact document_version from evidence excerpt>",
+      "page_number": <exact page_number from evidence excerpt>,
+      "start_offset": <exact start_offset from evidence excerpt>,
+      "end_offset": <exact end_offset from evidence excerpt>,
+      "source_uri": "<exact source_uri from evidence excerpt>",
+      "quote": "<exact snippet from evidence text, max 25 words>"
     }
   ]
 }'''
@@ -88,13 +89,19 @@ def _build_user_prompt(
 
     return "\n".join(
         [
-            "You MUST answer using ONLY the chunks below.",
+            "You MUST answer using ONLY the evidence excerpts below.",
             "Conversation history and user memory may clarify intent, but they are NOT evidence.",
-            "If the chunks are insufficient, return the refusal message exactly.",
+            "If the evidence is insufficient, return the refusal message exactly.",
             "Return ONLY valid JSON matching the EXACT schema below. No other fields allowed.",
             "Use the same language as the user for the answer.",
-            "Each citation must use the EXACT values from the chunk metadata (doc_id, document_version, page_number, start_offset, end_offset, source_uri).",
-            "The quote must be an exact snippet from the chunk text, max 25 words, NOT translated.",
+            "Write the answer as a polished KIB copilot reply, not as a retrieval/debug summary.",
+            "Start with the answer, then add concise supporting details if useful.",
+            "Use bullets when the evidence contains multiple points, laws, requirements, or steps.",
+            "Never use the words chunks, retrieved context, or phrases that expose retrieval internals.",
+            "Avoid weak filler like 'These sources reference...'. Prefer 'KIB sources point to...' or 'The evidence I found says...'.",
+            "If evidence mentions a law/regulation but not the full legal text, say that clearly and offer to search for a more specific clause.",
+            "Each citation must use the EXACT values from the evidence metadata (doc_id, document_version, page_number, start_offset, end_offset, source_uri).",
+            "The quote must be an exact snippet from the evidence text, max 25 words, NOT translated.",
             "",
             "REQUIRED JSON SCHEMA:",
             schema_example,
@@ -105,8 +112,8 @@ def _build_user_prompt(
             history_block,
             f"User question: {question}",
             "",
-            "Retrieved chunks:",
-            chunks_block,
+            "Evidence excerpts:",
+            evidence_block,
         ]
     )
 
@@ -138,11 +145,21 @@ def answer_with_llm(
     )
     system_prompt = get_system_prompt(role_names)
     log.debug("[RAG] Sending prompt to LLM (%d chars, %d chunks, roles=%s)", len(prompt), len(rows), role_names)
-    try:
-        raw = provider.generate(system_prompt, prompt)
-    except Exception as exc:
-        log.error("[RAG] LLM call failed: %s", exc)
-        return build_refusal_payload(language), meta
+
+    raw = ""
+    last_exc: Exception | None = None
+    for attempt in range(1, 3):
+        try:
+            raw = provider.generate(system_prompt, prompt)
+            last_exc = None
+            break
+        except Exception as exc:
+            last_exc = exc
+            log.warning("[RAG] LLM call attempt %s failed: %s", attempt, exc)
+    if last_exc is not None:
+        log.error("[RAG] LLM call failed after retries: %s", last_exc)
+        meta["llm_error"] = str(last_exc)
+        return build_answer_failed_payload(language), meta
 
     log.debug("[RAG] Raw LLM response (%d chars): %s", len(raw), raw[:500])
 
@@ -158,36 +175,62 @@ def answer_with_llm(
 
     log.debug("[RAG] Cleaned LLM output (%d chars): %s", len(cleaned), cleaned[:500])
 
+    if not cleaned:
+        log.error("[RAG] LLM returned empty content")
+        meta["llm_error"] = "empty_response"
+        return build_answer_failed_payload(language), meta
+
     try:
         data = json.loads(cleaned)
     except json.JSONDecodeError as exc:
         log.error("[RAG] JSON parse failed: %s — cleaned text: %s", exc, cleaned[:300])
-        return build_refusal_payload(language), meta
+        meta["llm_error"] = "json_parse_failed"
+        return build_answer_failed_payload(language), meta
 
     if not isinstance(data, dict):
         log.error("[RAG] Parsed data is not a dict: %s", type(data))
-        return build_refusal_payload(language), meta
+        meta["llm_error"] = "non_dict_response"
+        return build_answer_failed_payload(language), meta
 
     answer = str(data.get("answer", "")).strip()
     if answer in {REFUSAL_TEXT_EN, REFUSAL_TEXT_AR}:
         log.debug("[RAG] LLM returned refusal text")
         return build_refusal_payload(language), meta
 
-    citations = data.get("citations")
-    if not isinstance(citations, list) or not citations:
-        log.error("[RAG] No citations in LLM response: %s", citations)
-        return build_refusal_payload(language), meta
-
-    log.debug("[RAG] LLM returned %d citations", len(citations))
-    normalized_citations, used_rows = normalize_citations(citations, rows)
-    if not normalized_citations:
-        log.error("[RAG] Citation normalization failed. LLM citations: %s", json.dumps(citations[:2], default=str)[:500])
-        log.error("[RAG] Available row keys: %s", [str(r.get('document_id'))[:8] + '/' + str(r.get('document_version')) + '/p' + str(r.get('page_start')) for r in rows[:3]])
-        return build_refusal_payload(language), meta
-
     if not answer:
         log.error("[RAG] Empty answer after processing")
-        return build_refusal_payload(language), meta
+        meta["llm_error"] = "empty_answer"
+        return build_answer_failed_payload(language), meta
+
+    citations = data.get("citations") if isinstance(data.get("citations"), list) else []
+    log.debug("[RAG] LLM returned %d citations", len(citations))
+    normalized_citations, used_rows = normalize_citations(citations, rows)
+
+    if not normalized_citations:
+        log.warning(
+            "[RAG] Citation normalization failed; falling back to top retrieved row. "
+            "LLM citations=%s rows=%s",
+            json.dumps(citations[:2], default=str)[:300],
+            [
+                str(r.get("document_id"))[:8] + "/" + str(r.get("document_version")) + "/p" + str(r.get("page_start"))
+                for r in rows[:3]
+            ],
+        )
+        fallback_row = rows[0]
+        used_rows = [fallback_row]
+        normalized_citations = [
+            {
+                "doc_title": fallback_row.get("document_title"),
+                "doc_id": str(fallback_row.get("document_id")),
+                "document_version": fallback_row.get("document_version"),
+                "page_number": fallback_row.get("page_start"),
+                "start_offset": fallback_row.get("offset_start"),
+                "end_offset": fallback_row.get("offset_end"),
+                "quote": (str(fallback_row.get("text") or "").strip().split("\n", 1)[0])[:200],
+                "source_uri": fallback_row.get("source_uri"),
+            }
+        ]
+        meta["citation_fallback"] = True
 
     confidence = compute_confidence(used_rows, normalized_citations)
     missing_info = translate_missing_info(confidence, language)

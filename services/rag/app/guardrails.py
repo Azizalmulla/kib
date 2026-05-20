@@ -6,12 +6,14 @@ from pydantic import ValidationError
 from .schemas import StrictRagResponse
 
 LLM_SYSTEM_PROMPT_BASE = (
-    "You are the KIB Knowledge Copilot. Answer ONLY using the provided chunks. "
-    "If the chunks do not contain enough evidence, refuse with the exact message: "
+    "You are the KIB Knowledge Copilot. Answer ONLY using the provided KIB evidence excerpts. "
+    "If the evidence excerpts do not contain enough evidence, refuse with the exact message: "
     "\"I can't answer from KIB's approved documents for this question.\" "
     "Do NOT use general knowledge. Do NOT fabricate policies, numbers, fees, or limits. "
+    "Write like a polished KIB WhatsApp assistant: direct, useful, and professional. "
+    "Never mention internal retrieval terms such as chunks, context, retrieved context, or provided documents. "
     "Return JSON that matches the response schema exactly. "
-    "Every non-refusal answer must include citations derived from the provided chunks only."
+    "Every non-refusal answer must include citations derived from the provided evidence excerpts only."
 )
 
 ROLE_PROMPT_OVERRIDES = {
@@ -51,6 +53,25 @@ MISSING_INFO_AR = (
     "قد يكون هذا خارج نطاق قاعدة معرفة KIB. "
     "جرّب إضافة اسم السياسة أو المنتج أو عنوان القسم."
 )
+
+ANSWER_FAILED_INFO_EN = (
+    "The answer model is temporarily unavailable. Please retry shortly."
+)
+ANSWER_FAILED_INFO_AR = (
+    "نموذج توليد الإجابة غير متاح مؤقتاً. يرجى إعادة المحاولة بعد قليل."
+)
+
+
+def build_answer_failed_payload(language: str) -> Dict[str, Any]:
+    language = "ar" if language == "ar" else "en"
+    return {
+        "language": language,
+        "answer": REFUSAL_TEXT_AR if language == "ar" else REFUSAL_TEXT_EN,
+        "confidence": "low",
+        "citations": [],
+        "missing_info": ANSWER_FAILED_INFO_AR if language == "ar" else ANSWER_FAILED_INFO_EN,
+        "safe_next_steps": safe_next_steps(language),
+    }
 
 SAFE_NEXT_STEPS_EN = [
     "Search by policy or product name.",
@@ -127,25 +148,49 @@ def translate_missing_info(confidence: str, language: str) -> Optional[str]:
     return MISSING_INFO_EN
 
 
+def _normalize_id(value: Any) -> str:
+    return "".join(ch for ch in str(value or "").lower() if ch.isalnum())
+
+
+def _quote_overlap(citation: Dict[str, Any], row: Dict[str, Any]) -> bool:
+    quote = str(citation.get("quote") or "").strip()
+    if len(quote) < 12:
+        return False
+    text = str(row.get("text") or "")
+    if not text:
+        return False
+    snippet = quote[:60].lower()
+    return snippet in text.lower()
+
+
 def _find_matching_row(
     citation: Dict[str, Any],
     rows: List[Dict[str, Any]],
 ) -> Optional[Dict[str, Any]]:
     """Find the best matching row for an LLM-generated citation.
 
-    Match by doc_id + page_number first (most reliable from LLM).
-    Falls back to doc_id only if page doesn't match."""
+    Match strictly by doc_id + page first, then doc_id only, then a
+    normalized id match (handles dashes/case), then quote overlap.
+    """
     cit_doc_id = str(citation.get("doc_id", ""))
     cit_page = citation.get("page_number")
 
-    # Try doc_id + page_number match
     for row in rows:
         if str(row.get("document_id")) == cit_doc_id and row.get("page_start") == cit_page:
             return row
 
-    # Fall back to doc_id only
     for row in rows:
         if str(row.get("document_id")) == cit_doc_id:
+            return row
+
+    cit_doc_norm = _normalize_id(cit_doc_id)
+    if cit_doc_norm:
+        for row in rows:
+            if _normalize_id(row.get("document_id")) == cit_doc_norm:
+                return row
+
+    for row in rows:
+        if _quote_overlap(citation, row):
             return row
 
     return None
