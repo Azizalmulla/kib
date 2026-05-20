@@ -40,6 +40,10 @@ def get_accessible_document_ids(
 ) -> List[str]:
     if not role_names:
         return []
+    expanded_roles = set(role_names)
+    if "admin" in expanded_roles:
+        expanded_roles.update({"employee", "front_desk", "compliance", "audit_admin"})
+    role_names = sorted(expanded_roles)
     if attributes:
         rows = conn.execute(
             """
