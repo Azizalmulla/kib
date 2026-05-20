@@ -66,6 +66,8 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
+    model_config = {"extra": "ignore"}
+
     language: Literal["en", "ar"]
     answer: str
     confidence: Literal["high", "medium", "low"]
@@ -74,6 +76,7 @@ class ChatResponse(BaseModel):
     safe_next_steps: List[str]
     audit_log_id: Optional[str] = None
     conversation_id: Optional[str] = None
+    meta: Optional[Dict[str, Any]] = None
 
 
 class ChatMessageOut(BaseModel):
