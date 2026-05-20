@@ -9,7 +9,16 @@ from .core.config import settings
 from .core.db import get_db
 from .guardrails import build_meta
 from .llm import get_provider
-from .rag import filter_rows_by_doc_ids, filter_rows_by_status, get_accessible_document_ids, rerank_chunks, retrieve_chunks
+from .rag import (
+    expand_retrieval_question,
+    filter_rows_by_doc_ids,
+    filter_rows_by_status,
+    get_accessible_document_ids,
+    merge_chunk_rows,
+    rerank_chunks,
+    retrieve_chunks,
+    retrieve_keyword_chunks,
+)
 from .schemas import RagRequest, StrictRagResponse
 
 app = FastAPI(title=settings.app_name)
@@ -54,6 +63,14 @@ def _rewrite_question(question: str, history: list[tuple[str, str]], memory_summ
     return question
 
 
+def _is_refusal_payload(payload: dict) -> bool:
+    answer = str(payload.get("answer") or "").strip()
+    return answer in {
+        "I can't answer from KIB's approved documents for this question.",
+        "لا أستطيع الإجابة من مستندات KIB المعتمدة لهذا السؤال.",
+    } or (payload.get("confidence") == "low" and not payload.get("citations"))
+
+
 @app.post("/rag/answer", response_model=StrictRagResponse)
 def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     started_at = perf_counter()
@@ -95,6 +112,48 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
         memory_summary=answer_memory_summary,
     )
     answer_ms = int((perf_counter() - answer_started_at) * 1000)
+    recovery_used = False
+    recovery_ms = 0
+
+    if _is_refusal_payload(payload):
+        recovery_started_at = perf_counter()
+        expanded_question = expand_retrieval_question(retrieval_question)
+        recovery_candidate_k = max(candidate_k, settings.recovery_candidate_k)
+        with get_db() as conn:
+            recovery_vector_rows = retrieve_chunks(
+                conn,
+                expanded_question,
+                allowed_doc_ids,
+                recovery_candidate_k,
+            )
+            keyword_rows = retrieve_keyword_chunks(
+                conn,
+                expanded_question,
+                allowed_doc_ids,
+                settings.keyword_candidate_k,
+            )
+
+        recovery_rows = merge_chunk_rows(keyword_rows, recovery_vector_rows, rows)
+        recovery_rows = filter_rows_by_doc_ids(recovery_rows, allowed_doc_ids)
+        recovery_rows = filter_rows_by_status(recovery_rows)
+        recovery_reranked = rerank_chunks(expanded_question, recovery_rows, settings.rerank_top_n)
+        recovery_payload, recovery_meta = answer_with_llm(
+            recovery_reranked,
+            request.question,
+            request.language,
+            request.user.role_names,
+            provider,
+            history=answer_history,
+            memory_summary=answer_memory_summary,
+        )
+        recovery_ms = int((perf_counter() - recovery_started_at) * 1000)
+        if not _is_refusal_payload(recovery_payload):
+            payload = recovery_payload
+            meta = recovery_meta
+            reranked = recovery_reranked
+            retrieval_question = expanded_question
+            recovery_used = True
+
     if not meta.get("trace_id"):
         meta = build_meta(reranked)
     meta["retrieval_question"] = retrieval_question
@@ -105,6 +164,8 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
         "rerank_ms": rerank_ms,
         "candidate_k": candidate_k,
         "final_k": len(reranked),
+        "recovery_used": recovery_used,
+        "recovery_ms": recovery_ms,
         "answer_ms": answer_ms,
         "total_ms": int((perf_counter() - started_at) * 1000),
     }

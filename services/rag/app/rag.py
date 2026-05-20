@@ -1,4 +1,5 @@
 import math
+import re
 from typing import Any, Dict, List
 
 import httpx
@@ -107,6 +108,141 @@ def retrieve_chunks(
     ).fetchall()
 
     return rows
+
+
+def _keyword_terms(question: str) -> List[str]:
+    normalized = " ".join(question.split())
+    lowered = normalized.lower()
+    terms: List[str] = []
+
+    def add(term: str) -> None:
+        clean = " ".join(term.split())
+        if clean and clean.lower() not in {item.lower() for item in terms}:
+            terms.append(clean)
+
+    add(normalized)
+
+    for token in re.findall(r"[\w\u0600-\u06ff]+", normalized):
+        if len(token) >= 3:
+            add(token)
+
+    domain_expansions = {
+        "capital adequacy": [
+            "capital adequacy",
+            "CAR",
+            "Capital Adequacy Ratio",
+            "Basel III",
+            "Pillar III",
+            "Tier 1",
+            "CET1",
+        ],
+        "كفاية رأس المال": [
+            "كفاية رأس المال",
+            "معيار كفاية رأس المال",
+            "بازل",
+            "Basel III",
+            "Pillar III",
+            "CAR",
+            "Capital Adequacy Ratio",
+        ],
+        "online banking": [
+            "online banking",
+            "internet banking",
+            "KIB Internet Banking",
+            "terms and conditions online banking",
+        ],
+        "مكافحة غسل الأموال": [
+            "مكافحة غسل الأموال",
+            "AML",
+            "Anti-money laundering",
+            "Law No. (106)",
+            "FATF",
+        ],
+    }
+
+    for trigger, expansions in domain_expansions.items():
+        if trigger.lower() in lowered or trigger in normalized:
+            for expansion in expansions:
+                add(expansion)
+
+    return terms[:24]
+
+
+def expand_retrieval_question(question: str) -> str:
+    terms = _keyword_terms(question)
+    return " ".join(terms[:12])[:700] or question
+
+
+def retrieve_keyword_chunks(
+    conn,
+    question: str,
+    allowed_doc_ids: List[str],
+    top_k: int,
+) -> List[Dict[str, Any]]:
+    if not allowed_doc_ids:
+        return []
+
+    patterns = [f"%{term}%" for term in _keyword_terms(question)]
+    if not patterns:
+        return []
+
+    rows = conn.execute(
+        """
+        SELECT
+            c.id AS chunk_id,
+            c.text,
+            c.page_start,
+            c.page_end,
+            c.section,
+            c.offset_start,
+            c.offset_end,
+            dv.id AS document_version_id,
+            dv.version AS document_version,
+            d.id AS document_id,
+            d.title AS document_title,
+            d.status AS document_status,
+            dv.source_uri,
+            0.25::float AS distance,
+            (
+                SELECT count(*)
+                FROM unnest(%s::text[]) AS p(pattern)
+                WHERE c.text ILIKE p.pattern
+                   OR d.title ILIKE p.pattern
+                   OR COALESCE(dv.source_uri, '') ILIKE p.pattern
+            ) AS keyword_score
+        FROM chunks c
+        JOIN document_versions dv ON dv.id = c.document_version_id
+        JOIN documents d ON d.id = dv.document_id
+        WHERE d.id = ANY(%s)
+          AND d.status = 'approved'
+          AND dv.is_active = true
+          AND EXISTS (
+              SELECT 1
+              FROM unnest(%s::text[]) AS p(pattern)
+              WHERE c.text ILIKE p.pattern
+                 OR d.title ILIKE p.pattern
+                 OR COALESCE(dv.source_uri, '') ILIKE p.pattern
+          )
+        ORDER BY keyword_score DESC, d.title, c.page_start
+        LIMIT %s
+        """,
+        (patterns, allowed_doc_ids, patterns, top_k),
+    ).fetchall()
+
+    return rows
+
+
+def merge_chunk_rows(*row_groups: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    merged: List[Dict[str, Any]] = []
+    seen: set[str] = set()
+    for rows in row_groups:
+        for row in rows:
+            key = str(row.get("chunk_id"))
+            if key in seen:
+                continue
+            seen.add(key)
+            merged.append(row)
+    return merged
 
 
 def filter_rows_by_doc_ids(

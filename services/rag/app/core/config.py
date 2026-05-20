@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     vector_probes: int = 10
     rerank_enabled: bool = True
     rerank_candidate_k: int = 15
+    recovery_candidate_k: int = 40
+    keyword_candidate_k: int = 30
     rerank_top_n: int = 4
 
     fireworks_api_key: str = ""
