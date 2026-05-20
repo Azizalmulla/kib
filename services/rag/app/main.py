@@ -1,5 +1,7 @@
 import json
+import os
 import re
+import subprocess
 from time import perf_counter
 
 from fastapi import FastAPI, Response
@@ -22,6 +24,28 @@ from .rag import (
 from .schemas import RagRequest, StrictRagResponse
 
 app = FastAPI(title=settings.app_name)
+
+
+def _resolve_build_marker() -> str:
+    env_marker = os.getenv("RENDER_GIT_COMMIT") or os.getenv("GIT_COMMIT") or os.getenv("BUILD_COMMIT")
+    if env_marker:
+        return env_marker[:12]
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short=12", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return "unknown"
+
+
+BUILD_MARKER = _resolve_build_marker()
 
 
 FOLLOW_UP_PATTERNS = (
@@ -217,17 +241,14 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     response.headers["X-RAG-Timings"] = json.dumps(timings)
 
     payload_with_meta = dict(payload)
-    payload_with_meta["meta"] = {
-        "trace_id": meta.get("trace_id"),
-        "retrieved_chunk_ids": meta.get("retrieved_chunk_ids", []),
-        "retrieval_question": retrieval_question,
-        "llm_error": meta.get("llm_error"),
-        "citation_fallback": meta.get("citation_fallback", False),
-        "timings": timings,
-    }
+    response_meta = dict(meta)
+    response_meta["retrieval_question"] = retrieval_question
+    response_meta.setdefault("citation_fallback", False)
+    response_meta["timings"] = timings
+    payload_with_meta["meta"] = response_meta
     return StrictRagResponse(**payload_with_meta)
 
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok"}
+    return {"status": "ok", "build": BUILD_MARKER}

@@ -418,6 +418,17 @@ def answer_with_llm(
     language = "ar" if language == "ar" else "en"
     meta = {
         "retrieved_chunk_ids": [str(row["chunk_id"]) for row in rows],
+        "top_evidence": [
+            {
+                "chunk_id": str(row.get("chunk_id")),
+                "document_id": str(row.get("document_id")),
+                "document_title": row.get("document_title"),
+                "page_number": row.get("page_start"),
+                "rerank_score": row.get("rerank_score"),
+                "distance": row.get("distance"),
+            }
+            for row in rows[:4]
+        ],
     }
 
     if not rows:
