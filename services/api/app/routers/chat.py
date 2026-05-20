@@ -384,6 +384,16 @@ def chat(request: ChatRequest, current_user: AuthUser = Depends(get_current_user
         data = _unavailable_payload(request.language)
         retrieved_ids = []
 
+    if data.get("confidence") == "low" and not data.get("citations"):
+        log.warning(
+            "RAG returned low-confidence refusal trace_id=%s query=%r roles=%s retrieved=%s timings=%s",
+            trace_id,
+            request.question,
+            current_user.roles,
+            [str(chunk_id) for chunk_id in retrieved_ids],
+            rag_timings,
+        )
+
     latency_ms = int((time.time() - start_time) * 1000)
     audit_log_id = None
     try:
