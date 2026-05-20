@@ -39,7 +39,7 @@ class Citation(BaseModel):
 
 
 class StrictRagResponse(BaseModel):
-    model_config = {"extra": "forbid"}
+    model_config = {"extra": "ignore"}
 
     language: Literal["en", "ar"]
     answer: str
@@ -47,6 +47,7 @@ class StrictRagResponse(BaseModel):
     citations: List[Citation]
     missing_info: Optional[str] = None
     safe_next_steps: List[str]
+    meta: Optional[dict] = None
 
 
 class ModelInfo(BaseModel):

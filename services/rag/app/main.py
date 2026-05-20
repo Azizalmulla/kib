@@ -113,8 +113,35 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     )
     answer_ms = int((perf_counter() - answer_started_at) * 1000)
     recovery_used = False
+    recovery_stage = None
     recovery_ms = 0
+    cheap_retry_used = False
 
+    # Stage 1: cheap retry against the SAME reranked rows. This handles the most
+    # common failure mode we see in production — a single transient LLM hiccup
+    # (slow cold call, malformed JSON, citation that doesn't normalize) on rows
+    # that clearly contain the answer. Cost: one extra LLM call, no DB hits.
+    if _is_refusal_payload(payload) and reranked:
+        retry_started_at = perf_counter()
+        retry_payload, retry_meta = answer_with_llm(
+            reranked,
+            request.question,
+            request.language,
+            request.user.role_names,
+            provider,
+            history=answer_history,
+            memory_summary=answer_memory_summary,
+        )
+        recovery_ms += int((perf_counter() - retry_started_at) * 1000)
+        cheap_retry_used = True
+        if not _is_refusal_payload(retry_payload):
+            payload = retry_payload
+            meta = retry_meta
+            recovery_used = True
+            recovery_stage = "cheap_retry"
+
+    # Stage 2: full recovery — expand the query, run keyword search alongside
+    # vector retrieval, rerank a larger candidate pool, and call the LLM again.
     if _is_refusal_payload(payload):
         recovery_started_at = perf_counter()
         expanded_question = expand_retrieval_question(retrieval_question)
@@ -146,13 +173,14 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
             history=answer_history,
             memory_summary=answer_memory_summary,
         )
-        recovery_ms = int((perf_counter() - recovery_started_at) * 1000)
+        recovery_ms += int((perf_counter() - recovery_started_at) * 1000)
         if not _is_refusal_payload(recovery_payload):
             payload = recovery_payload
             meta = recovery_meta
             reranked = recovery_reranked
             retrieval_question = expanded_question
             recovery_used = True
+            recovery_stage = "full_recovery"
 
     if not meta.get("trace_id"):
         meta = build_meta(reranked)
@@ -165,6 +193,8 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
         "candidate_k": candidate_k,
         "final_k": len(reranked),
         "recovery_used": recovery_used,
+        "recovery_stage": recovery_stage,
+        "cheap_retry_used": cheap_retry_used,
         "recovery_ms": recovery_ms,
         "answer_ms": answer_ms,
         "total_ms": int((perf_counter() - started_at) * 1000),
@@ -173,7 +203,17 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
     response.headers["X-Trace-Id"] = meta["trace_id"]
     response.headers["X-Retrieved-Chunk-Ids"] = ",".join(meta["retrieved_chunk_ids"])
     response.headers["X-RAG-Timings"] = json.dumps(timings)
-    return StrictRagResponse(**payload)
+
+    payload_with_meta = dict(payload)
+    payload_with_meta["meta"] = {
+        "trace_id": meta.get("trace_id"),
+        "retrieved_chunk_ids": meta.get("retrieved_chunk_ids", []),
+        "retrieval_question": retrieval_question,
+        "llm_error": meta.get("llm_error"),
+        "citation_fallback": meta.get("citation_fallback", False),
+        "timings": timings,
+    }
+    return StrictRagResponse(**payload_with_meta)
 
 
 @app.get("/health")
