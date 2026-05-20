@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 import subprocess
@@ -23,6 +24,7 @@ from .rag import (
 )
 from .schemas import RagRequest, StrictRagResponse
 
+log = logging.getLogger(__name__)
 app = FastAPI(title=settings.app_name)
 
 
@@ -46,6 +48,21 @@ def _resolve_build_marker() -> str:
 
 
 BUILD_MARKER = _resolve_build_marker()
+
+
+@app.on_event("startup")
+def ensure_search_indexes() -> None:
+    try:
+        with get_db() as conn:
+            conn.execute(
+                """
+                CREATE INDEX IF NOT EXISTS idx_chunks_text_fts
+                ON chunks
+                USING gin (to_tsvector('simple', coalesce(text, '')))
+                """
+            )
+    except Exception as exc:
+        log.warning("Could not ensure chunk full-text index: %s", exc)
 
 
 FOLLOW_UP_PATTERNS = (
@@ -122,13 +139,21 @@ def answer(request: RagRequest, response: Response) -> StrictRagResponse:
             request.user.attributes,
         )
         expanded_retrieval_question = expand_retrieval_question(retrieval_question)
+        keyword_rows = retrieve_keyword_chunks(
+            conn,
+            expanded_retrieval_question,
+            allowed_doc_ids,
+            settings.keyword_candidate_k,
+        )
         if expanded_retrieval_question != retrieval_question:
-            per_query_k = max(request.top_k, candidate_k // 2)
+            vector_budget = max(request.top_k * 2, candidate_k - settings.keyword_candidate_k)
+            per_query_k = max(request.top_k, vector_budget // 2)
             raw_rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, per_query_k)
             expanded_rows = retrieve_chunks(conn, expanded_retrieval_question, allowed_doc_ids, per_query_k)
-            rows = merge_chunk_rows(raw_rows, expanded_rows)
+            rows = merge_chunk_rows(keyword_rows, raw_rows, expanded_rows)
         else:
-            rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, candidate_k)
+            vector_rows = retrieve_chunks(conn, retrieval_question, allowed_doc_ids, candidate_k)
+            rows = merge_chunk_rows(keyword_rows, vector_rows)
     retrieval_ms = int((perf_counter() - retrieval_started_at) * 1000)
 
     rows = filter_rows_by_doc_ids(rows, allowed_doc_ids)

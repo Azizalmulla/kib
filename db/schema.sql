@@ -142,6 +142,9 @@ CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
 CREATE INDEX IF NOT EXISTS idx_doc_acl_role ON document_acl(role_id);
 CREATE INDEX IF NOT EXISTS idx_chunks_doc_version ON chunks(document_version_id);
 CREATE INDEX IF NOT EXISTS idx_embeddings_model ON embeddings(model);
+CREATE INDEX IF NOT EXISTS idx_chunks_text_fts
+  ON chunks
+  USING gin (to_tsvector('simple', coalesce(text, '')));
 
 -- Vector index for similarity search (requires pgvector >= 0.5 for HNSW)
 CREATE INDEX IF NOT EXISTS idx_embeddings_hnsw

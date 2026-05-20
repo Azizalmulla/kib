@@ -185,6 +185,20 @@ def expand_retrieval_question(question: str) -> str:
     return " ".join(terms[:12])[:700] or question
 
 
+def _fts_query(question: str) -> str:
+    terms = _keyword_terms(question)
+    parts: List[str] = []
+    for term in terms[:16]:
+        escaped = term.replace('"', " ").strip()
+        if not escaped:
+            continue
+        if " " in escaped:
+            parts.append(f'"{escaped}"')
+        else:
+            parts.append(escaped)
+    return " OR ".join(parts) or question
+
+
 def retrieve_keyword_chunks(
     conn,
     question: str,
@@ -194,12 +208,15 @@ def retrieve_keyword_chunks(
     if not allowed_doc_ids:
         return []
 
-    patterns = [f"%{term}%" for term in _keyword_terms(question)]
-    if not patterns:
+    query_text = _fts_query(question)
+    if not query_text:
         return []
 
     rows = conn.execute(
         """
+        WITH query AS (
+            SELECT websearch_to_tsquery('simple', %s) AS tsq
+        )
         SELECT
             c.id AS chunk_id,
             c.text,
@@ -215,30 +232,19 @@ def retrieve_keyword_chunks(
             d.status AS document_status,
             dv.source_uri,
             0.25::float AS distance,
-            (
-                SELECT count(*)
-                FROM unnest(%s::text[]) AS p(pattern)
-                WHERE c.text ILIKE p.pattern
-                   OR d.title ILIKE p.pattern
-                   OR COALESCE(dv.source_uri, '') ILIKE p.pattern
-            ) AS keyword_score
+            ts_rank_cd(to_tsvector('simple', coalesce(c.text, '')), query.tsq) AS keyword_score
         FROM chunks c
         JOIN document_versions dv ON dv.id = c.document_version_id
         JOIN documents d ON d.id = dv.document_id
+        CROSS JOIN query
         WHERE d.id = ANY(%s)
           AND d.status = 'approved'
           AND dv.is_active = true
-          AND EXISTS (
-              SELECT 1
-              FROM unnest(%s::text[]) AS p(pattern)
-              WHERE c.text ILIKE p.pattern
-                 OR d.title ILIKE p.pattern
-                 OR COALESCE(dv.source_uri, '') ILIKE p.pattern
-          )
-        ORDER BY keyword_score DESC, d.title, c.page_start
+          AND to_tsvector('simple', coalesce(c.text, '')) @@ query.tsq
+        ORDER BY keyword_score DESC, c.page_start
         LIMIT %s
         """,
-        (patterns, allowed_doc_ids, patterns, top_k),
+        (query_text, allowed_doc_ids, top_k),
     ).fetchall()
 
     return rows
